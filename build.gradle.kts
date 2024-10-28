@@ -84,14 +84,14 @@ allprojects {
         }
 
         compileTestJava {
-            targetCompatibility = runtimeJavaVersion()
+            targetCompatibility = "1.8"//runtimeJavaVersion()
         }
         compileTestFixturesJava {
             targetCompatibility = "1.8"
         }
         compileTestKotlin {
             kotlinOptions {
-                jvmTarget = runtimeJavaVersion()
+                jvmTarget = "1.8"//runtimeJavaVersion()
             }
         }
         compileTestFixturesKotlin {
@@ -169,6 +169,7 @@ if (!repoUrl.isNullOrEmpty()) {
         listOf(
             project(":jacodb-api-common"),
             project(":jacodb-api-jvm"),
+            project(":jacodb-api-net"),
             project(":jacodb-api-storage"),
             project(":jacodb-core"),
             project(":jacodb-storage"),
