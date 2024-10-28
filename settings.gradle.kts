@@ -1,5 +1,15 @@
 rootProject.name = "jacodb"
 
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.name == "rdgen") {
+                useModule("com.jetbrains.rd:rd-gen:${requested.version}")
+            }
+        }
+    }
+}
+
 plugins {
     `gradle-enterprise`
     id("org.danilopianini.gradle-pre-commit-git-hooks") version "1.1.11"
@@ -32,3 +42,4 @@ include("jacodb-approximations")
 include("jacodb-taint-configuration")
 include("jacodb-ets")
 include("jacodb-panda-static")
+include("jacodb-api-net")

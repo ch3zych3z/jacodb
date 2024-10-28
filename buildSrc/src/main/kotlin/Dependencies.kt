@@ -41,6 +41,7 @@ object Versions {
     const val xodus = "2.0.1"
     const val rocks_db = "9.1.1"
     const val lmdb_java = "0.9.0"
+    const val rd = "2023.2.0"
 
     // libs for tests only
     const val jgit_test_only_version = "5.9.0.202009080501-r"
@@ -339,6 +340,23 @@ object Libs {
         name = "commons-compress",
         version = Versions.commons_compress_test_only_version
     )
+
+    // https://github.com/JetBrains/rd
+    val rd_core = dep(
+        group = "com.jetbrains.rd",
+        name = "rd-core",
+        version = Versions.rd
+    )
+    val rd_framework = dep(
+        group = "com.jetbrains.rd",
+        name = "rd-framework",
+        version = Versions.rd
+    )
+    val rd_gen = dep(
+        group = "com.jetbrains.rd",
+        name = "rd-gen",
+        version = Versions.rd
+    )
 }
 
 object Plugins {
@@ -379,6 +397,12 @@ object Plugins {
     object Shadow : ProjectPlugin(
         version = Versions.shadow,
         id = "com.github.johnrengelman.shadow"
+    )
+
+    // https://github.com/JetBrains/rd
+    object RdGen : ProjectPlugin(
+        id = "com.jetbrains.rdgen",
+        version = Versions.rd
     )
 }
 
