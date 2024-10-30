@@ -14,22 +14,19 @@
  *  limitations under the License.
  */
 
-package org.example.ilinstances
+@file:Suppress("unused")
 
-import org.jacodb.api.net.generated.models.AsmCacheKey
-import org.jacodb.api.net.generated.models.IlTypeDto
+package org.jacodb.api.net.models
 
-class IlType(private val dto: IlTypeDto) : IlInstance {
-    lateinit var declAsm: IlAsm
-    val name: String = dto.name
-    val fields: MutableList<IlField> = mutableListOf()
-    val methods: MutableList<IlMethod> = mutableListOf()
-    override fun attach() {
-        declAsm = IlInstance.cache.getAsm(AsmCacheKey(dto.id.asm))
-        declAsm.types.add(this)
+import com.jetbrains.rd.generator.nova.*
+
+object IlSigModel : Ext(IlModel) {
+    private val request = structdef {
+        field("rootAsm", PredefinedType.string)
     }
 
-    override fun toString(): String {
-        return name
+    init {
+        signal("asmRequest", request).apply { async }
+        signal("asmResponse", immutableList(IlModel.IlDto)).apply { async }
     }
 }
