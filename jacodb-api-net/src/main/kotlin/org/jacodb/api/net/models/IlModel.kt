@@ -70,11 +70,24 @@ object IlModel : Ext(IlRoot) {
         field("isPinned", PredefinedType.bool)
     }
 
-    private val IlTempVarDto = structdef extends IlVarDto {
-    }
-    private val IlErrVarDto = structdef extends IlVarDto {
+    private val IlTempVarDto = structdef extends IlVarDto { }
+    private val IlErrVarDto = structdef extends IlVarDto { }
 
+    private val IlEhScopeDto = basestruct extends IlDto {
+        field("tb", PredefinedType.int)
+        field("te", PredefinedType.int)
+        field("hb", PredefinedType.int)
+        field("he", PredefinedType.int)
     }
+    private val IlCatchScopeDto = structdef extends IlEhScopeDto {
+    }
+    private val IlFilterScopeDto = structdef extends IlEhScopeDto {
+        field("fb", PredefinedType.int)
+    }
+    private val IlFaultScopeDto = structdef extends IlEhScopeDto { }
+    private val IlFinallyScopeDto = structdef extends IlEhScopeDto { }
+
+
     private val IlMethodDto = structdef extends IlDto {
         field("id", cacheKey)
         field("declType", cacheKey.nullable)
@@ -85,6 +98,7 @@ object IlModel : Ext(IlRoot) {
         field("locals", immutableList(IlLocalVarDto))
         field("temps", immutableList(IlTempVarDto))
         field("errs", immutableList(IlErrVarDto))
+        field("ehScopes", immutableList(IlEhScopeDto))
         field("body", immutableList(IlMethodBodyModel.IlStmtDto))
     }
 }
