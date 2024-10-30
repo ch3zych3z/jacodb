@@ -16,14 +16,23 @@
 
 package org.example.ilinstances
 
+import org.jacodb.api.net.generated.models.IlBranchStmtDto
 import org.jacodb.api.net.generated.models.IlMethodDto
 import org.jacodb.api.net.generated.models.IlParameterDto
+import org.jacodb.api.net.ilinstances.*
 
 class IlMethod(private val dto: IlMethodDto) : IlInstance {
     var declType: IlType? = null
     var returnType: IlType? = null
     val name: String = dto.name
     val parametes: MutableList<IlParameter> = dto.parameters.map { IlParameter(it) }.toMutableList()
+    val args: List<IlArgument> = dto.parameters.map { IlArgument(it) }.toList()
+    val resolved: Boolean = dto.resolved
+    val locals: MutableList<IlLocalVar> = mutableListOf()
+    val temps: MutableList<IlTempVar> = mutableListOf()
+    val errs: MutableList<IlErrVar> = mutableListOf()
+
+    val body: MutableList<IlStmt> = mutableListOf()
 
     override fun attach() {
         if (dto.declType != null) {
@@ -33,6 +42,16 @@ class IlMethod(private val dto: IlMethodDto) : IlInstance {
         if (dto.returnType != null)
             returnType = IlInstance.cache.getType(dto.returnType)
         parametes.forEach { it.attach() }
+        dto.locals.map { IlLocalVar(it) }.sortedBy { it.index }.forEach { locals.add(it) }
+        dto.temps.map { IlTempVar(it) }.sortedBy { it.index }.forEach { temps.add(it) }
+        dto.errs.map { IlErrVar(it) }.sortedBy { it.index }.forEach { errs.add(it) }
+        dto.body.forEach { body.add(IlStmt.deserialize(this, it)) }
+        dto.body.zip(body).filter { (_, inst) -> inst is IlBranchStmt }
+            .forEach { (dto, inst) -> inst as IlBranchStmt; dto as IlBranchStmtDto; inst.updateTarget(dto, this) }
+    }
+
+    override fun toString(): String {
+        return "${returnType ?: ""} $name(${parametes.joinToString(", ")})"
     }
 }
 
@@ -43,4 +62,7 @@ class IlParameter(private val dto: IlParameterDto) : IlInstance {
         paramType = IlInstance.cache.getType(dto.type)
     }
 
+    override fun toString(): String {
+        return paramType.toString()
+    }
 }
