@@ -94,7 +94,12 @@ class IlIfStmt(dto: IlIfStmtDto, src: IlMethod) : IlBranchStmt {
     lateinit var target: IlStmt
     val condition = dto.cond.deserialize(src)
     override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
-        target = src.body[dto.target]
+        // TOOD forcedFault
+        val targetIndex = when {
+            dto.target < src.body.size -> dto.target
+            else -> src.body.indices.last
+        }
+        target = src.body[targetIndex]
     }
 
     override fun toString(): String {

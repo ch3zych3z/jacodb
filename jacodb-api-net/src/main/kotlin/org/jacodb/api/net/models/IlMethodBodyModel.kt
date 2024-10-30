@@ -123,7 +123,16 @@ object IlMethodBodyModel : Ext(IlRoot) {
         field("retVal", IlExprDto.nullable)
     }
 
-    private val IlEhStmtDto = structdef extends IlStmtDto {}
+    private val IlEhStmtDto = basestruct extends IlStmtDto {}
+    private val IlThrowStmtDto = structdef extends IlEhStmtDto {
+        field("value", IlExprDto)
+    }
+    private val IlRethrowStmtDto = structdef extends IlEhStmtDto {}
+    private val IlEndFinallyStmtDto = structdef extends IlEhStmtDto {}
+    private val IlEndFaultStmtDto = structdef extends IlEhStmtDto {}
+    private val IlEndFilterStmtDto = structdef extends IlEhStmtDto {
+        field("value", IlExprDto)
+    }
 
     private val IlBranchStmtDto = basestruct extends IlStmtDto {
         field("target", PredefinedType.int)
@@ -135,6 +144,7 @@ object IlMethodBodyModel : Ext(IlRoot) {
     private val IlIfStmtDto = structdef extends IlBranchStmtDto {
         field("cond", IlExprDto)
     }
+
     private val IlVarKind = enum {
         +"local"
         +"temp"
