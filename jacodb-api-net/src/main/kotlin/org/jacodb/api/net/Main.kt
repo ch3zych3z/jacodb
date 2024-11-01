@@ -21,6 +21,7 @@ import com.jetbrains.rd.util.catch
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.IScheduler
+import com.jetbrains.rd.util.threading.SingleThreadScheduler
 import org.example.ilinstances.IlInstance
 import org.jacodb.api.net.generated.models.Request
 import org.jacodb.api.net.generated.models.ilModel
@@ -67,7 +68,6 @@ fun main() {
     val lifetime = socketLifetimeDef.lifetime
 
     val serializers = Serializers()
-
     pumpCurrentThread(lifetime) { scheduler ->
         val protocol = Protocol(
             "Server",
@@ -80,7 +80,7 @@ fun main() {
 
         val ilModel = protocol.ilModel;
         val sigModel = ilModel.ilSigModel;
-        var (process, alive) = spawnDotNetProcess("/home/andrew/Documents/dotnet-tac/TACBuilder/bin/Debug/net8.0/linux-x64/")
+        val (process, alive) = spawnDotNetProcess("/home/andrew/Documents/dotnet-tac/TACBuilder/bin/Debug/net8.0/linux-x64/")
 
         sigModel.asmResponse.advise(lifetime) { response ->
             response.forEach { dto ->
@@ -104,7 +104,7 @@ fun spawnDotNetProcess(exePath: String): Pair<Process, Boolean> {
         .redirectOutput(ProcessBuilder.Redirect.INHERIT)
         .redirectError(ProcessBuilder.Redirect.INHERIT)
         .start()
-    val alive = process.waitFor(10, TimeUnit.SECONDS)
+    val alive = process.waitFor(1, TimeUnit.SECONDS)
     println(".NET process spawned")
     return Pair(process, alive)
 }

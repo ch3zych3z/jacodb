@@ -30,4 +30,8 @@ class IlField(private val dto: IlFieldDto) : IlInstance {
         fieldType = IlInstance.cache.getType(dto.fieldType)
 
     }
+
+    override fun toString(): String {
+        return if (isStatic) "$declType.$name" else "$.$name"
+    }
 }

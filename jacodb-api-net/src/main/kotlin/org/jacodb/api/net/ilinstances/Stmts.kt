@@ -26,10 +26,12 @@ interface IlStmt {
                 is IlAssignStmtDto -> IlAssignStmt(dto, src)
                 is IlCallStmtDto -> IlCallStmt(dto, src)
                 is IlReturnStmtDto -> IlReturnStmt(dto, src)
-                is IlEhStmtDto -> IlEhStmt(dto, src)
-                is IlGotoStmtDto ->
-                    IlGotoStmt()
-
+                is IlEndFinallyStmtDto -> IlEndFinallyStmt()
+                is IlEndFaultStmtDto -> IlEndFaultStmt()
+                is IlRethrowStmtDto -> IlRethrowStmt()
+                is IlEndFilterStmtDto -> IlEndFilterStmt(dto, src)
+                is IlThrowStmtDto -> IlThrowStmt(dto, src)
+                is IlGotoStmtDto -> IlGotoStmt()
                 is IlIfStmtDto -> IlIfStmt(dto, src)
                 else -> throw Exception("unexpected dto $dto")
             }
@@ -59,8 +61,16 @@ class IlReturnStmt(dto: IlReturnStmtDto, src: IlMethod) : IlStmt {
     }
 }
 
-class IlEhStmt(dto: IlEhStmtDto, src: IlMethod) : IlStmt {
+interface IlEhStmt : IlStmt
+class IlThrowStmt(dto: IlThrowStmtDto, src: IlMethod) : IlEhStmt {
+    val value = dto.value.deserialize(src)
+}
 
+class IlRethrowStmt : IlEhStmt {}
+class IlEndFinallyStmt : IlEhStmt {}
+class IlEndFaultStmt : IlEhStmt {}
+class IlEndFilterStmt(dto: IlEndFilterStmtDto, src: IlMethod) : IlEhStmt {
+    val value = dto.value.deserialize(src)
 }
 
 interface IlBranchStmt : IlStmt {
@@ -78,6 +88,7 @@ class IlGotoStmt : IlBranchStmt {
         }
         target = src.body[targetIndex]
     }
+
     private fun hasTargetSet() = ::target.isInitialized
 
     override fun toString(): String {
