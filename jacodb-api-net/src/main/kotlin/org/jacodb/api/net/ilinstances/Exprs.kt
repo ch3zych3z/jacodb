@@ -37,16 +37,16 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
     is IlUnaryOpDto -> IlUnaryOp(operand.deserialize(ilMethod))
     is IlBinaryOpDto -> IlBinaryOp(lhs.deserialize(ilMethod), rhs.deserialize(ilMethod))
     is IlArrayLengthExprDto -> IlArrayLengthExpr(array.deserialize(ilMethod))
-    is IlCallDto -> IlCall()
-    is IlInitExprDto -> IlInitExpr()
+    is IlCallDto -> IlCall(IlInstance.cache.getMethod(method), args.map { it.deserialize(ilMethod) })
+    is IlInitExprDto -> IlInitExpr(IlInstance.cache.getType(type))
     is IlNewArrayExprDto -> IlNewArrayExpr(IlInstance.cache.getType(type), size.deserialize(ilMethod))
     is IlNewExprDto -> IlNewExpr(IlInstance.cache.getType(type), args.map { it.deserialize(ilMethod) })
     is IlSizeOfExprDto -> IlSizeOfExpr(IlInstance.cache.getType(targetType))
-    is IlStackAllocExprDto -> IlStackAllocExpr()
-    is IlManagedRefExprDto -> IlManagedRefExpr()
-    is IlUnmanagedRefExprDto -> IlUnmanagedRefExpr()
-    is IlManagedDerefExprDto -> IlManagedDerefExpr()
-    is IlUnmanagedDerefExprDto -> IlUnmanagedDerefExpr()
+    is IlStackAllocExprDto -> IlStackAllocExpr(IlInstance.cache.getType(type), size.deserialize(ilMethod))
+    is IlManagedRefExprDto -> IlManagedRefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
+    is IlUnmanagedRefExprDto -> IlUnmanagedRefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
+    is IlManagedDerefExprDto -> IlManagedDerefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
+    is IlUnmanagedDerefExprDto -> IlUnmanagedDerefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
     is IlConvExprDto -> IlConvExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
     is IlBoxExprDto -> IlBoxExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
     is IlUnboxExprDto -> IlUnboxExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
@@ -72,7 +72,10 @@ class IlBinaryOp(val lhs: IlExpr, val rhs: IlExpr) : IlExpr {
     override fun toString(): String = "$lhs binOp $rhs"
 }
 
-class IlInitExpr : IlExpr {}
+class IlInitExpr(val type: IlType) : IlExpr {
+    override fun toString(): String = "init $type"
+}
+
 class IlNewArrayExpr(val elementType: IlType, val size: IlExpr) : IlExpr {
     override fun toString(): String {
         return "new $elementType[$size]"
@@ -81,7 +84,7 @@ class IlNewArrayExpr(val elementType: IlType, val size: IlExpr) : IlExpr {
 
 class IlNewExpr(val type: IlType, val args: List<IlExpr>) : IlExpr {
     override fun toString(): String {
-        return "new (${args.joinToString(", ")})"
+        return "new $type(${args.joinToString(", ")})"
     }
 }
 
@@ -107,7 +110,11 @@ class IlArrayAccess(val array: IlExpr, val index: IlExpr) : IlExpr {
     }
 }
 
-class IlCall : IlExpr {}
+class IlCall(val method: IlMethod, val args: List<IlExpr>) : IlExpr {
+    override fun toString(): String {
+        return "${method.returnType?.toString() ?: ""} ${method.name}(${args.joinToString(", ")})"
+    }
+}
 
 sealed class IlCastExpr(val expectedType: IlType, val operand: IlExpr) : IlExpr {
 
@@ -148,12 +155,33 @@ class IlIsInstExpr(expectedType: IlType, operand: IlExpr) : IlCastExpr(expectedT
 interface IlRefExpr : IlValue
 interface IlDerefExpr : IlValue
 
-class IlManagedRefExpr : IlRefExpr
-class IlUnmanagedRefExpr : IlRefExpr
-class IlManagedDerefExpr : IlDerefExpr
-class IlUnmanagedDerefExpr : IlDerefExpr
+class IlManagedRefExpr(val type: IlType, val value: IlExpr) : IlRefExpr {
+    override fun toString(): String {
+        return "m& $value"
+    }
+}
 
-class IlStackAllocExpr : IlExpr
+class IlUnmanagedRefExpr(val type: IlType, val value: IlExpr) : IlRefExpr {
+    override fun toString(): String {
+        return "um& $value"
+    }
+}
+class IlManagedDerefExpr(val type: IlType, val value: IlExpr) : IlDerefExpr {
+    override fun toString(): String {
+        return "m* $value"
+    }
+}
+class IlUnmanagedDerefExpr(val type: IlType, val value: IlExpr) : IlDerefExpr {
+    override fun toString(): String {
+        return "u* $value"
+    }
+}
+
+class IlStackAllocExpr(val type: IlType, val size: IlExpr) : IlExpr {
+    override fun toString(): String {
+        return "stackalloc $type $size"
+    }
+}
 
 class IlArgument(private val dto: IlParameterDto) : IlLocal {
     lateinit var paramType: IlType
