@@ -64,13 +64,34 @@ class IlReturnStmt(dto: IlReturnStmtDto, src: IlMethod) : IlStmt {
 interface IlEhStmt : IlStmt
 class IlThrowStmt(dto: IlThrowStmtDto, src: IlMethod) : IlEhStmt {
     val value = dto.value.deserialize(src)
+    override fun toString(): String {
+        return "throw $value"
+    }
 }
 
-class IlRethrowStmt : IlEhStmt {}
-class IlEndFinallyStmt : IlEhStmt {}
-class IlEndFaultStmt : IlEhStmt {}
+class IlRethrowStmt : IlEhStmt {
+    override fun toString(): String {
+        return "rethrow"
+    }
+}
+
+class IlEndFinallyStmt : IlEhStmt {
+    override fun toString(): String {
+        return "endfinally"
+    }
+}
+
+class IlEndFaultStmt : IlEhStmt {
+    override fun toString(): String {
+        return "endfault"
+    }
+}
+
 class IlEndFilterStmt(dto: IlEndFilterStmtDto, src: IlMethod) : IlEhStmt {
     val value = dto.value.deserialize(src)
+    override fun toString(): String {
+        return "endfilter $value"
+    }
 }
 
 interface IlBranchStmt : IlStmt {
