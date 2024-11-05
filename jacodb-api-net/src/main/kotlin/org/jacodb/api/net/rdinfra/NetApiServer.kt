@@ -48,8 +48,13 @@ class RdServer(port: Int, private val netExePath: String) {
     val signalModel: IlSigModel
         get() = instanceModel.ilSigModel
     private lateinit var netProcess: Process
+    private var unresponded = 0
+    fun request(action: () -> Unit) {
+        unresponded += 1
+        queue { action() }
+    }
 
-    fun queue(action: () -> Unit) {
+    private fun queue(action: () -> Unit) {
         scheduler.queue {
             try {
                 action()
@@ -76,6 +81,7 @@ class RdServer(port: Int, private val netExePath: String) {
                     response.forEach { dto -> IlInstance.cache.get(dto).attach() }
                 }
                 logWithTime("response deserialized")
+                unresponded -= 1
             }
         }
         logWithTime("after queue")
@@ -83,7 +89,7 @@ class RdServer(port: Int, private val netExePath: String) {
 
     fun close() {
         logWithTime("Spinning started")
-        spinUntil(SPINNING_TIMEOUT) { false }
+        spinUntil { unresponded == 0 }
         logWithTime("Spinning finished")
 
         lifetimeDef.terminate()
@@ -130,7 +136,7 @@ class NetApiServer {
 
     private fun requestAsm(path: String) {
         logWithTime("requesting asm $path")
-        server.queue { server.signalModel.asmRequest.fire(Request(path)) }
+        server.request { server.signalModel.asmRequest.fire(Request(path)) }
         logWithTime("request sent")
     }
 
