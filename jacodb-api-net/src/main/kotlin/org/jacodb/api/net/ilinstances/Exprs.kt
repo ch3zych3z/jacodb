@@ -22,7 +22,7 @@ import org.jacodb.api.net.generated.models.*
 sealed interface IlExpr {
 }
 
-fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
+fun IlConstDto.deserializeConst(): IlConst = when (this) {
     is IlNullDto -> IlNull()
     is IlBoolConstDto -> IlBoolConst(value)
     is IlStringConstDto -> IlStringConst(value)
@@ -34,6 +34,12 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
     is IlTypeRefDto -> IlTypeRef(IlInstance.cache.getType(referencedType))
     is IlMethodRefDto -> IlMethodRef(IlInstance.cache.getMethod(method))
     is IlFieldRefDto -> IlFieldRef(IlInstance.cache.getField(field))
+    is IlArrayConstDto -> IlArrayConst(values.map { it.deserializeConst() })
+    else -> throw NotImplementedError();
+
+}
+
+fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
     is IlUnaryOpDto -> IlUnaryOp(operand.deserialize(ilMethod))
     is IlBinaryOpDto -> IlBinaryOp(lhs.deserialize(ilMethod), rhs.deserialize(ilMethod))
     is IlArrayLengthExprDto -> IlArrayLengthExpr(array.deserialize(ilMethod))
@@ -52,6 +58,7 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
     is IlUnboxExprDto -> IlUnboxExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
     is IlCastClassExprDto -> IlCastClassExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
     is IlIsInstExprDto -> IlIsInstExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
+    is IlConstDto -> this.deserializeConst()
     is IlFieldAccessDto -> IlFieldAccess(IlInstance.cache.getField(field), instance?.deserialize(ilMethod))
     is IlArrayAccessDto -> IlArrayAccess(array.deserialize(ilMethod), index.deserialize(ilMethod))
     is IlVarAccessDto -> when (kind) {
@@ -166,11 +173,13 @@ class IlUnmanagedRefExpr(val type: IlType, val value: IlExpr) : IlRefExpr {
         return "um& $value"
     }
 }
+
 class IlManagedDerefExpr(val type: IlType, val value: IlExpr) : IlDerefExpr {
     override fun toString(): String {
         return "m* $value"
     }
 }
+
 class IlUnmanagedDerefExpr(val type: IlType, val value: IlExpr) : IlDerefExpr {
     override fun toString(): String {
         return "u* $value"

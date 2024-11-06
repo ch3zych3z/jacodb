@@ -45,6 +45,7 @@ object IlModel : Ext(IlRoot) {
         field("isGenericParam", PredefinedType.bool)
         field("isValueType", PredefinedType.bool)
         field("isManaged", PredefinedType.bool)
+        field("attrs", immutableList(IlAttrDto))
     }
 
     private val IlFieldDto = structdef extends IlDto {
@@ -53,6 +54,7 @@ object IlModel : Ext(IlRoot) {
         field("fieldType", cacheKey)
         field("isStatic", PredefinedType.bool)
         field("name", PredefinedType.string)
+        field("attrs", immutableList(IlAttrDto))
     }
 
     private val IlParameterDto = structdef {
@@ -60,10 +62,19 @@ object IlModel : Ext(IlRoot) {
         field("type", cacheKey)
         field("name", PredefinedType.string)
         field("defaultValue", PredefinedType.string.nullable)
+        field("attrs", immutableList(IlAttrDto))
     }
+
     private val IlVarDto = basestruct extends IlDto {
         field("type", cacheKey)
         field("index", PredefinedType.int)
+    }
+
+    private val IlAttrDto = structdef extends IlDto {
+        field("attrType", cacheKey)
+        field("ctorArgs", immutableList(IlMethodBodyModel.IlConstDto))
+        field("namedArgsNames", immutableList(PredefinedType.string))
+        field("namedArgsValues", immutableList(IlMethodBodyModel.IlConstDto))
     }
 
     private val IlLocalVarDto = structdef extends IlVarDto {
@@ -92,6 +103,7 @@ object IlModel : Ext(IlRoot) {
         field("id", cacheKey)
         field("declType", cacheKey.nullable)
         field("returnType", cacheKey.nullable)
+        field("attrs", immutableList(IlAttrDto))
         field("name", PredefinedType.string)
         field("parameters", immutableList(IlParameterDto))
         field("resolved", PredefinedType.bool)

@@ -14,15 +14,16 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net
+package org.jacodb.api.net.ilinstances
 
-import org.jacodb.api.net.rdinfra.NetApiServer
+import org.example.ilinstances.IlInstance
+import org.example.ilinstances.IlType
+import org.jacodb.api.net.generated.models.IlAttrDto
+import org.jacodb.api.net.generated.models.IlConstDto
 
-
-fun main() {
-    val api = NetApiServer()
-    api.requestTestAsm()
-    // add spin method for api 
-    api.requestRdAsm()
-    api.close()
+class IlAttribute(dto: IlAttrDto) {
+    val type: IlType = IlInstance.cache.getType(dto.attrType)
+    val constructorArgs: List<IlConst> = dto.ctorArgs.map { it.deserializeConst() }.toList()
+    val namedArgs: Map<String, IlConst> =
+        dto.namedArgsNames.zip(dto.namedArgsValues).map { (k, v) -> k to (v as IlConstDto).deserializeConst() }.toMap()
 }

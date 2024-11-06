@@ -30,6 +30,7 @@ class IlMethod(private val dto: IlMethodDto) : IlInstance {
     val temps: MutableList<IlTempVar> = mutableListOf()
     val errs: MutableList<IlErrVar> = mutableListOf()
     val scopes: MutableList<IlEhScope> = mutableListOf()
+    val attributes: MutableList<IlAttribute> = mutableListOf()
     val body: MutableList<IlStmt> = mutableListOf()
 
     override fun attach() {
@@ -43,6 +44,7 @@ class IlMethod(private val dto: IlMethodDto) : IlInstance {
         dto.locals.map { IlLocalVar(it) }.sortedBy { it.index }.forEach { locals.add(it) }
         dto.temps.map { IlTempVar(it) }.sortedBy { it.index }.forEach { temps.add(it) }
         dto.errs.map { IlErrVar(it) }.sortedBy { it.index }.forEach { errs.add(it) }
+        dto.attrs.forEach { attributes.add(IlAttribute(it)) }
         dto.body.forEach { body.add(IlStmt.deserialize(this, it)) }
         dto.body.zip(body).filter { (_, inst) -> inst is IlBranchStmt }
             .forEach { (dto, inst) -> inst as IlBranchStmt; dto as IlBranchStmtDto; inst.updateTarget(dto, this) }
@@ -56,9 +58,11 @@ class IlMethod(private val dto: IlMethodDto) : IlInstance {
 
 class IlParameter(private val dto: IlParameterDto) : IlInstance {
     lateinit var paramType: IlType
+    val attributes: MutableList<IlAttribute> = mutableListOf()
     val name: String = dto.name
     override fun attach() {
         paramType = IlInstance.cache.getType(dto.type)
+        dto.attrs.forEach { attributes.add(IlAttribute(it)) }
     }
 
     override fun toString(): String {

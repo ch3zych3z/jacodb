@@ -46,6 +46,7 @@ class IlMethodBodyModel private constructor(
             serializers.register(IlLongConstDto)
             serializers.register(IlFloatConstDto)
             serializers.register(IlDoubleConstDto)
+            serializers.register(IlArrayConstDto)
             serializers.register(IlNullDto)
             serializers.register(IlBoolConstDto)
             serializers.register(IlStringConstDto)
@@ -115,7 +116,7 @@ class IlMethodBodyModel private constructor(
         }
         
         
-        const val serializationHash = -7271216282343879510L
+        const val serializationHash = -2692739442657292118L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlMethodBodyModel
@@ -144,7 +145,7 @@ val IProtocol.ilMethodBodyModel get() = getOrCreateExtension(IlMethodBodyModel::
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:153]
+ * #### Generated from [IlMethodBodyModel.kt:155]
  */
 class IlArgAccessDto (
     val index: Int,
@@ -211,7 +212,7 @@ class IlArgAccessDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:68]
+ * #### Generated from [IlMethodBodyModel.kt:70]
  */
 class IlArrayAccessDto (
     val array: IlExprDto,
@@ -284,7 +285,74 @@ class IlArrayAccessDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:77]
+ * #### Generated from [IlMethodBodyModel.kt:37]
+ */
+class IlArrayConstDto (
+    val values: List<IlConstDto>,
+    type: CacheKey
+) : IlConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlArrayConstDto> {
+        override val _type: KClass<IlArrayConstDto> = IlArrayConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlArrayConstDto  {
+            val type = CacheKey.read(ctx, buffer)
+            val values = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
+            return IlArrayConstDto(values, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArrayConstDto)  {
+            CacheKey.write(ctx, buffer, value.type)
+            buffer.writeList(value.values) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlArrayConstDto
+        
+        if (values != other.values) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + values.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlArrayConstDto (")
+        printer.indent {
+            print("values = "); values.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:79]
  */
 class IlArrayLengthExprDto (
     val array: IlExprDto,
@@ -351,7 +419,7 @@ class IlArrayLengthExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:113]
+ * #### Generated from [IlMethodBodyModel.kt:115]
  */
 class IlAssignStmtDto (
     val lhs: IlValueDto,
@@ -417,7 +485,7 @@ class IlAssignStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:48]
+ * #### Generated from [IlMethodBodyModel.kt:50]
  */
 class IlBinaryOpDto (
     val lhs: IlExprDto,
@@ -490,7 +558,7 @@ class IlBinaryOpDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:39]
+ * #### Generated from [IlMethodBodyModel.kt:41]
  */
 class IlBoolConstDto (
     val value: Boolean,
@@ -557,7 +625,7 @@ class IlBoolConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:89]
+ * #### Generated from [IlMethodBodyModel.kt:91]
  */
 class IlBoxExprDto (
     targetType: CacheKey,
@@ -632,7 +700,7 @@ class IlBoxExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:137]
+ * #### Generated from [IlMethodBodyModel.kt:139]
  */
 abstract class IlBranchStmtDto (
     val target: Int
@@ -791,7 +859,7 @@ class IlByteConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:78]
+ * #### Generated from [IlMethodBodyModel.kt:80]
  */
 class IlCallDto (
     val method: CacheKey,
@@ -864,7 +932,7 @@ class IlCallDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:118]
+ * #### Generated from [IlMethodBodyModel.kt:120]
  */
 class IlCallStmtDto (
     val call: IlCallDto
@@ -924,7 +992,7 @@ class IlCallStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:91]
+ * #### Generated from [IlMethodBodyModel.kt:93]
  */
 class IlCastClassExprDto (
     targetType: CacheKey,
@@ -999,7 +1067,7 @@ class IlCastClassExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:83]
+ * #### Generated from [IlMethodBodyModel.kt:85]
  */
 abstract class IlCastExprDto (
     val targetType: CacheKey,
@@ -1201,7 +1269,7 @@ class IlConstDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:88]
+ * #### Generated from [IlMethodBodyModel.kt:90]
  */
 class IlConvExprDto (
     targetType: CacheKey,
@@ -1276,7 +1344,7 @@ class IlConvExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:98]
+ * #### Generated from [IlMethodBodyModel.kt:100]
  */
 abstract class IlDerefExprDto (
     val value: IlExprDto,
@@ -1444,7 +1512,7 @@ class IlDoubleConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:126]
+ * #### Generated from [IlMethodBodyModel.kt:128]
  */
 abstract class IlEhStmtDto (
 ) : IlStmtDto (
@@ -1526,7 +1594,7 @@ class IlEhStmtDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:132]
+ * #### Generated from [IlMethodBodyModel.kt:134]
  */
 class IlEndFaultStmtDto (
 ) : IlEhStmtDto (
@@ -1578,7 +1646,7 @@ class IlEndFaultStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:133]
+ * #### Generated from [IlMethodBodyModel.kt:135]
  */
 class IlEndFilterStmtDto (
     val value: IlExprDto
@@ -1638,7 +1706,7 @@ class IlEndFilterStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:131]
+ * #### Generated from [IlMethodBodyModel.kt:133]
  */
 class IlEndFinallyStmtDto (
 ) : IlEhStmtDto (
@@ -1781,7 +1849,7 @@ class IlExprDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:64]
+ * #### Generated from [IlMethodBodyModel.kt:66]
  */
 class IlFieldAccessDto (
     val instance: IlExprDto?,
@@ -1854,7 +1922,7 @@ class IlFieldAccessDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:45]
+ * #### Generated from [IlMethodBodyModel.kt:47]
  */
 class IlFieldRefDto (
     val `field`: CacheKey,
@@ -1988,7 +2056,7 @@ class IlFloatConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:141]
+ * #### Generated from [IlMethodBodyModel.kt:143]
  */
 class IlGotoStmtDto (
     target: Int
@@ -2049,7 +2117,7 @@ class IlGotoStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:144]
+ * #### Generated from [IlMethodBodyModel.kt:146]
  */
 class IlIfStmtDto (
     val cond: IlExprDto,
@@ -2116,7 +2184,7 @@ class IlIfStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:53]
+ * #### Generated from [IlMethodBodyModel.kt:55]
  */
 class IlInitExprDto (
     type: CacheKey
@@ -2244,7 +2312,7 @@ class IlIntConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:92]
+ * #### Generated from [IlMethodBodyModel.kt:94]
  */
 class IlIsInstExprDto (
     targetType: CacheKey,
@@ -2386,7 +2454,7 @@ class IlLongConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:104]
+ * #### Generated from [IlMethodBodyModel.kt:106]
  */
 class IlManagedDerefExprDto (
     value: IlExprDto,
@@ -2454,7 +2522,7 @@ class IlManagedDerefExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:102]
+ * #### Generated from [IlMethodBodyModel.kt:104]
  */
 class IlManagedRefExprDto (
     value: IlExprDto,
@@ -2522,7 +2590,7 @@ class IlManagedRefExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:44]
+ * #### Generated from [IlMethodBodyModel.kt:46]
  */
 class IlMethodRefDto (
     val method: CacheKey,
@@ -2589,7 +2657,7 @@ class IlMethodRefDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:73]
+ * #### Generated from [IlMethodBodyModel.kt:75]
  */
 class IlNewArrayExprDto (
     val size: IlExprDto,
@@ -2656,7 +2724,7 @@ class IlNewArrayExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:55]
+ * #### Generated from [IlMethodBodyModel.kt:57]
  */
 class IlNewExprDto (
     val args: List<IlExprDto>,
@@ -2723,7 +2791,7 @@ class IlNewExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:38]
+ * #### Generated from [IlMethodBodyModel.kt:40]
  */
 class IlNullDto (
     type: CacheKey
@@ -2877,7 +2945,7 @@ class IlNumConstDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:95]
+ * #### Generated from [IlMethodBodyModel.kt:97]
  */
 abstract class IlRefExprDto (
     val value: IlExprDto,
@@ -2978,7 +3046,7 @@ class IlRefExprDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:130]
+ * #### Generated from [IlMethodBodyModel.kt:132]
  */
 class IlRethrowStmtDto (
 ) : IlEhStmtDto (
@@ -3030,7 +3098,7 @@ class IlRethrowStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:122]
+ * #### Generated from [IlMethodBodyModel.kt:124]
  */
 class IlReturnStmtDto (
     val retVal: IlExprDto?
@@ -3090,7 +3158,7 @@ class IlReturnStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:59]
+ * #### Generated from [IlMethodBodyModel.kt:61]
  */
 class IlSizeOfExprDto (
     val targetType: CacheKey,
@@ -3157,7 +3225,7 @@ class IlSizeOfExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:107]
+ * #### Generated from [IlMethodBodyModel.kt:109]
  */
 class IlStackAllocExprDto (
     val size: IlExprDto,
@@ -3224,7 +3292,7 @@ class IlStackAllocExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:111]
+ * #### Generated from [IlMethodBodyModel.kt:113]
  */
 abstract class IlStmtDto (
 ) : IPrintable {
@@ -3305,7 +3373,7 @@ class IlStmtDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:40]
+ * #### Generated from [IlMethodBodyModel.kt:42]
  */
 class IlStringConstDto (
     val value: String,
@@ -3372,7 +3440,7 @@ class IlStringConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:127]
+ * #### Generated from [IlMethodBodyModel.kt:129]
  */
 class IlThrowStmtDto (
     val value: IlExprDto
@@ -3432,7 +3500,7 @@ class IlThrowStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:43]
+ * #### Generated from [IlMethodBodyModel.kt:45]
  */
 class IlTypeRefDto (
     val referencedType: CacheKey,
@@ -3499,7 +3567,7 @@ class IlTypeRefDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:47]
+ * #### Generated from [IlMethodBodyModel.kt:49]
  */
 class IlUnaryOpDto (
     val operand: IlExprDto,
@@ -3566,7 +3634,7 @@ class IlUnaryOpDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:90]
+ * #### Generated from [IlMethodBodyModel.kt:92]
  */
 class IlUnboxExprDto (
     targetType: CacheKey,
@@ -3641,7 +3709,7 @@ class IlUnboxExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:105]
+ * #### Generated from [IlMethodBodyModel.kt:107]
  */
 class IlUnmanagedDerefExprDto (
     value: IlExprDto,
@@ -3709,7 +3777,7 @@ class IlUnmanagedDerefExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:103]
+ * #### Generated from [IlMethodBodyModel.kt:105]
  */
 class IlUnmanagedRefExprDto (
     value: IlExprDto,
@@ -3870,7 +3938,7 @@ class IlValueDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:156]
+ * #### Generated from [IlMethodBodyModel.kt:158]
  */
 class IlVarAccessDto (
     val kind: IlVarKind,
@@ -3943,7 +4011,7 @@ class IlVarAccessDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:148]
+ * #### Generated from [IlMethodBodyModel.kt:150]
  */
 enum class IlVarKind {
     local, 
