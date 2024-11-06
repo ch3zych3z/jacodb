@@ -17,10 +17,12 @@
 package org.example.ilinstances
 
 import org.jacodb.api.net.generated.models.IlFieldDto
+import org.jacodb.api.net.ilinstances.IlAttribute
 
 class IlField(private val dto: IlFieldDto) : IlInstance {
     lateinit var declType: IlType
     lateinit var fieldType: IlType
+    val attributes: MutableList<IlAttribute> = mutableListOf()
     val isStatic: Boolean = dto.isStatic
     val name: String = dto.name
 
@@ -28,7 +30,7 @@ class IlField(private val dto: IlFieldDto) : IlInstance {
         declType = IlInstance.cache.getType(dto.declType)
         declType.fields.add(this)
         fieldType = IlInstance.cache.getType(dto.fieldType)
-
+        dto.attrs.forEach { attributes.add(IlAttribute(it)) }
     }
 
     override fun toString(): String {

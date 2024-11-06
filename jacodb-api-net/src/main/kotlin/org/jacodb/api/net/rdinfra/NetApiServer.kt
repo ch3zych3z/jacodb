@@ -74,15 +74,16 @@ class RdServer(port: Int, private val netExePath: String) {
         logWithTime("registering callbacks")
         queue {
             signalModel.asmResponse.advise(lifetime) { response ->
-                synchronized(IlInstance.cache) {
+            // TODO clean response queue
                     response.forEach { dto ->
                         IlInstance.cache.put(dto)
                     }
                     response.forEach { dto -> IlInstance.cache.get(dto).attach() }
-                }
+
                 logWithTime("response deserialized")
                 unresponded -= 1
             }
+
         }
         logWithTime("after queue")
     }

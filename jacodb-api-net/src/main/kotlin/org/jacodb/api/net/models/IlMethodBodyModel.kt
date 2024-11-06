@@ -26,7 +26,7 @@ object IlMethodBodyModel : Ext(IlRoot) {
         field("type", cacheKey)
     }
     private val IlValueDto = basestruct extends IlExprDto {}
-    private val IlConstDto = basestruct extends IlValueDto {}
+    val IlConstDto = basestruct extends IlValueDto {}
     private val IlNumConstDto = basestruct extends IlConstDto {}
 
     private val IlByteConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.byte) }
@@ -34,7 +34,9 @@ object IlMethodBodyModel : Ext(IlRoot) {
     private val IlLongConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.long) }
     private val IlFloatConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.float) }
     private val IlDoubleConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.double) }
-
+    val IlArrayConstDto = structdef extends IlConstDto {
+        field("values", immutableList(IlConstDto))
+    }
     private val IlNullDto = structdef extends IlConstDto {}
     private val IlBoolConstDto = structdef extends IlConstDto { field("value", PredefinedType.bool) }
     private val IlStringConstDto = structdef extends IlConstDto { field("value", PredefinedType.string) }

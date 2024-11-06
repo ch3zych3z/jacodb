@@ -43,6 +43,7 @@ data class IlLongConst(override val value: Long) : IlNumericConst()
 data class IlFloatConst(override val value: Float) : IlNumericConst()
 data class IlDoubleConst(override val value: Double) : IlNumericConst()
 
+data class IlArrayConst(val values: List<IlConst>) : IlConst
 
 data class IlTypeRef(val referencedType: IlType) : IlConst
 data class IlMethodRef(val referencedMethod: IlMethod) : IlConst

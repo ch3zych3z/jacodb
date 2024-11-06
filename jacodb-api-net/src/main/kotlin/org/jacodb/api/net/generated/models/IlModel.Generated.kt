@@ -47,6 +47,7 @@ class IlModel private constructor(
             serializers.register(IlTypeDto)
             serializers.register(IlFieldDto)
             serializers.register(IlParameterDto)
+            serializers.register(IlAttrDto)
             serializers.register(IlLocalVarDto)
             serializers.register(IlTempVarDto)
             serializers.register(IlErrVarDto)
@@ -78,7 +79,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = -1706758733721535707L
+        const val serializationHash = -8431306000670948402L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -299,7 +300,85 @@ class IlAsmDto (
 
 
 /**
- * #### Generated from [IlModel.kt:82]
+ * #### Generated from [IlModel.kt:73]
+ */
+class IlAttrDto (
+    val attrType: CacheKey,
+    val ctorArgs: List<IlConstDto>,
+    val namedArgsNames: List<String>,
+    val namedArgsValues: List<IlConstDto>
+) : IlDto (
+) {
+    //companion
+    
+    companion object : IMarshaller<IlAttrDto> {
+        override val _type: KClass<IlAttrDto> = IlAttrDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlAttrDto  {
+            val attrType = CacheKey.read(ctx, buffer)
+            val ctorArgs = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
+            val namedArgsNames = buffer.readList { buffer.readString() }
+            val namedArgsValues = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
+            return IlAttrDto(attrType, ctorArgs, namedArgsNames, namedArgsValues)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlAttrDto)  {
+            CacheKey.write(ctx, buffer, value.attrType)
+            buffer.writeList(value.ctorArgs) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
+            buffer.writeList(value.namedArgsNames) { v -> buffer.writeString(v) }
+            buffer.writeList(value.namedArgsValues) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlAttrDto
+        
+        if (attrType != other.attrType) return false
+        if (ctorArgs != other.ctorArgs) return false
+        if (namedArgsNames != other.namedArgsNames) return false
+        if (namedArgsValues != other.namedArgsValues) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + attrType.hashCode()
+        __r = __r*31 + ctorArgs.hashCode()
+        __r = __r*31 + namedArgsNames.hashCode()
+        __r = __r*31 + namedArgsValues.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlAttrDto (")
+        printer.indent {
+            print("attrType = "); attrType.print(printer); println()
+            print("ctorArgs = "); ctorArgs.print(printer); println()
+            print("namedArgsNames = "); namedArgsNames.print(printer); println()
+            print("namedArgsValues = "); namedArgsValues.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlModel.kt:93]
  */
 class IlCatchScopeDto (
     tb: Int,
@@ -462,7 +541,7 @@ class IlDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:76]
+ * #### Generated from [IlModel.kt:87]
  */
 abstract class IlEhScopeDto (
     val tb: Int,
@@ -578,7 +657,7 @@ class IlEhScopeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:74]
+ * #### Generated from [IlModel.kt:85]
  */
 class IlErrVarDto (
     type: CacheKey,
@@ -646,7 +725,7 @@ class IlErrVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:87]
+ * #### Generated from [IlModel.kt:98]
  */
 class IlFaultScopeDto (
     tb: Int,
@@ -728,14 +807,15 @@ class IlFaultScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:50]
+ * #### Generated from [IlModel.kt:51]
  */
 class IlFieldDto (
     val id: CacheKey,
     val declType: CacheKey,
     val fieldType: CacheKey,
     val isStatic: Boolean,
-    val name: String
+    val name: String,
+    val attrs: List<IlAttrDto>
 ) : IlDto (
 ) {
     //companion
@@ -750,7 +830,8 @@ class IlFieldDto (
             val fieldType = CacheKey.read(ctx, buffer)
             val isStatic = buffer.readBool()
             val name = buffer.readString()
-            return IlFieldDto(id, declType, fieldType, isStatic, name)
+            val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
+            return IlFieldDto(id, declType, fieldType, isStatic, name, attrs)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlFieldDto)  {
@@ -759,6 +840,7 @@ class IlFieldDto (
             CacheKey.write(ctx, buffer, value.fieldType)
             buffer.writeBool(value.isStatic)
             buffer.writeString(value.name)
+            buffer.writeList(value.attrs) { v -> IlAttrDto.write(ctx, buffer, v) }
         }
         
         
@@ -779,6 +861,7 @@ class IlFieldDto (
         if (fieldType != other.fieldType) return false
         if (isStatic != other.isStatic) return false
         if (name != other.name) return false
+        if (attrs != other.attrs) return false
         
         return true
     }
@@ -790,6 +873,7 @@ class IlFieldDto (
         __r = __r*31 + fieldType.hashCode()
         __r = __r*31 + isStatic.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + attrs.hashCode()
         return __r
     }
     //pretty print
@@ -801,6 +885,7 @@ class IlFieldDto (
             print("fieldType = "); fieldType.print(printer); println()
             print("isStatic = "); isStatic.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("attrs = "); attrs.print(printer); println()
         }
         printer.print(")")
     }
@@ -812,7 +897,7 @@ class IlFieldDto (
 
 
 /**
- * #### Generated from [IlModel.kt:84]
+ * #### Generated from [IlModel.kt:95]
  */
 class IlFilterScopeDto (
     val fb: Int,
@@ -900,7 +985,7 @@ class IlFilterScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:88]
+ * #### Generated from [IlModel.kt:99]
  */
 class IlFinallyScopeDto (
     tb: Int,
@@ -982,7 +1067,7 @@ class IlFinallyScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:69]
+ * #### Generated from [IlModel.kt:80]
  */
 class IlLocalVarDto (
     val isPinned: Boolean,
@@ -1056,12 +1141,13 @@ class IlLocalVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:91]
+ * #### Generated from [IlModel.kt:102]
  */
 class IlMethodDto (
     val id: CacheKey,
     val declType: CacheKey?,
     val returnType: CacheKey?,
+    val attrs: List<IlAttrDto>,
     val name: String,
     val parameters: List<IlParameterDto>,
     val resolved: Boolean,
@@ -1082,6 +1168,7 @@ class IlMethodDto (
             val id = CacheKey.read(ctx, buffer)
             val declType = buffer.readNullable { CacheKey.read(ctx, buffer) }
             val returnType = buffer.readNullable { CacheKey.read(ctx, buffer) }
+            val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val name = buffer.readString()
             val parameters = buffer.readList { IlParameterDto.read(ctx, buffer) }
             val resolved = buffer.readBool()
@@ -1090,13 +1177,14 @@ class IlMethodDto (
             val errs = buffer.readList { IlErrVarDto.read(ctx, buffer) }
             val ehScopes = buffer.readList { ctx.serializers.readPolymorphic<IlEhScopeDto>(ctx, buffer, IlEhScopeDto) }
             val body = buffer.readList { ctx.serializers.readPolymorphic<IlStmtDto>(ctx, buffer, IlStmtDto) }
-            return IlMethodDto(id, declType, returnType, name, parameters, resolved, locals, temps, errs, ehScopes, body)
+            return IlMethodDto(id, declType, returnType, attrs, name, parameters, resolved, locals, temps, errs, ehScopes, body)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMethodDto)  {
             CacheKey.write(ctx, buffer, value.id)
             buffer.writeNullable(value.declType) { CacheKey.write(ctx, buffer, it) }
             buffer.writeNullable(value.returnType) { CacheKey.write(ctx, buffer, it) }
+            buffer.writeList(value.attrs) { v -> IlAttrDto.write(ctx, buffer, v) }
             buffer.writeString(value.name)
             buffer.writeList(value.parameters) { v -> IlParameterDto.write(ctx, buffer, v) }
             buffer.writeBool(value.resolved)
@@ -1123,6 +1211,7 @@ class IlMethodDto (
         if (id != other.id) return false
         if (declType != other.declType) return false
         if (returnType != other.returnType) return false
+        if (attrs != other.attrs) return false
         if (name != other.name) return false
         if (parameters != other.parameters) return false
         if (resolved != other.resolved) return false
@@ -1140,6 +1229,7 @@ class IlMethodDto (
         __r = __r*31 + id.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + if (returnType != null) returnType.hashCode() else 0
+        __r = __r*31 + attrs.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + parameters.hashCode()
         __r = __r*31 + resolved.hashCode()
@@ -1157,6 +1247,7 @@ class IlMethodDto (
             print("id = "); id.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("returnType = "); returnType.print(printer); println()
+            print("attrs = "); attrs.print(printer); println()
             print("name = "); name.print(printer); println()
             print("parameters = "); parameters.print(printer); println()
             print("resolved = "); resolved.print(printer); println()
@@ -1176,13 +1267,14 @@ class IlMethodDto (
 
 
 /**
- * #### Generated from [IlModel.kt:58]
+ * #### Generated from [IlModel.kt:60]
  */
 data class IlParameterDto (
     val index: Int,
     val type: CacheKey,
     val name: String,
-    val defaultValue: String?
+    val defaultValue: String?,
+    val attrs: List<IlAttrDto>
 ) : IPrintable {
     //companion
     
@@ -1195,7 +1287,8 @@ data class IlParameterDto (
             val type = CacheKey.read(ctx, buffer)
             val name = buffer.readString()
             val defaultValue = buffer.readNullable { buffer.readString() }
-            return IlParameterDto(index, type, name, defaultValue)
+            val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
+            return IlParameterDto(index, type, name, defaultValue, attrs)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlParameterDto)  {
@@ -1203,6 +1296,7 @@ data class IlParameterDto (
             CacheKey.write(ctx, buffer, value.type)
             buffer.writeString(value.name)
             buffer.writeNullable(value.defaultValue) { buffer.writeString(it) }
+            buffer.writeList(value.attrs) { v -> IlAttrDto.write(ctx, buffer, v) }
         }
         
         
@@ -1222,6 +1316,7 @@ data class IlParameterDto (
         if (type != other.type) return false
         if (name != other.name) return false
         if (defaultValue != other.defaultValue) return false
+        if (attrs != other.attrs) return false
         
         return true
     }
@@ -1232,6 +1327,7 @@ data class IlParameterDto (
         __r = __r*31 + type.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + if (defaultValue != null) defaultValue.hashCode() else 0
+        __r = __r*31 + attrs.hashCode()
         return __r
     }
     //pretty print
@@ -1242,6 +1338,7 @@ data class IlParameterDto (
             print("type = "); type.print(printer); println()
             print("name = "); name.print(printer); println()
             print("defaultValue = "); defaultValue.print(printer); println()
+            print("attrs = "); attrs.print(printer); println()
         }
         printer.print(")")
     }
@@ -1251,7 +1348,7 @@ data class IlParameterDto (
 
 
 /**
- * #### Generated from [IlModel.kt:73]
+ * #### Generated from [IlModel.kt:84]
  */
 class IlTempVarDto (
     type: CacheKey,
@@ -1327,7 +1424,8 @@ class IlTypeDto (
     val genericArgs: List<CacheKey>,
     val isGenericParam: Boolean,
     val isValueType: Boolean,
-    val isManaged: Boolean
+    val isManaged: Boolean,
+    val attrs: List<IlAttrDto>
 ) : IlDto (
 ) {
     //companion
@@ -1343,7 +1441,8 @@ class IlTypeDto (
             val isGenericParam = buffer.readBool()
             val isValueType = buffer.readBool()
             val isManaged = buffer.readBool()
-            return IlTypeDto(id, name, genericArgs, isGenericParam, isValueType, isManaged)
+            val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
+            return IlTypeDto(id, name, genericArgs, isGenericParam, isValueType, isManaged, attrs)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlTypeDto)  {
@@ -1353,6 +1452,7 @@ class IlTypeDto (
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isValueType)
             buffer.writeBool(value.isManaged)
+            buffer.writeList(value.attrs) { v -> IlAttrDto.write(ctx, buffer, v) }
         }
         
         
@@ -1374,6 +1474,7 @@ class IlTypeDto (
         if (isGenericParam != other.isGenericParam) return false
         if (isValueType != other.isValueType) return false
         if (isManaged != other.isManaged) return false
+        if (attrs != other.attrs) return false
         
         return true
     }
@@ -1386,6 +1487,7 @@ class IlTypeDto (
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isValueType.hashCode()
         __r = __r*31 + isManaged.hashCode()
+        __r = __r*31 + attrs.hashCode()
         return __r
     }
     //pretty print
@@ -1398,6 +1500,7 @@ class IlTypeDto (
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isValueType = "); isValueType.print(printer); println()
             print("isManaged = "); isManaged.print(printer); println()
+            print("attrs = "); attrs.print(printer); println()
         }
         printer.print(")")
     }
@@ -1409,7 +1512,7 @@ class IlTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:64]
+ * #### Generated from [IlModel.kt:68]
  */
 abstract class IlVarDto (
     val type: CacheKey,

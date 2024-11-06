@@ -18,15 +18,18 @@ package org.example.ilinstances
 
 import org.jacodb.api.net.generated.models.AsmCacheKey
 import org.jacodb.api.net.generated.models.IlTypeDto
+import org.jacodb.api.net.ilinstances.IlAttribute
 
 class IlType(private val dto: IlTypeDto) : IlInstance {
     lateinit var declAsm: IlAsm
     val name: String = dto.name
+    val attributes: MutableList<IlAttribute> = mutableListOf()
     val fields: MutableList<IlField> = mutableListOf()
     val methods: MutableList<IlMethod> = mutableListOf()
     override fun attach() {
         declAsm = IlInstance.cache.getAsm(AsmCacheKey(dto.id.asm))
         declAsm.types.add(this)
+        dto.attrs.forEach { attributes.add(IlAttribute(it)) }
     }
 
     override fun toString(): String {
