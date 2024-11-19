@@ -14,11 +14,8 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.ilinstances
+package org.jacodb.api.net.devmocs
 
-interface IlValue : IlExpr
-interface IlLocal : IlValue
-interface IlConst : IlValue
-abstract class IlNumericConst<T>(open val value: T) : IlConst {
-    override fun toString(): String = "$value"
+class IlFeaturesChain {
+
 }

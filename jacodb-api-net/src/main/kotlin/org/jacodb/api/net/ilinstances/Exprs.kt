@@ -22,44 +22,50 @@ import org.jacodb.api.net.generated.models.*
 sealed interface IlExpr {
 }
 
+// TODO we may introduce type above typeId and instanceIdRef and use it inside const refs (so there will be no need
+// to pull classpath)
 fun IlConstDto.deserializeConst(): IlConst = when (this) {
     is IlNullDto -> IlNull()
     is IlBoolConstDto -> IlBoolConst(value)
     is IlStringConstDto -> IlStringConst(value)
-    is IlByteConstDto -> IlByteConst(value)
-    is IlIntConstDto -> IlIntConst(value)
-    is IlLongConstDto -> IlLongConst(value)
+    is IlCharConstDto -> IlCharConst(value)
+    is IlInt8ConstDto -> IlInt8Const(value)
+    is IlUint8ConstDto -> IlUint8Const(value)
+    is IlInt16ConstDto -> IlInt16Const(value)
+    is IlUint16ConstDto -> IlUint16Const(value)
+    is IlInt32ConstDto -> IlInt32Const(value)
+    is IlUint32ConstDto -> IlUint32Const(value)
+    is IlInt64ConstDto -> IlInt64Const(value)
+    is IlUint64ConstDto -> IlUint64Const(value)
     is IlFloatConstDto -> IlFloatConst(value)
     is IlDoubleConstDto -> IlDoubleConst(value)
-    is IlTypeRefDto -> IlTypeRef(IlInstance.cache.getType(referencedType))
-    is IlMethodRefDto -> IlMethodRef(IlInstance.cache.getMethod(method))
-    is IlFieldRefDto -> IlFieldRef(IlInstance.cache.getField(field))
+//    is IlTypeRefDto -> IlTypeRef(IlInstance.cache.getType(referencedType))
+//    is IlMethodRefDto -> IlMethodRef(IlInstance.cache.getMethod(method))
+//    is IlFieldRefDto -> IlFieldRef(IlInstance.cache.getField(field))
     is IlArrayConstDto -> IlArrayConst(values.map { it.deserializeConst() })
-    else -> throw NotImplementedError();
-
+    else -> throw NotImplementedError()
 }
 
 fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
     is IlUnaryOpDto -> IlUnaryOp(operand.deserialize(ilMethod))
     is IlBinaryOpDto -> IlBinaryOp(lhs.deserialize(ilMethod), rhs.deserialize(ilMethod))
     is IlArrayLengthExprDto -> IlArrayLengthExpr(array.deserialize(ilMethod))
-    is IlCallDto -> IlCall(IlInstance.cache.getMethod(method), args.map { it.deserialize(ilMethod) })
-    is IlInitExprDto -> IlInitExpr(IlInstance.cache.getType(type))
-    is IlNewArrayExprDto -> IlNewArrayExpr(IlInstance.cache.getType(type), size.deserialize(ilMethod))
-    is IlNewExprDto -> IlNewExpr(IlInstance.cache.getType(type), args.map { it.deserialize(ilMethod) })
-    is IlSizeOfExprDto -> IlSizeOfExpr(IlInstance.cache.getType(targetType))
-    is IlStackAllocExprDto -> IlStackAllocExpr(IlInstance.cache.getType(type), size.deserialize(ilMethod))
-    is IlManagedRefExprDto -> IlManagedRefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
-    is IlUnmanagedRefExprDto -> IlUnmanagedRefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
-    is IlManagedDerefExprDto -> IlManagedDerefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
-    is IlUnmanagedDerefExprDto -> IlUnmanagedDerefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
-    is IlConvExprDto -> IlConvExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
-    is IlBoxExprDto -> IlBoxExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
-    is IlUnboxExprDto -> IlUnboxExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
-    is IlCastClassExprDto -> IlCastClassExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
-    is IlIsInstExprDto -> IlIsInstExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
+//    is IlCallDto -> IlCall(IlInstance.cache.getMethod(method), args.map { it.deserialize(ilMethod) })
+//    is IlNewArrayExprDto -> IlNewArrayExpr(IlInstance.cache.getType(type), size.deserialize(ilMethod))
+//    is IlNewExprDto -> IlNewExpr(IlInstance.cache.getType(type), args.map { it.deserialize(ilMethod) })
+//    is IlSizeOfExprDto -> IlSizeOfExpr(IlInstance.cache.getType(targetType))
+//    is IlStackAllocExprDto -> IlStackAllocExpr(IlInstance.cache.getType(type), size.deserialize(ilMethod))
+//    is IlManagedRefExprDto -> IlManagedRefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
+//    is IlUnmanagedRefExprDto -> IlUnmanagedRefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
+//    is IlManagedDerefExprDto -> IlManagedDerefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
+//    is IlUnmanagedDerefExprDto -> IlUnmanagedDerefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
+//    is IlConvExprDto -> IlConvExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
+//    is IlBoxExprDto -> IlBoxExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
+//    is IlUnboxExprDto -> IlUnboxExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
+//    is IlCastClassExprDto -> IlCastClassExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
+//    is IlIsInstExprDto -> IlIsInstExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
     is IlConstDto -> this.deserializeConst()
-    is IlFieldAccessDto -> IlFieldAccess(IlInstance.cache.getField(field), instance?.deserialize(ilMethod))
+//    is IlFieldAccessDto -> IlFieldAccess(IlInstance.cache.getField(field), instance?.deserialize(ilMethod))
     is IlArrayAccessDto -> IlArrayAccess(array.deserialize(ilMethod), index.deserialize(ilMethod))
     is IlVarAccessDto -> when (kind) {
         IlVarKind.local -> ilMethod.locals[index]
@@ -67,7 +73,7 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
         IlVarKind.err -> ilMethod.errs[index]
     }
 
-    is IlArgAccessDto -> ilMethod.args[index]
+//    is IlArgAccessDto -> ilMethod.args[index]
     else -> throw NotImplementedError()
 }
 
@@ -202,7 +208,7 @@ class IlArgument(private val dto: IlParameterDto) : IlLocal {
 }
 
 class IlLocalVar(dto: IlVarDto) : IlLocal {
-    val type: IlType = IlInstance.cache.getType(dto.type)
+//    val type: IlType = IlInstance.cache.getType(dto.type)
     val index: Int = dto.index
 
     override fun toString(): String {
@@ -211,7 +217,7 @@ class IlLocalVar(dto: IlVarDto) : IlLocal {
 }
 
 class IlTempVar(dto: IlVarDto) : IlLocal {
-    val type: IlType = IlInstance.cache.getType(dto.type)
+//    val type: IlType = IlInstance.cache.getType(dto.type)
     val index: Int = dto.index
 
     override fun toString(): String {
@@ -220,7 +226,7 @@ class IlTempVar(dto: IlVarDto) : IlLocal {
 }
 
 class IlErrVar(dto: IlVarDto) : IlLocal {
-    val type: IlType = IlInstance.cache.getType(dto.type)
+//    val type: IlType = IlInstance.cache.getType(dto.type)
     val index: Int = dto.index
 
     override fun toString(): String {

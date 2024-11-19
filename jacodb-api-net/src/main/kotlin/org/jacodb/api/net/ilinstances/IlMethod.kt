@@ -16,54 +16,37 @@
 
 package org.example.ilinstances
 
+import org.jacodb.api.net.devmocs.IlClasspathMock
 import org.jacodb.api.net.generated.models.*
 import org.jacodb.api.net.ilinstances.*
+import kotlin.LazyThreadSafetyMode.PUBLICATION
 
-class IlMethod(private val dto: IlMethodDto) : IlInstance {
-    var declType: IlType? = null
-    var returnType: IlType? = null
+class IlMethod(private val declType: IlType, private val dto: IlMethodDto, classpath: IlClasspathMock) : IlInstance {
+    val returnType: IlType? by lazy { classpath.findType(dto.returnType) }
     val name: String = dto.name
-    val parametes: MutableList<IlParameter> = dto.parameters.map { IlParameter(it) }.toMutableList()
-    val args: List<IlArgument> = dto.parameters.map { IlArgument(it) }.toList()
+    val parametes: List<IlParameter> by lazy(PUBLICATION) { dto.parameters.map { IlParameter(it, classpath) }.toMutableList() }
+    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }
+    val body: List<IlStmt> by lazy(PUBLICATION) { dto.body.map { IlStmt.deserialize(this, it) } }
     val resolved: Boolean = dto.resolved
+
+    // TODO args next to parameters seems defn improper
+//    val args: List<IlArgument> = dto.parameters.map { IlArgument(it) }.toList()
     val locals: MutableList<IlLocalVar> = mutableListOf()
     val temps: MutableList<IlTempVar> = mutableListOf()
     val errs: MutableList<IlErrVar> = mutableListOf()
     val scopes: MutableList<IlEhScope> = mutableListOf()
-    val attributes: MutableList<IlAttribute> = mutableListOf()
-    val body: MutableList<IlStmt> = mutableListOf()
-
-    override fun attach() {
-        if (dto.declType != null) {
-            declType = IlInstance.cache.getType(dto.declType)
-            (declType as IlType).methods.add(this)
-        }
-        if (dto.returnType != null)
-            returnType = IlInstance.cache.getType(dto.returnType)
-        parametes.forEach { it.attach() }
-        dto.locals.map { IlLocalVar(it) }.sortedBy { it.index }.forEach { locals.add(it) }
-        dto.temps.map { IlTempVar(it) }.sortedBy { it.index }.forEach { temps.add(it) }
-        dto.errs.map { IlErrVar(it) }.sortedBy { it.index }.forEach { errs.add(it) }
-        dto.attrs.forEach { attributes.add(IlAttribute(it)) }
-        dto.body.forEach { body.add(IlStmt.deserialize(this, it)) }
-        dto.body.zip(body).filter { (_, inst) -> inst is IlBranchStmt }
-            .forEach { (dto, inst) -> inst as IlBranchStmt; dto as IlBranchStmtDto; inst.updateTarget(dto, this) }
-        dto.ehScopes.forEach { scopeDto -> scopes.add(IlEhScope.deserialize(this, scopeDto)) }
-    }
 
     override fun toString(): String {
         return "${returnType ?: ""} $name(${parametes.joinToString(", ")})"
     }
 }
 
-class IlParameter(private val dto: IlParameterDto) : IlInstance {
-    lateinit var paramType: IlType
-    val attributes: MutableList<IlAttribute> = mutableListOf()
+class IlParameter(private val dto: IlParameterDto, classpath: IlClasspathMock) : IlInstance {
+    val paramType: IlType by lazy(PUBLICATION) { classpath.findType(dto.type)!! }
+    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }
+    val index: Int = dto.index
     val name: String = dto.name
-    override fun attach() {
-        paramType = IlInstance.cache.getType(dto.type)
-        dto.attrs.forEach { attributes.add(IlAttribute(it)) }
-    }
+    val defaultValue: IlConst get() = dto.defaultValue.deserializeConst()
 
     override fun toString(): String {
         return paramType.toString()

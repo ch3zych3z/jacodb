@@ -19,21 +19,37 @@
 package org.jacodb.api.net.models
 
 import com.jetbrains.rd.generator.nova.*
-import org.jacodb.api.net.models.IlModel.cacheKey
+import org.jacodb.api.net.models.IlModel.typeId
 
 object IlMethodBodyModel : Ext(IlRoot) {
+    private val instanceIdRef = structdef {
+        field("type", typeId)
+        field("name", PredefinedType.string)
+    }
     private val IlExprDto = basestruct {
-        field("type", cacheKey)
+        field("type", typeId)
     }
     private val IlValueDto = basestruct extends IlExprDto {}
     val IlConstDto = basestruct extends IlValueDto {}
     private val IlNumConstDto = basestruct extends IlConstDto {}
 
-    private val IlByteConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.byte) }
-    private val IlIntConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.int) }
-    private val IlLongConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.long) }
+    private val IlInt8ConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.int8) }
+    private val IlUint8ConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.uint8) }
+
+    private val IlInt16ConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.int16) }
+    private val IlUint16ConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.uint16) }
+
+    private val IlInt32ConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.int32) }
+    private val IlUint32ConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.uint32) }
+
+    private val IlInt64ConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.int64) }
+    private val IlUint64ConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.uint64) }
+
     private val IlFloatConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.float) }
     private val IlDoubleConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.double) }
+
+    private val IlCharConstDto = structdef extends IlNumConstDto { field("value", PredefinedType.char) }
+
     val IlArrayConstDto = structdef extends IlConstDto {
         field("values", immutableList(IlConstDto))
     }
@@ -41,10 +57,9 @@ object IlMethodBodyModel : Ext(IlRoot) {
     private val IlBoolConstDto = structdef extends IlConstDto { field("value", PredefinedType.bool) }
     private val IlStringConstDto = structdef extends IlConstDto { field("value", PredefinedType.string) }
 
-    // TODO fix inconsistent naming
-    private val IlTypeRefDto = structdef extends IlConstDto { field("referencedType", cacheKey) }
-    private val IlMethodRefDto = structdef extends IlConstDto { field("method", cacheKey) }
-    private val IlFieldRefDto = structdef extends IlConstDto { field("field", cacheKey) }
+    private val IlTypeRefDto = structdef extends IlConstDto { field("referencedType", typeId) }
+    private val IlMethodRefDto = structdef extends IlConstDto { field("method", instanceIdRef) }
+    private val IlFieldRefDto = structdef extends IlConstDto { field("field", instanceIdRef) }
 
     private val IlUnaryOpDto = structdef extends IlExprDto { field("operand", IlExprDto) }
     private val IlBinaryOpDto = structdef extends IlExprDto {
@@ -52,20 +67,17 @@ object IlMethodBodyModel : Ext(IlRoot) {
         field("rhs", IlExprDto)
     }
 
-    private val IlInitExprDto = structdef extends IlExprDto {
-    }
     private val IlNewExprDto = structdef extends IlExprDto {
-        field("args", immutableList(IlExprDto))
     }
 
     private val IlSizeOfExprDto = structdef extends IlExprDto {
-        field("targetType", cacheKey)
+        field("targetType", typeId)
         // TODO use type as targetType
     }
 
     private val IlFieldAccessDto = structdef extends IlValueDto {
         field("instance", IlExprDto.nullable)
-        field("field", cacheKey)
+        field("field", instanceIdRef)
     }
     private val IlArrayAccessDto = structdef extends IlValueDto {
         field("array", IlExprDto)
@@ -78,12 +90,12 @@ object IlMethodBodyModel : Ext(IlRoot) {
     }
     private val IlArrayLengthExprDto = structdef extends IlExprDto { field("array", IlExprDto) }
     private val IlCallDto = structdef extends IlExprDto {
-        field("method", cacheKey)
+        field("method", instanceIdRef)
         field("args", immutableList(IlExprDto))
     }
 
     private val IlCastExprDto = basestruct extends IlExprDto {
-        field("targetType", cacheKey) // TODO mb same with ilexpr type
+        field("targetType", typeId)
         field("operand", IlExprDto)
     }
 
@@ -109,7 +121,14 @@ object IlMethodBodyModel : Ext(IlRoot) {
     private val IlStackAllocExprDto = structdef extends IlExprDto {
         field("size", IlExprDto)
     }
-
+    private val IlArgListRefDto = structdef extends IlExprDto {
+        field("method", instanceIdRef)
+    }
+    private val IlCalliDto = structdef extends IlExprDto {
+        field("signature", IlModel.IlSignatureDto)
+        field("ftn", IlExprDto)
+        field("args", immutableList(IlExprDto))
+    }
     val IlStmtDto = basestruct {}
 
     private val IlAssignStmtDto = structdef extends IlStmtDto {

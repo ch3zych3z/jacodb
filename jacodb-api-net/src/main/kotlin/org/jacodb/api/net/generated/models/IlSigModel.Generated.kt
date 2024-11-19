@@ -35,6 +35,7 @@ import kotlin.jvm.JvmStatic
  * #### Generated from [IlSigModel.kt:23]
  */
 class IlSigModel private constructor(
+    private val _callForAsm: RdCall<Request, List<IlTypeDto>>,
     private val _asmRequest: RdSignal<Request>,
     private val _asmResponse: RdSignal<List<IlDto>>
 ) : RdExtBase() {
@@ -49,15 +50,17 @@ class IlSigModel private constructor(
         
         
         
+        private val __IlTypeDtoListSerializer = AbstractPolymorphic(IlTypeDto).list()
         private val __IlDtoListSerializer = AbstractPolymorphic(IlDto).list()
         
-        const val serializationHash = 4472687692352809953L
+        const val serializationHash = 9130847229297571826L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlSigModel
     override val serializationHash: Long get() = IlSigModel.serializationHash
     
     //fields
+    val callForAsm: IRdCall<Request, List<IlTypeDto>> get() = _callForAsm
     val asmRequest: IAsyncSignal<Request> get() = _asmRequest
     val asmResponse: IAsyncSignal<List<IlDto>> get() = _asmResponse
     //methods
@@ -68,6 +71,7 @@ class IlSigModel private constructor(
     }
     
     init {
+        bindableChildren.add("callForAsm" to _callForAsm)
         bindableChildren.add("asmRequest" to _asmRequest)
         bindableChildren.add("asmResponse" to _asmResponse)
     }
@@ -75,6 +79,7 @@ class IlSigModel private constructor(
     //secondary constructor
     internal constructor(
     ) : this(
+        RdCall<Request, List<IlTypeDto>>(Request, __IlTypeDtoListSerializer),
         RdSignal<Request>(Request),
         RdSignal<List<IlDto>>(__IlDtoListSerializer)
     )
@@ -85,6 +90,7 @@ class IlSigModel private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlSigModel (")
         printer.indent {
+            print("callForAsm = "); _callForAsm.print(printer); println()
             print("asmRequest = "); _asmRequest.print(printer); println()
             print("asmResponse = "); _asmResponse.print(printer); println()
         }
@@ -93,6 +99,7 @@ class IlSigModel private constructor(
     //deepClone
     override fun deepClone(): IlSigModel   {
         return IlSigModel(
+            _callForAsm.deepClonePolymorphic(),
             _asmRequest.deepClonePolymorphic(),
             _asmResponse.deepClonePolymorphic()
         )

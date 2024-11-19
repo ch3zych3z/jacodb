@@ -41,11 +41,18 @@ class IlMethodBodyModel private constructor(
     companion object : ISerializersOwner {
         
         override fun registerSerializersCore(serializers: ISerializers)  {
-            serializers.register(IlByteConstDto)
-            serializers.register(IlIntConstDto)
-            serializers.register(IlLongConstDto)
+            serializers.register(InstanceIdRef)
+            serializers.register(IlInt8ConstDto)
+            serializers.register(IlUint8ConstDto)
+            serializers.register(IlInt16ConstDto)
+            serializers.register(IlUint16ConstDto)
+            serializers.register(IlInt32ConstDto)
+            serializers.register(IlUint32ConstDto)
+            serializers.register(IlInt64ConstDto)
+            serializers.register(IlUint64ConstDto)
             serializers.register(IlFloatConstDto)
             serializers.register(IlDoubleConstDto)
+            serializers.register(IlCharConstDto)
             serializers.register(IlArrayConstDto)
             serializers.register(IlNullDto)
             serializers.register(IlBoolConstDto)
@@ -55,7 +62,6 @@ class IlMethodBodyModel private constructor(
             serializers.register(IlFieldRefDto)
             serializers.register(IlUnaryOpDto)
             serializers.register(IlBinaryOpDto)
-            serializers.register(IlInitExprDto)
             serializers.register(IlNewExprDto)
             serializers.register(IlSizeOfExprDto)
             serializers.register(IlFieldAccessDto)
@@ -73,6 +79,8 @@ class IlMethodBodyModel private constructor(
             serializers.register(IlManagedDerefExprDto)
             serializers.register(IlUnmanagedDerefExprDto)
             serializers.register(IlStackAllocExprDto)
+            serializers.register(IlArgListRefDto)
+            serializers.register(IlCalliDto)
             serializers.register(IlAssignStmtDto)
             serializers.register(IlCallStmtDto)
             serializers.register(IlReturnStmtDto)
@@ -116,7 +124,7 @@ class IlMethodBodyModel private constructor(
         }
         
         
-        const val serializationHash = -2692739442657292118L
+        const val serializationHash = 8373857192004288571L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlMethodBodyModel
@@ -145,11 +153,11 @@ val IProtocol.ilMethodBodyModel get() = getOrCreateExtension(IlMethodBodyModel::
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:155]
+ * #### Generated from [IlMethodBodyModel.kt:174]
  */
 class IlArgAccessDto (
     val index: Int,
-    type: CacheKey
+    type: TypeId
 ) : IlValueDto (
     type
 ) {
@@ -160,13 +168,13 @@ class IlArgAccessDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlArgAccessDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val index = buffer.readInt()
             return IlArgAccessDto(index, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArgAccessDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeInt(value.index)
         }
         
@@ -212,12 +220,79 @@ class IlArgAccessDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:70]
+ * #### Generated from [IlMethodBodyModel.kt:124]
+ */
+class IlArgListRefDto (
+    val method: InstanceIdRef,
+    type: TypeId
+) : IlExprDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlArgListRefDto> {
+        override val _type: KClass<IlArgListRefDto> = IlArgListRefDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlArgListRefDto  {
+            val type = TypeId.read(ctx, buffer)
+            val method = InstanceIdRef.read(ctx, buffer)
+            return IlArgListRefDto(method, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArgListRefDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            InstanceIdRef.write(ctx, buffer, value.method)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlArgListRefDto
+        
+        if (method != other.method) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + method.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlArgListRefDto (")
+        printer.indent {
+            print("method = "); method.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:82]
  */
 class IlArrayAccessDto (
     val array: IlExprDto,
     val index: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlValueDto (
     type
 ) {
@@ -228,14 +303,14 @@ class IlArrayAccessDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlArrayAccessDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val array = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val index = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             return IlArrayAccessDto(array, index, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArrayAccessDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             ctx.serializers.writePolymorphic(ctx, buffer, value.array)
             ctx.serializers.writePolymorphic(ctx, buffer, value.index)
         }
@@ -285,11 +360,11 @@ class IlArrayAccessDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:37]
+ * #### Generated from [IlMethodBodyModel.kt:53]
  */
 class IlArrayConstDto (
     val values: List<IlConstDto>,
-    type: CacheKey
+    type: TypeId
 ) : IlConstDto (
     type
 ) {
@@ -300,13 +375,13 @@ class IlArrayConstDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlArrayConstDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val values = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
             return IlArrayConstDto(values, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArrayConstDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeList(value.values) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
         }
         
@@ -352,11 +427,11 @@ class IlArrayConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:79]
+ * #### Generated from [IlMethodBodyModel.kt:91]
  */
 class IlArrayLengthExprDto (
     val array: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -367,13 +442,13 @@ class IlArrayLengthExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlArrayLengthExprDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val array = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             return IlArrayLengthExprDto(array, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArrayLengthExprDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             ctx.serializers.writePolymorphic(ctx, buffer, value.array)
         }
         
@@ -419,7 +494,7 @@ class IlArrayLengthExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:115]
+ * #### Generated from [IlMethodBodyModel.kt:134]
  */
 class IlAssignStmtDto (
     val lhs: IlValueDto,
@@ -485,12 +560,12 @@ class IlAssignStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:50]
+ * #### Generated from [IlMethodBodyModel.kt:65]
  */
 class IlBinaryOpDto (
     val lhs: IlExprDto,
     val rhs: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -501,14 +576,14 @@ class IlBinaryOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlBinaryOpDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             return IlBinaryOpDto(lhs, rhs, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlBinaryOpDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
             ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
         }
@@ -558,11 +633,11 @@ class IlBinaryOpDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:41]
+ * #### Generated from [IlMethodBodyModel.kt:57]
  */
 class IlBoolConstDto (
     val value: Boolean,
-    type: CacheKey
+    type: TypeId
 ) : IlConstDto (
     type
 ) {
@@ -573,13 +648,13 @@ class IlBoolConstDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlBoolConstDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val value = buffer.readBool()
             return IlBoolConstDto(value, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlBoolConstDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeBool(value.value)
         }
         
@@ -625,12 +700,12 @@ class IlBoolConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:91]
+ * #### Generated from [IlMethodBodyModel.kt:103]
  */
 class IlBoxExprDto (
-    targetType: CacheKey,
+    targetType: TypeId,
     operand: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlCastExprDto (
     targetType,
     operand,
@@ -643,16 +718,16 @@ class IlBoxExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlBoxExprDto  {
-            val targetType = CacheKey.read(ctx, buffer)
+            val targetType = TypeId.read(ctx, buffer)
             val operand = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlBoxExprDto(targetType, operand, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlBoxExprDto)  {
-            CacheKey.write(ctx, buffer, value.targetType)
+            TypeId.write(ctx, buffer, value.targetType)
             ctx.serializers.writePolymorphic(ctx, buffer, value.operand)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -700,7 +775,7 @@ class IlBoxExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:139]
+ * #### Generated from [IlMethodBodyModel.kt:158]
  */
 abstract class IlBranchStmtDto (
     val target: Int
@@ -792,79 +867,12 @@ class IlBranchStmtDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:32]
- */
-class IlByteConstDto (
-    val value: Byte,
-    type: CacheKey
-) : IlNumConstDto (
-    type
-) {
-    //companion
-    
-    companion object : IMarshaller<IlByteConstDto> {
-        override val _type: KClass<IlByteConstDto> = IlByteConstDto::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlByteConstDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val value = buffer.readByte()
-            return IlByteConstDto(value, type)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlByteConstDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            buffer.writeByte(value.value)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as IlByteConstDto
-        
-        if (value != other.value) return false
-        if (type != other.type) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + value.hashCode()
-        __r = __r*31 + type.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("IlByteConstDto (")
-        printer.indent {
-            print("value = "); value.print(printer); println()
-            print("type = "); type.print(printer); println()
-        }
-        printer.print(")")
-    }
-    
-    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
-    //deepClone
-    //contexts
-}
-
-
-/**
- * #### Generated from [IlMethodBodyModel.kt:80]
+ * #### Generated from [IlMethodBodyModel.kt:92]
  */
 class IlCallDto (
-    val method: CacheKey,
+    val method: InstanceIdRef,
     val args: List<IlExprDto>,
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -875,15 +883,15 @@ class IlCallDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCallDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val method = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
+            val method = InstanceIdRef.read(ctx, buffer)
             val args = buffer.readList { ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto) }
             return IlCallDto(method, args, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCallDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            CacheKey.write(ctx, buffer, value.method)
+            TypeId.write(ctx, buffer, value.type)
+            InstanceIdRef.write(ctx, buffer, value.method)
             buffer.writeList(value.args) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
         }
         
@@ -932,7 +940,7 @@ class IlCallDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:120]
+ * #### Generated from [IlMethodBodyModel.kt:139]
  */
 class IlCallStmtDto (
     val call: IlCallDto
@@ -992,12 +1000,91 @@ class IlCallStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:93]
+ * #### Generated from [IlMethodBodyModel.kt:127]
+ */
+class IlCalliDto (
+    val signature: IlSignatureDto,
+    val ftn: IlExprDto,
+    val args: List<IlExprDto>,
+    type: TypeId
+) : IlExprDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlCalliDto> {
+        override val _type: KClass<IlCalliDto> = IlCalliDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCalliDto  {
+            val type = TypeId.read(ctx, buffer)
+            val signature = IlSignatureDto.read(ctx, buffer)
+            val ftn = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val args = buffer.readList { ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto) }
+            return IlCalliDto(signature, ftn, args, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCalliDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            IlSignatureDto.write(ctx, buffer, value.signature)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.ftn)
+            buffer.writeList(value.args) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlCalliDto
+        
+        if (signature != other.signature) return false
+        if (ftn != other.ftn) return false
+        if (args != other.args) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + signature.hashCode()
+        __r = __r*31 + ftn.hashCode()
+        __r = __r*31 + args.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlCalliDto (")
+        printer.indent {
+            print("signature = "); signature.print(printer); println()
+            print("ftn = "); ftn.print(printer); println()
+            print("args = "); args.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:105]
  */
 class IlCastClassExprDto (
-    targetType: CacheKey,
+    targetType: TypeId,
     operand: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlCastExprDto (
     targetType,
     operand,
@@ -1010,16 +1097,16 @@ class IlCastClassExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCastClassExprDto  {
-            val targetType = CacheKey.read(ctx, buffer)
+            val targetType = TypeId.read(ctx, buffer)
             val operand = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlCastClassExprDto(targetType, operand, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCastClassExprDto)  {
-            CacheKey.write(ctx, buffer, value.targetType)
+            TypeId.write(ctx, buffer, value.targetType)
             ctx.serializers.writePolymorphic(ctx, buffer, value.operand)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -1067,12 +1154,12 @@ class IlCastClassExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:85]
+ * #### Generated from [IlMethodBodyModel.kt:97]
  */
 abstract class IlCastExprDto (
-    val targetType: CacheKey,
+    val targetType: TypeId,
     val operand: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -1081,9 +1168,9 @@ abstract class IlCastExprDto (
     companion object : IAbstractDeclaration<IlCastExprDto> {
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlCastExprDto  {
             val objectStartPosition = buffer.position
-            val targetType = CacheKey.read(ctx, buffer)
+            val targetType = TypeId.read(ctx, buffer)
             val operand = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
             return IlCastExprDto_Unknown(targetType, operand, type, unknownId, unknownBytes)
@@ -1104,9 +1191,9 @@ abstract class IlCastExprDto (
 
 
 class IlCastExprDto_Unknown (
-    targetType: CacheKey,
+    targetType: TypeId,
     operand: IlExprDto,
-    type: CacheKey,
+    type: TypeId,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : IlCastExprDto (
@@ -1125,9 +1212,9 @@ class IlCastExprDto_Unknown (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCastExprDto_Unknown)  {
-            CacheKey.write(ctx, buffer, value.targetType)
+            TypeId.write(ctx, buffer, value.targetType)
             ctx.serializers.writePolymorphic(ctx, buffer, value.operand)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
         
@@ -1176,10 +1263,77 @@ class IlCastExprDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:29]
+ * #### Generated from [IlMethodBodyModel.kt:51]
+ */
+class IlCharConstDto (
+    val value: Char,
+    type: TypeId
+) : IlNumConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlCharConstDto> {
+        override val _type: KClass<IlCharConstDto> = IlCharConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCharConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readChar()
+            return IlCharConstDto(value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCharConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeChar(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlCharConstDto
+        
+        if (value != other.value) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlCharConstDto (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:33]
  */
 abstract class IlConstDto (
-    type: CacheKey
+    type: TypeId
 ) : IlValueDto (
     type
 ) {
@@ -1188,7 +1342,7 @@ abstract class IlConstDto (
     companion object : IAbstractDeclaration<IlConstDto> {
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlConstDto  {
             val objectStartPosition = buffer.position
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
             return IlConstDto_Unknown(type, unknownId, unknownBytes)
@@ -1209,7 +1363,7 @@ abstract class IlConstDto (
 
 
 class IlConstDto_Unknown (
-    type: CacheKey,
+    type: TypeId,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : IlConstDto (
@@ -1226,7 +1380,7 @@ class IlConstDto_Unknown (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlConstDto_Unknown)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
         
@@ -1269,12 +1423,12 @@ class IlConstDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:90]
+ * #### Generated from [IlMethodBodyModel.kt:102]
  */
 class IlConvExprDto (
-    targetType: CacheKey,
+    targetType: TypeId,
     operand: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlCastExprDto (
     targetType,
     operand,
@@ -1287,16 +1441,16 @@ class IlConvExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlConvExprDto  {
-            val targetType = CacheKey.read(ctx, buffer)
+            val targetType = TypeId.read(ctx, buffer)
             val operand = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlConvExprDto(targetType, operand, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlConvExprDto)  {
-            CacheKey.write(ctx, buffer, value.targetType)
+            TypeId.write(ctx, buffer, value.targetType)
             ctx.serializers.writePolymorphic(ctx, buffer, value.operand)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -1344,11 +1498,11 @@ class IlConvExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:100]
+ * #### Generated from [IlMethodBodyModel.kt:112]
  */
 abstract class IlDerefExprDto (
     val value: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlValueDto (
     type
 ) {
@@ -1358,7 +1512,7 @@ abstract class IlDerefExprDto (
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlDerefExprDto  {
             val objectStartPosition = buffer.position
             val value = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
             return IlDerefExprDto_Unknown(value, type, unknownId, unknownBytes)
@@ -1380,7 +1534,7 @@ abstract class IlDerefExprDto (
 
 class IlDerefExprDto_Unknown (
     value: IlExprDto,
-    type: CacheKey,
+    type: TypeId,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : IlDerefExprDto (
@@ -1399,7 +1553,7 @@ class IlDerefExprDto_Unknown (
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlDerefExprDto_Unknown)  {
             ctx.serializers.writePolymorphic(ctx, buffer, value.value)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
         
@@ -1445,11 +1599,11 @@ class IlDerefExprDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:36]
+ * #### Generated from [IlMethodBodyModel.kt:49]
  */
 class IlDoubleConstDto (
     val value: Double,
-    type: CacheKey
+    type: TypeId
 ) : IlNumConstDto (
     type
 ) {
@@ -1460,13 +1614,13 @@ class IlDoubleConstDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlDoubleConstDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val value = buffer.readDouble()
             return IlDoubleConstDto(value, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlDoubleConstDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeDouble(value.value)
         }
         
@@ -1512,7 +1666,7 @@ class IlDoubleConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:128]
+ * #### Generated from [IlMethodBodyModel.kt:147]
  */
 abstract class IlEhStmtDto (
 ) : IlStmtDto (
@@ -1594,7 +1748,7 @@ class IlEhStmtDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:134]
+ * #### Generated from [IlMethodBodyModel.kt:153]
  */
 class IlEndFaultStmtDto (
 ) : IlEhStmtDto (
@@ -1646,7 +1800,7 @@ class IlEndFaultStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:135]
+ * #### Generated from [IlMethodBodyModel.kt:154]
  */
 class IlEndFilterStmtDto (
     val value: IlExprDto
@@ -1706,7 +1860,7 @@ class IlEndFilterStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:133]
+ * #### Generated from [IlMethodBodyModel.kt:152]
  */
 class IlEndFinallyStmtDto (
 ) : IlEhStmtDto (
@@ -1758,17 +1912,17 @@ class IlEndFinallyStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:25]
+ * #### Generated from [IlMethodBodyModel.kt:29]
  */
 abstract class IlExprDto (
-    val type: CacheKey
+    val type: TypeId
 ) : IPrintable {
     //companion
     
     companion object : IAbstractDeclaration<IlExprDto> {
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlExprDto  {
             val objectStartPosition = buffer.position
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
             return IlExprDto_Unknown(type, unknownId, unknownBytes)
@@ -1789,7 +1943,7 @@ abstract class IlExprDto (
 
 
 class IlExprDto_Unknown (
-    type: CacheKey,
+    type: TypeId,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : IlExprDto (
@@ -1806,7 +1960,7 @@ class IlExprDto_Unknown (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlExprDto_Unknown)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
         
@@ -1849,12 +2003,12 @@ class IlExprDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:66]
+ * #### Generated from [IlMethodBodyModel.kt:78]
  */
 class IlFieldAccessDto (
     val instance: IlExprDto?,
-    val `field`: CacheKey,
-    type: CacheKey
+    val `field`: InstanceIdRef,
+    type: TypeId
 ) : IlValueDto (
     type
 ) {
@@ -1865,16 +2019,16 @@ class IlFieldAccessDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlFieldAccessDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val instance = buffer.readNullable { ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto) }
-            val `field` = CacheKey.read(ctx, buffer)
+            val `field` = InstanceIdRef.read(ctx, buffer)
             return IlFieldAccessDto(instance, `field`, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlFieldAccessDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeNullable(value.instance) { ctx.serializers.writePolymorphic(ctx, buffer, it) }
-            CacheKey.write(ctx, buffer, value.`field`)
+            InstanceIdRef.write(ctx, buffer, value.`field`)
         }
         
         
@@ -1922,11 +2076,11 @@ class IlFieldAccessDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:47]
+ * #### Generated from [IlMethodBodyModel.kt:62]
  */
 class IlFieldRefDto (
-    val `field`: CacheKey,
-    type: CacheKey
+    val `field`: InstanceIdRef,
+    type: TypeId
 ) : IlConstDto (
     type
 ) {
@@ -1937,14 +2091,14 @@ class IlFieldRefDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlFieldRefDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val `field` = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
+            val `field` = InstanceIdRef.read(ctx, buffer)
             return IlFieldRefDto(`field`, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlFieldRefDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            CacheKey.write(ctx, buffer, value.`field`)
+            TypeId.write(ctx, buffer, value.type)
+            InstanceIdRef.write(ctx, buffer, value.`field`)
         }
         
         
@@ -1989,11 +2143,11 @@ class IlFieldRefDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:35]
+ * #### Generated from [IlMethodBodyModel.kt:48]
  */
 class IlFloatConstDto (
     val value: Float,
-    type: CacheKey
+    type: TypeId
 ) : IlNumConstDto (
     type
 ) {
@@ -2004,13 +2158,13 @@ class IlFloatConstDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlFloatConstDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val value = buffer.readFloat()
             return IlFloatConstDto(value, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlFloatConstDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeFloat(value.value)
         }
         
@@ -2056,7 +2210,7 @@ class IlFloatConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:143]
+ * #### Generated from [IlMethodBodyModel.kt:162]
  */
 class IlGotoStmtDto (
     target: Int
@@ -2117,7 +2271,7 @@ class IlGotoStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:146]
+ * #### Generated from [IlMethodBodyModel.kt:165]
  */
 class IlIfStmtDto (
     val cond: IlExprDto,
@@ -2184,90 +2338,29 @@ class IlIfStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:55]
+ * #### Generated from [IlMethodBodyModel.kt:39]
  */
-class IlInitExprDto (
-    type: CacheKey
-) : IlExprDto (
-    type
-) {
-    //companion
-    
-    companion object : IMarshaller<IlInitExprDto> {
-        override val _type: KClass<IlInitExprDto> = IlInitExprDto::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlInitExprDto  {
-            val type = CacheKey.read(ctx, buffer)
-            return IlInitExprDto(type)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlInitExprDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as IlInitExprDto
-        
-        if (type != other.type) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + type.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("IlInitExprDto (")
-        printer.indent {
-            print("type = "); type.print(printer); println()
-        }
-        printer.print(")")
-    }
-    
-    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
-    //deepClone
-    //contexts
-}
-
-
-/**
- * #### Generated from [IlMethodBodyModel.kt:33]
- */
-class IlIntConstDto (
-    val value: Int,
-    type: CacheKey
+class IlInt16ConstDto (
+    val value: Short,
+    type: TypeId
 ) : IlNumConstDto (
     type
 ) {
     //companion
     
-    companion object : IMarshaller<IlIntConstDto> {
-        override val _type: KClass<IlIntConstDto> = IlIntConstDto::class
+    companion object : IMarshaller<IlInt16ConstDto> {
+        override val _type: KClass<IlInt16ConstDto> = IlInt16ConstDto::class
         
         @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlIntConstDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val value = buffer.readInt()
-            return IlIntConstDto(value, type)
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlInt16ConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readShort()
+            return IlInt16ConstDto(value, type)
         }
         
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlIntConstDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            buffer.writeInt(value.value)
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlInt16ConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeShort(value.value)
         }
         
         
@@ -2281,7 +2374,7 @@ class IlIntConstDto (
         if (this === other) return true
         if (other == null || other::class != this::class) return false
         
-        other as IlIntConstDto
+        other as IlInt16ConstDto
         
         if (value != other.value) return false
         if (type != other.type) return false
@@ -2297,7 +2390,7 @@ class IlIntConstDto (
     }
     //pretty print
     override fun print(printer: PrettyPrinter)  {
-        printer.println("IlIntConstDto (")
+        printer.println("IlInt16ConstDto (")
         printer.indent {
             print("value = "); value.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -2312,12 +2405,213 @@ class IlIntConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:94]
+ * #### Generated from [IlMethodBodyModel.kt:42]
+ */
+class IlInt32ConstDto (
+    val value: Int,
+    type: TypeId
+) : IlNumConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlInt32ConstDto> {
+        override val _type: KClass<IlInt32ConstDto> = IlInt32ConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlInt32ConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readInt()
+            return IlInt32ConstDto(value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlInt32ConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeInt(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlInt32ConstDto
+        
+        if (value != other.value) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlInt32ConstDto (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:45]
+ */
+class IlInt64ConstDto (
+    val value: Long,
+    type: TypeId
+) : IlNumConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlInt64ConstDto> {
+        override val _type: KClass<IlInt64ConstDto> = IlInt64ConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlInt64ConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readLong()
+            return IlInt64ConstDto(value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlInt64ConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeLong(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlInt64ConstDto
+        
+        if (value != other.value) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlInt64ConstDto (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:36]
+ */
+class IlInt8ConstDto (
+    val value: Byte,
+    type: TypeId
+) : IlNumConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlInt8ConstDto> {
+        override val _type: KClass<IlInt8ConstDto> = IlInt8ConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlInt8ConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readByte()
+            return IlInt8ConstDto(value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlInt8ConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeByte(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlInt8ConstDto
+        
+        if (value != other.value) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlInt8ConstDto (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:106]
  */
 class IlIsInstExprDto (
-    targetType: CacheKey,
+    targetType: TypeId,
     operand: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlCastExprDto (
     targetType,
     operand,
@@ -2330,16 +2624,16 @@ class IlIsInstExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlIsInstExprDto  {
-            val targetType = CacheKey.read(ctx, buffer)
+            val targetType = TypeId.read(ctx, buffer)
             val operand = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlIsInstExprDto(targetType, operand, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlIsInstExprDto)  {
-            CacheKey.write(ctx, buffer, value.targetType)
+            TypeId.write(ctx, buffer, value.targetType)
             ctx.serializers.writePolymorphic(ctx, buffer, value.operand)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -2387,78 +2681,11 @@ class IlIsInstExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:34]
- */
-class IlLongConstDto (
-    val value: Long,
-    type: CacheKey
-) : IlNumConstDto (
-    type
-) {
-    //companion
-    
-    companion object : IMarshaller<IlLongConstDto> {
-        override val _type: KClass<IlLongConstDto> = IlLongConstDto::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlLongConstDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val value = buffer.readLong()
-            return IlLongConstDto(value, type)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlLongConstDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            buffer.writeLong(value.value)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as IlLongConstDto
-        
-        if (value != other.value) return false
-        if (type != other.type) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + value.hashCode()
-        __r = __r*31 + type.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("IlLongConstDto (")
-        printer.indent {
-            print("value = "); value.print(printer); println()
-            print("type = "); type.print(printer); println()
-        }
-        printer.print(")")
-    }
-    
-    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
-    //deepClone
-    //contexts
-}
-
-
-/**
- * #### Generated from [IlMethodBodyModel.kt:106]
+ * #### Generated from [IlMethodBodyModel.kt:118]
  */
 class IlManagedDerefExprDto (
     value: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlDerefExprDto (
     value,
     type
@@ -2471,13 +2698,13 @@ class IlManagedDerefExprDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlManagedDerefExprDto  {
             val value = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlManagedDerefExprDto(value, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlManagedDerefExprDto)  {
             ctx.serializers.writePolymorphic(ctx, buffer, value.value)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -2522,11 +2749,11 @@ class IlManagedDerefExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:104]
+ * #### Generated from [IlMethodBodyModel.kt:116]
  */
 class IlManagedRefExprDto (
     value: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlRefExprDto (
     value,
     type
@@ -2539,13 +2766,13 @@ class IlManagedRefExprDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlManagedRefExprDto  {
             val value = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlManagedRefExprDto(value, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlManagedRefExprDto)  {
             ctx.serializers.writePolymorphic(ctx, buffer, value.value)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -2590,11 +2817,11 @@ class IlManagedRefExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:46]
+ * #### Generated from [IlMethodBodyModel.kt:61]
  */
 class IlMethodRefDto (
-    val method: CacheKey,
-    type: CacheKey
+    val method: InstanceIdRef,
+    type: TypeId
 ) : IlConstDto (
     type
 ) {
@@ -2605,14 +2832,14 @@ class IlMethodRefDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlMethodRefDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val method = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
+            val method = InstanceIdRef.read(ctx, buffer)
             return IlMethodRefDto(method, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMethodRefDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            CacheKey.write(ctx, buffer, value.method)
+            TypeId.write(ctx, buffer, value.type)
+            InstanceIdRef.write(ctx, buffer, value.method)
         }
         
         
@@ -2657,11 +2884,11 @@ class IlMethodRefDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:75]
+ * #### Generated from [IlMethodBodyModel.kt:87]
  */
 class IlNewArrayExprDto (
     val size: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -2672,13 +2899,13 @@ class IlNewArrayExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlNewArrayExprDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val size = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             return IlNewArrayExprDto(size, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlNewArrayExprDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             ctx.serializers.writePolymorphic(ctx, buffer, value.size)
         }
         
@@ -2724,11 +2951,10 @@ class IlNewArrayExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:57]
+ * #### Generated from [IlMethodBodyModel.kt:70]
  */
 class IlNewExprDto (
-    val args: List<IlExprDto>,
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -2739,14 +2965,12 @@ class IlNewExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlNewExprDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val args = buffer.readList { ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto) }
-            return IlNewExprDto(args, type)
+            val type = TypeId.read(ctx, buffer)
+            return IlNewExprDto(type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlNewExprDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            buffer.writeList(value.args) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -2762,7 +2986,6 @@ class IlNewExprDto (
         
         other as IlNewExprDto
         
-        if (args != other.args) return false
         if (type != other.type) return false
         
         return true
@@ -2770,7 +2993,6 @@ class IlNewExprDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + args.hashCode()
         __r = __r*31 + type.hashCode()
         return __r
     }
@@ -2778,7 +3000,6 @@ class IlNewExprDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlNewExprDto (")
         printer.indent {
-            print("args = "); args.print(printer); println()
             print("type = "); type.print(printer); println()
         }
         printer.print(")")
@@ -2791,10 +3012,10 @@ class IlNewExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:40]
+ * #### Generated from [IlMethodBodyModel.kt:56]
  */
 class IlNullDto (
-    type: CacheKey
+    type: TypeId
 ) : IlConstDto (
     type
 ) {
@@ -2805,12 +3026,12 @@ class IlNullDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlNullDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlNullDto(type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlNullDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -2852,10 +3073,10 @@ class IlNullDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:30]
+ * #### Generated from [IlMethodBodyModel.kt:34]
  */
 abstract class IlNumConstDto (
-    type: CacheKey
+    type: TypeId
 ) : IlConstDto (
     type
 ) {
@@ -2864,7 +3085,7 @@ abstract class IlNumConstDto (
     companion object : IAbstractDeclaration<IlNumConstDto> {
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlNumConstDto  {
             val objectStartPosition = buffer.position
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
             return IlNumConstDto_Unknown(type, unknownId, unknownBytes)
@@ -2885,7 +3106,7 @@ abstract class IlNumConstDto (
 
 
 class IlNumConstDto_Unknown (
-    type: CacheKey,
+    type: TypeId,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : IlNumConstDto (
@@ -2902,7 +3123,7 @@ class IlNumConstDto_Unknown (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlNumConstDto_Unknown)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
         
@@ -2945,11 +3166,11 @@ class IlNumConstDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:97]
+ * #### Generated from [IlMethodBodyModel.kt:109]
  */
 abstract class IlRefExprDto (
     val value: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlValueDto (
     type
 ) {
@@ -2959,7 +3180,7 @@ abstract class IlRefExprDto (
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlRefExprDto  {
             val objectStartPosition = buffer.position
             val value = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
             return IlRefExprDto_Unknown(value, type, unknownId, unknownBytes)
@@ -2981,7 +3202,7 @@ abstract class IlRefExprDto (
 
 class IlRefExprDto_Unknown (
     value: IlExprDto,
-    type: CacheKey,
+    type: TypeId,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : IlRefExprDto (
@@ -3000,7 +3221,7 @@ class IlRefExprDto_Unknown (
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlRefExprDto_Unknown)  {
             ctx.serializers.writePolymorphic(ctx, buffer, value.value)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
         
@@ -3046,7 +3267,7 @@ class IlRefExprDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:132]
+ * #### Generated from [IlMethodBodyModel.kt:151]
  */
 class IlRethrowStmtDto (
 ) : IlEhStmtDto (
@@ -3098,7 +3319,7 @@ class IlRethrowStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:124]
+ * #### Generated from [IlMethodBodyModel.kt:143]
  */
 class IlReturnStmtDto (
     val retVal: IlExprDto?
@@ -3158,11 +3379,11 @@ class IlReturnStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:61]
+ * #### Generated from [IlMethodBodyModel.kt:73]
  */
 class IlSizeOfExprDto (
-    val targetType: CacheKey,
-    type: CacheKey
+    val targetType: TypeId,
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -3173,14 +3394,14 @@ class IlSizeOfExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlSizeOfExprDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val targetType = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
+            val targetType = TypeId.read(ctx, buffer)
             return IlSizeOfExprDto(targetType, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlSizeOfExprDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            CacheKey.write(ctx, buffer, value.targetType)
+            TypeId.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.targetType)
         }
         
         
@@ -3225,11 +3446,11 @@ class IlSizeOfExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:109]
+ * #### Generated from [IlMethodBodyModel.kt:121]
  */
 class IlStackAllocExprDto (
     val size: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -3240,13 +3461,13 @@ class IlStackAllocExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlStackAllocExprDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val size = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             return IlStackAllocExprDto(size, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlStackAllocExprDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             ctx.serializers.writePolymorphic(ctx, buffer, value.size)
         }
         
@@ -3292,7 +3513,7 @@ class IlStackAllocExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:113]
+ * #### Generated from [IlMethodBodyModel.kt:132]
  */
 abstract class IlStmtDto (
 ) : IPrintable {
@@ -3373,11 +3594,11 @@ class IlStmtDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:42]
+ * #### Generated from [IlMethodBodyModel.kt:58]
  */
 class IlStringConstDto (
     val value: String,
-    type: CacheKey
+    type: TypeId
 ) : IlConstDto (
     type
 ) {
@@ -3388,13 +3609,13 @@ class IlStringConstDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlStringConstDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val value = buffer.readString()
             return IlStringConstDto(value, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlStringConstDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeString(value.value)
         }
         
@@ -3440,7 +3661,7 @@ class IlStringConstDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:129]
+ * #### Generated from [IlMethodBodyModel.kt:148]
  */
 class IlThrowStmtDto (
     val value: IlExprDto
@@ -3500,11 +3721,11 @@ class IlThrowStmtDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:45]
+ * #### Generated from [IlMethodBodyModel.kt:60]
  */
 class IlTypeRefDto (
-    val referencedType: CacheKey,
-    type: CacheKey
+    val referencedType: TypeId,
+    type: TypeId
 ) : IlConstDto (
     type
 ) {
@@ -3515,14 +3736,14 @@ class IlTypeRefDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlTypeRefDto  {
-            val type = CacheKey.read(ctx, buffer)
-            val referencedType = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
+            val referencedType = TypeId.read(ctx, buffer)
             return IlTypeRefDto(referencedType, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlTypeRefDto)  {
-            CacheKey.write(ctx, buffer, value.type)
-            CacheKey.write(ctx, buffer, value.referencedType)
+            TypeId.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.referencedType)
         }
         
         
@@ -3567,11 +3788,279 @@ class IlTypeRefDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:49]
+ * #### Generated from [IlMethodBodyModel.kt:40]
+ */
+class IlUint16ConstDto (
+    val value: UShort,
+    type: TypeId
+) : IlNumConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlUint16ConstDto> {
+        override val _type: KClass<IlUint16ConstDto> = IlUint16ConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlUint16ConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readUShort()
+            return IlUint16ConstDto(value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlUint16ConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeUShort(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlUint16ConstDto
+        
+        if (value != other.value) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlUint16ConstDto (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:43]
+ */
+class IlUint32ConstDto (
+    val value: UInt,
+    type: TypeId
+) : IlNumConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlUint32ConstDto> {
+        override val _type: KClass<IlUint32ConstDto> = IlUint32ConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlUint32ConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readUInt()
+            return IlUint32ConstDto(value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlUint32ConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeUInt(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlUint32ConstDto
+        
+        if (value != other.value) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlUint32ConstDto (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:46]
+ */
+class IlUint64ConstDto (
+    val value: ULong,
+    type: TypeId
+) : IlNumConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlUint64ConstDto> {
+        override val _type: KClass<IlUint64ConstDto> = IlUint64ConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlUint64ConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readULong()
+            return IlUint64ConstDto(value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlUint64ConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeULong(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlUint64ConstDto
+        
+        if (value != other.value) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlUint64ConstDto (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:37]
+ */
+class IlUint8ConstDto (
+    val value: UByte,
+    type: TypeId
+) : IlNumConstDto (
+    type
+) {
+    //companion
+    
+    companion object : IMarshaller<IlUint8ConstDto> {
+        override val _type: KClass<IlUint8ConstDto> = IlUint8ConstDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlUint8ConstDto  {
+            val type = TypeId.read(ctx, buffer)
+            val value = buffer.readUByte()
+            return IlUint8ConstDto(value, type)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlUint8ConstDto)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeUByte(value.value)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlUint8ConstDto
+        
+        if (value != other.value) return false
+        if (type != other.type) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + type.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlUint8ConstDto (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("type = "); type.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:64]
  */
 class IlUnaryOpDto (
     val operand: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -3582,13 +4071,13 @@ class IlUnaryOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlUnaryOpDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val operand = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             return IlUnaryOpDto(operand, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlUnaryOpDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             ctx.serializers.writePolymorphic(ctx, buffer, value.operand)
         }
         
@@ -3634,12 +4123,12 @@ class IlUnaryOpDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:92]
+ * #### Generated from [IlMethodBodyModel.kt:104]
  */
 class IlUnboxExprDto (
-    targetType: CacheKey,
+    targetType: TypeId,
     operand: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlCastExprDto (
     targetType,
     operand,
@@ -3652,16 +4141,16 @@ class IlUnboxExprDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlUnboxExprDto  {
-            val targetType = CacheKey.read(ctx, buffer)
+            val targetType = TypeId.read(ctx, buffer)
             val operand = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlUnboxExprDto(targetType, operand, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlUnboxExprDto)  {
-            CacheKey.write(ctx, buffer, value.targetType)
+            TypeId.write(ctx, buffer, value.targetType)
             ctx.serializers.writePolymorphic(ctx, buffer, value.operand)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -3709,11 +4198,11 @@ class IlUnboxExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:107]
+ * #### Generated from [IlMethodBodyModel.kt:119]
  */
 class IlUnmanagedDerefExprDto (
     value: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlDerefExprDto (
     value,
     type
@@ -3726,13 +4215,13 @@ class IlUnmanagedDerefExprDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlUnmanagedDerefExprDto  {
             val value = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlUnmanagedDerefExprDto(value, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlUnmanagedDerefExprDto)  {
             ctx.serializers.writePolymorphic(ctx, buffer, value.value)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -3777,11 +4266,11 @@ class IlUnmanagedDerefExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:105]
+ * #### Generated from [IlMethodBodyModel.kt:117]
  */
 class IlUnmanagedRefExprDto (
     value: IlExprDto,
-    type: CacheKey
+    type: TypeId
 ) : IlRefExprDto (
     value,
     type
@@ -3794,13 +4283,13 @@ class IlUnmanagedRefExprDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlUnmanagedRefExprDto  {
             val value = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             return IlUnmanagedRefExprDto(value, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlUnmanagedRefExprDto)  {
             ctx.serializers.writePolymorphic(ctx, buffer, value.value)
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
         }
         
         
@@ -3845,10 +4334,10 @@ class IlUnmanagedRefExprDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:28]
+ * #### Generated from [IlMethodBodyModel.kt:32]
  */
 abstract class IlValueDto (
-    type: CacheKey
+    type: TypeId
 ) : IlExprDto (
     type
 ) {
@@ -3857,7 +4346,7 @@ abstract class IlValueDto (
     companion object : IAbstractDeclaration<IlValueDto> {
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlValueDto  {
             val objectStartPosition = buffer.position
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
             return IlValueDto_Unknown(type, unknownId, unknownBytes)
@@ -3878,7 +4367,7 @@ abstract class IlValueDto (
 
 
 class IlValueDto_Unknown (
-    type: CacheKey,
+    type: TypeId,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : IlValueDto (
@@ -3895,7 +4384,7 @@ class IlValueDto_Unknown (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlValueDto_Unknown)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
         
@@ -3938,12 +4427,12 @@ class IlValueDto_Unknown (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:158]
+ * #### Generated from [IlMethodBodyModel.kt:177]
  */
 class IlVarAccessDto (
     val kind: IlVarKind,
     val index: Int,
-    type: CacheKey
+    type: TypeId
 ) : IlValueDto (
     type
 ) {
@@ -3954,14 +4443,14 @@ class IlVarAccessDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlVarAccessDto  {
-            val type = CacheKey.read(ctx, buffer)
+            val type = TypeId.read(ctx, buffer)
             val kind = buffer.readEnum<IlVarKind>()
             val index = buffer.readInt()
             return IlVarAccessDto(kind, index, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlVarAccessDto)  {
-            CacheKey.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.type)
             buffer.writeEnum(value.kind)
             buffer.writeInt(value.index)
         }
@@ -4011,7 +4500,7 @@ class IlVarAccessDto (
 
 
 /**
- * #### Generated from [IlMethodBodyModel.kt:150]
+ * #### Generated from [IlMethodBodyModel.kt:169]
  */
 enum class IlVarKind {
     local, 
@@ -4022,4 +4511,67 @@ enum class IlVarKind {
         val marshaller = FrameworkMarshallers.enum<IlVarKind>()
         
     }
+}
+
+
+/**
+ * #### Generated from [IlMethodBodyModel.kt:25]
+ */
+data class InstanceIdRef (
+    val type: TypeId,
+    val name: String
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<InstanceIdRef> {
+        override val _type: KClass<InstanceIdRef> = InstanceIdRef::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): InstanceIdRef  {
+            val type = TypeId.read(ctx, buffer)
+            val name = buffer.readString()
+            return InstanceIdRef(type, name)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: InstanceIdRef)  {
+            TypeId.write(ctx, buffer, value.type)
+            buffer.writeString(value.name)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as InstanceIdRef
+        
+        if (type != other.type) return false
+        if (name != other.name) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + type.hashCode()
+        __r = __r*31 + name.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("InstanceIdRef (")
+        printer.indent {
+            print("type = "); type.print(printer); println()
+            print("name = "); name.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
 }
