@@ -14,13 +14,18 @@
  *  limitations under the License.
  */
 
-package org.example.ilinstances
+package org.jacodb.api.net.devmocs
 
-import org.jacodb.api.net.generated.models.IlAsmDto
+import org.example.ilinstances.IlType
+import org.jacodb.api.net.generated.models.IlTypeDto
+import org.jacodb.api.net.generated.models.TypeId
 
-class IlAsm(private val dto: IlAsmDto) : IlInstance {
-    val location = dto.location
-    val types: MutableList<IlType> = mutableListOf()
 
-    override fun attach() {}
+val blobCacheMock: MutableMap<TypeId, IlTypeDto> = mutableMapOf()
+
+class IlClasspathMock {
+    fun findType(id: TypeId?): IlType? {
+        if (id == null) return null
+        return IlType(blobCacheMock[id]!!, this)
+    }
 }

@@ -16,23 +16,15 @@
 
 package org.example.ilinstances
 
+import org.jacodb.api.net.devmocs.IlClasspathMock
 import org.jacodb.api.net.generated.models.IlFieldDto
 import org.jacodb.api.net.ilinstances.IlAttribute
 
-class IlField(private val dto: IlFieldDto) : IlInstance {
-    lateinit var declType: IlType
-    lateinit var fieldType: IlType
+class IlField(private val declType: IlType, private val dto: IlFieldDto, classpath: IlClasspathMock) : IlInstance {
+    val fieldType: IlType by lazy { classpath.findType(dto.fieldType)!! }
     val attributes: MutableList<IlAttribute> = mutableListOf()
     val isStatic: Boolean = dto.isStatic
     val name: String = dto.name
-
-    override fun attach() {
-        declType = IlInstance.cache.getType(dto.declType)
-        declType.fields.add(this)
-        fieldType = IlInstance.cache.getType(dto.fieldType)
-        dto.attrs.forEach { attributes.add(IlAttribute(it)) }
-    }
-
     override fun toString(): String {
         return if (isStatic) "$declType.$name" else "$.$name"
     }

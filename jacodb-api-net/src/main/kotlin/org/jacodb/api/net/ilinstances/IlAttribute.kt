@@ -16,14 +16,13 @@
 
 package org.jacodb.api.net.ilinstances
 
-import org.example.ilinstances.IlInstance
 import org.example.ilinstances.IlType
+import org.jacodb.api.net.devmocs.IlClasspathMock
 import org.jacodb.api.net.generated.models.IlAttrDto
-import org.jacodb.api.net.generated.models.IlConstDto
 
-class IlAttribute(dto: IlAttrDto) {
-    val type: IlType = IlInstance.cache.getType(dto.attrType)
-    val constructorArgs: List<IlConst> = dto.ctorArgs.map { it.deserializeConst() }.toList()
-    val namedArgs: Map<String, IlConst> =
-        dto.namedArgsNames.zip(dto.namedArgsValues).map { (k, v) -> k to (v as IlConstDto).deserializeConst() }.toMap()
+class IlAttribute(private val dto: IlAttrDto, private val classpath: IlClasspathMock) {
+    val type: IlType by lazy(LazyThreadSafetyMode.PUBLICATION) { classpath.findType(dto.attrType)!! }
+    val constructorArgs: List<IlConst> by lazy { dto.ctorArgs.map { it.deserializeConst() }.toList() }
+    val namedArgs: Map<String, IlConst> by lazy(LazyThreadSafetyMode.PUBLICATION)
+    { dto.namedArgsNames.zip(dto.namedArgsValues).associate { (k, v) -> k to v.deserializeConst() } }
 }

@@ -16,21 +16,21 @@
 
 package org.example.ilinstances
 
-import org.jacodb.api.net.generated.models.AsmCacheKey
+import org.jacodb.api.net.devmocs.IlClasspathMock
+import kotlin.LazyThreadSafetyMode.*
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.ilinstances.IlAttribute
 
-class IlType(private val dto: IlTypeDto) : IlInstance {
-    lateinit var declAsm: IlAsm
+// classpath should be public in particular to resolve refs inside TAC
+class IlType(private val dto: IlTypeDto, val classpath: IlClasspathMock) : IlInstance {
+    val declType: IlType? by lazy(PUBLICATION) { classpath.findType(dto.declType) }
+    val namespace: String = dto.namespace
     val name: String = dto.name
-    val attributes: MutableList<IlAttribute> = mutableListOf()
-    val fields: MutableList<IlField> = mutableListOf()
-    val methods: MutableList<IlMethod> = mutableListOf()
-    override fun attach() {
-        declAsm = IlInstance.cache.getAsm(AsmCacheKey(dto.id.asm))
-        declAsm.types.add(this)
-        dto.attrs.forEach { attributes.add(IlAttribute(it)) }
-    }
+    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }
+    val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { classpath.findType(it)!! } }
+    val fields: List<IlField> by lazy(PUBLICATION) { dto.fields.map { IlField(this, it, classpath) } }
+    val methods: List<IlMethod> by lazy(PUBLICATION) { dto.methods.map { IlMethod(this, it, classpath) } }
+
 
     override fun toString(): String {
         return name

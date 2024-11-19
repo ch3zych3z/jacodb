@@ -21,37 +21,55 @@ package org.jacodb.api.net.models
 import com.jetbrains.rd.generator.nova.*
 
 object IlModel : Ext(IlRoot) {
-    val cacheKey = structdef {
-        field("asm", PredefinedType.int)
-        field("mod", PredefinedType.int)
-        field("inst", PredefinedType.int)
-    }
-
-    private val asmCacheKey = structdef {
-        field("asm", PredefinedType.int)
+    val typeId = structdef {
+        field("asmName", PredefinedType.int)
+        field("typeName", PredefinedType.int)
     }
 
     val IlDto = basestruct {}
 
-    private val IlAsmDto = structdef extends IlDto {
-        field("id", asmCacheKey)
-        field("location", PredefinedType.string)
-    }
-
-    private val IlTypeDto = structdef extends IlDto {
-        field("id", cacheKey)
+    val IlTypeDto = basestruct extends IlDto {
+        field("asmName", PredefinedType.string)
+        field("namespace", PredefinedType.string)
         field("name", PredefinedType.string)
-        field("genericArgs", immutableList(cacheKey))
+        field("declType", typeId.nullable)
+        field("genericArgs", immutableList(typeId))
         field("isGenericParam", PredefinedType.bool)
         field("isValueType", PredefinedType.bool)
         field("isManaged", PredefinedType.bool)
         field("attrs", immutableList(IlAttrDto))
+        field("fields", immutableList(IlFieldDto))
+        field("methods", immutableList(IlMethodDto))
+    }
+
+    val IlPointeDto = structdef extends IlTypeDto {
+        field("pointedType", typeId)
+    }
+
+    val IlValueTypeDto = basestruct extends IlTypeDto {}
+    val IlPrimitiveTypeDto = structdef extends IlValueTypeDto {}
+    val IlEnumTypeDto = structdef extends IlValueTypeDto {
+        field("underlyingType", typeId)
+    }
+    val IlStructTypeDto = structdef extends IlValueTypeDto {}
+
+    val IlReferenceTypeDto = basestruct extends IlTypeDto {}
+    val IlManagedReferenceDto = structdef extends IlReferenceTypeDto {
+        field("referencedType", typeId)
+    }
+    val IlClassTypeDto = structdef extends IlReferenceTypeDto {}
+    val IlArrayTypeDto = structdef extends IlReferenceTypeDto {
+        field("elementType", typeId)
+    }
+    private val IlAttrDto = structdef extends IlDto {
+        field("attrType", typeId)
+        field("ctorArgs", immutableList(IlMethodBodyModel.IlConstDto))
+        field("namedArgsNames", immutableList(PredefinedType.string))
+        field("namedArgsValues", immutableList(IlMethodBodyModel.IlConstDto))
     }
 
     private val IlFieldDto = structdef extends IlDto {
-        field("id", cacheKey)
-        field("declType", cacheKey)
-        field("fieldType", cacheKey)
+        field("fieldType", typeId)
         field("isStatic", PredefinedType.bool)
         field("name", PredefinedType.string)
         field("attrs", immutableList(IlAttrDto))
@@ -59,22 +77,15 @@ object IlModel : Ext(IlRoot) {
 
     private val IlParameterDto = structdef {
         field("index", PredefinedType.int)
-        field("type", cacheKey)
+        field("type", typeId)
         field("name", PredefinedType.string)
-        field("defaultValue", PredefinedType.string.nullable)
+        field("defaultValue", IlMethodBodyModel.IlConstDto)
         field("attrs", immutableList(IlAttrDto))
     }
 
     private val IlVarDto = basestruct extends IlDto {
-        field("type", cacheKey)
+        field("type", typeId)
         field("index", PredefinedType.int)
-    }
-
-    private val IlAttrDto = structdef extends IlDto {
-        field("attrType", cacheKey)
-        field("ctorArgs", immutableList(IlMethodBodyModel.IlConstDto))
-        field("namedArgsNames", immutableList(PredefinedType.string))
-        field("namedArgsValues", immutableList(IlMethodBodyModel.IlConstDto))
     }
 
     private val IlLocalVarDto = structdef extends IlVarDto {
@@ -100,9 +111,7 @@ object IlModel : Ext(IlRoot) {
 
 
     private val IlMethodDto = structdef extends IlDto {
-        field("id", cacheKey)
-        field("declType", cacheKey.nullable)
-        field("returnType", cacheKey.nullable)
+        field("returnType", typeId.nullable)
         field("attrs", immutableList(IlAttrDto))
         field("name", PredefinedType.string)
         field("parameters", immutableList(IlParameterDto))
@@ -112,5 +121,11 @@ object IlModel : Ext(IlRoot) {
         field("errs", immutableList(IlErrVarDto))
         field("ehScopes", immutableList(IlEhScopeDto))
         field("body", immutableList(IlMethodBodyModel.IlStmtDto))
+    }
+    val IlSignatureDto = structdef extends IlDto {
+        field("returnType", typeId)
+        field("isInstance", PredefinedType.bool)
+        field("isGeneric", PredefinedType.bool)
+        field("parametersTypes", immutableList(typeId))
     }
 }

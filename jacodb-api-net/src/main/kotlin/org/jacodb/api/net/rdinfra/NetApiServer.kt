@@ -78,7 +78,7 @@ class RdServer(port: Int, private val netExePath: String) {
                     response.forEach { dto ->
                         IlInstance.cache.put(dto)
                     }
-                    response.forEach { dto -> IlInstance.cache.get(dto).attach() }
+//                    response.forEach { dto -> IlInstance.cache.get(dto).attach() }
 
                 logWithTime("response deserialized")
                 unresponded -= 1

@@ -26,6 +26,7 @@ object IlSigModel : Ext(IlModel) {
     }
 
     init {
+        call("callForAsm", request, immutableList(IlModel.IlTypeDto))
         signal("asmRequest", request).apply { async }
         signal("asmResponse", immutableList(IlModel.IlDto)).apply { async }
     }
