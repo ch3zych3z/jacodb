@@ -23,6 +23,6 @@ fun main() {
     val api = NetApiServer()
     api.requestTestAsm()
     // add spin method for api 
-    api.requestRdAsm()
+//    api.requestRdAsm()
     api.close()
 }

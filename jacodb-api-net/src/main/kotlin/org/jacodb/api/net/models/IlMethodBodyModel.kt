@@ -24,7 +24,7 @@ import org.jacodb.api.net.models.IlModel.typeId
 object IlMethodBodyModel : Ext(IlRoot) {
     private val instanceIdRef = structdef {
         field("type", typeId)
-        field("name", PredefinedType.string)
+        field("instanceToken", PredefinedType.int)
     }
     private val IlExprDto = basestruct {
         field("type", typeId)
@@ -52,6 +52,11 @@ object IlMethodBodyModel : Ext(IlRoot) {
 
     val IlArrayConstDto = structdef extends IlConstDto {
         field("values", immutableList(IlConstDto))
+    }
+    val IlEnumConstDto = structdef extends IlConstDto {
+        field("underlyingType", typeId)
+        field("underlyingValue", IlConstDto)
+
     }
     private val IlNullDto = structdef extends IlConstDto {}
     private val IlBoolConstDto = structdef extends IlConstDto { field("value", PredefinedType.bool) }
@@ -139,7 +144,9 @@ object IlMethodBodyModel : Ext(IlRoot) {
     private val IlCallStmtDto = structdef extends IlStmtDto {
         field("call", IlCallDto)
     }
-
+    private val IlCalliStmtDto = structdef extends IlStmtDto {
+        field("calli", IlCalliDto)
+    }
     private val IlReturnStmtDto = structdef extends IlStmtDto {
         field("retVal", IlExprDto.nullable)
     }

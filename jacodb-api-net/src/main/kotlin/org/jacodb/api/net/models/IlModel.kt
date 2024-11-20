@@ -22,15 +22,15 @@ import com.jetbrains.rd.generator.nova.*
 
 object IlModel : Ext(IlRoot) {
     val typeId = structdef {
-        field("asmName", PredefinedType.int)
-        field("typeName", PredefinedType.int)
+        field("asmName", PredefinedType.string)
+        field("typeName", PredefinedType.string)
     }
 
     val IlDto = basestruct {}
 
     val IlTypeDto = basestruct extends IlDto {
         field("asmName", PredefinedType.string)
-        field("namespace", PredefinedType.string)
+        field("namespaceName", PredefinedType.string)
         field("name", PredefinedType.string)
         field("declType", typeId.nullable)
         field("genericArgs", immutableList(typeId))
@@ -42,13 +42,14 @@ object IlModel : Ext(IlRoot) {
         field("methods", immutableList(IlMethodDto))
     }
 
-    val IlPointeDto = structdef extends IlTypeDto {
+    val IlPointerTypeDto = structdef extends IlTypeDto {
         field("pointedType", typeId)
     }
 
     val IlValueTypeDto = basestruct extends IlTypeDto {}
     val IlPrimitiveTypeDto = structdef extends IlValueTypeDto {}
     val IlEnumTypeDto = structdef extends IlValueTypeDto {
+        // TODO name to value mapping
         field("underlyingType", typeId)
     }
     val IlStructTypeDto = structdef extends IlValueTypeDto {}
@@ -79,7 +80,7 @@ object IlModel : Ext(IlRoot) {
         field("index", PredefinedType.int)
         field("type", typeId)
         field("name", PredefinedType.string)
-        field("defaultValue", IlMethodBodyModel.IlConstDto)
+        field("defaultValue", IlMethodBodyModel.IlConstDto.nullable)
         field("attrs", immutableList(IlAttrDto))
     }
 

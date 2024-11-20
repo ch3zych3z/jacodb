@@ -16,7 +16,6 @@
 
 package org.jacodb.api.net.ilinstances
 
-import org.example.ilinstances.IlField
 import org.example.ilinstances.IlMethod
 import org.example.ilinstances.IlType
 
