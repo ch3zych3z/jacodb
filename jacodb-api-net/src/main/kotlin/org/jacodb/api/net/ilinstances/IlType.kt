@@ -17,14 +17,15 @@
 package org.example.ilinstances
 
 import org.jacodb.api.net.devmocs.IlClasspathMock
+import org.jacodb.api.net.generated.models.*
 import kotlin.LazyThreadSafetyMode.*
-import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.ilinstances.IlAttribute
+import org.jacodb.api.net.ilinstances.IlField
 
 // classpath should be public in particular to resolve refs inside TAC
-class IlType(private val dto: IlTypeDto, val classpath: IlClasspathMock) : IlInstance {
+open class IlType(private val dto: IlTypeDto, val classpath: IlClasspathMock) : IlInstance {
     val declType: IlType? by lazy(PUBLICATION) { classpath.findType(dto.declType) }
-    val namespace: String = dto.namespace
+    val namespace: String = dto.namespaceName
     val name: String = dto.name
     val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }
     val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { classpath.findType(it)!! } }
@@ -36,3 +37,16 @@ class IlType(private val dto: IlTypeDto, val classpath: IlClasspathMock) : IlIns
         return name
     }
 }
+
+class IlPointerType(private val dto: IlPointerTypeDto, classpath: IlClasspathMock): IlType(dto, classpath)
+open class IlValueType(private val dto: IlValueTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
+class IlEnumType(private val dto: IlEnumTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
+class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
+class IlStructType(private val dto: IlStructTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
+
+open class IlReferenceType(private val dto: IlReferenceTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
+class IlArrayType(private val dto: IlArrayTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
+class IlClassType(private val dto: IlClassTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
+class IlManagedReference(private val dto: IlManagedReferenceDto, classpath: IlClasspathMock) : IlType(dto, classpath)
+
+

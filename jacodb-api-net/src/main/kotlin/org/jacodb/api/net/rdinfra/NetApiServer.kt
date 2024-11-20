@@ -74,12 +74,6 @@ class RdServer(port: Int, private val netExePath: String) {
         logWithTime("registering callbacks")
         queue {
             signalModel.asmResponse.advise(lifetime) { response ->
-            // TODO clean response queue
-                    response.forEach { dto ->
-                        IlInstance.cache.put(dto)
-                    }
-//                    response.forEach { dto -> IlInstance.cache.get(dto).attach() }
-
                 logWithTime("response deserialized")
                 unresponded -= 1
             }
@@ -121,14 +115,15 @@ class RdServer(port: Int, private val netExePath: String) {
 }
 
 class NetApiServer {
-    private val server = RdServer(8083, "/home/andrew/Documents/dotnet-tac/TACBuilder/bin/Debug/net8.0/linux-x64/")
+    private val exePath = "/Users/petrukhinandrew/RiderProjects/dotnet-tac/TACBuilder/bin/Debug/net8.0/osx-arm64/";
+    private val server = RdServer(8083, exePath)
 
     init {
         server.run()
     }
 
     fun requestTestAsm() {
-        requestAsm("/home/andrew/Documents/dotnet-tac/TACBuilder.Tests/bin/Release/net8.0/linux-x64/publish/TACBuilder.Tests.dll")
+        requestAsm("/Users/petrukhinandrew/RiderProjects/dotnet-tac/TACBuilder.Tests/bin/Release/net8.0/osx-arm64/publish/TACBuilder.Tests.dll")
     }
 
     fun requestRdAsm() {

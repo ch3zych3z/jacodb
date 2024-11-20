@@ -46,7 +46,7 @@ class IlParameter(private val dto: IlParameterDto, classpath: IlClasspathMock) :
     val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }
     val index: Int = dto.index
     val name: String = dto.name
-    val defaultValue: IlConst get() = dto.defaultValue.deserializeConst()
+    val defaultValue: IlConst? get() = dto.defaultValue?.deserializeConst()
 
     override fun toString(): String {
         return paramType.toString()

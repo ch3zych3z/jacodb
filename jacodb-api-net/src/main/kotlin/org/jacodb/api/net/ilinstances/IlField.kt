@@ -14,11 +14,12 @@
  *  limitations under the License.
  */
 
-package org.example.ilinstances
+package org.jacodb.api.net.ilinstances
 
+import org.example.ilinstances.IlInstance
+import org.example.ilinstances.IlType
 import org.jacodb.api.net.devmocs.IlClasspathMock
 import org.jacodb.api.net.generated.models.IlFieldDto
-import org.jacodb.api.net.ilinstances.IlAttribute
 
 class IlField(private val declType: IlType, private val dto: IlFieldDto, classpath: IlClasspathMock) : IlInstance {
     val fieldType: IlType by lazy { classpath.findType(dto.fieldType)!! }

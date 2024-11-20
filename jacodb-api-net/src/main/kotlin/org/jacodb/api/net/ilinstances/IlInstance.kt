@@ -17,7 +17,5 @@
 package org.example.ilinstances
 
 interface IlInstance {
-    companion object {
-        val cache = IlCache()
-    }
+
 }
