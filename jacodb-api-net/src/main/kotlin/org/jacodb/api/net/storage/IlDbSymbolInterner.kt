@@ -14,8 +14,7 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.devmocs
+package org.jacodb.api.net.storage
 
-class IlFeaturesChain {
-
+class IlDbSymbolInterner {
 }

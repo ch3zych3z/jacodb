@@ -20,6 +20,7 @@ kotlin {
 dependencies {
     api(project(":jacodb-api-common"))
     api(project(":jacodb-api-storage"))
+    api(project(":jacodb-core"))
 
     api(Libs.kotlinx_coroutines_core)
     api(Libs.kotlinx_coroutines_jdk8)

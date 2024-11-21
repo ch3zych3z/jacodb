@@ -17,9 +17,14 @@
 package org.jacodb.api.net.ilinstances
 
 import org.example.ilinstances.IlMethod
+import org.jacodb.api.net.core.IlStmtVisitor
 import org.jacodb.api.net.generated.models.*
+import kotlin.math.max
+import kotlin.math.min
 
 interface IlStmt {
+    fun <T> accept(visitor: IlStmtVisitor<T>) : T
+
     companion object {
         fun deserialize(src: IlMethod, dto: IlStmtDto): IlStmt {
             return when (dto) {
@@ -32,7 +37,7 @@ interface IlStmt {
                 is IlRethrowStmtDto -> IlRethrowStmt()
                 is IlEndFilterStmtDto -> IlEndFilterStmt(dto, src)
                 is IlThrowStmtDto -> IlThrowStmt(dto, src)
-                is IlGotoStmtDto -> IlGotoStmt()
+                is IlGotoStmtDto -> IlGotoStmt(dto, src)
                 is IlIfStmtDto -> IlIfStmt(dto, src)
                 else -> throw Exception("unexpected dto $dto")
             }
@@ -40,9 +45,13 @@ interface IlStmt {
     }
 }
 
-class IlAssignStmt(dto: IlAssignStmtDto, src: IlMethod) : IlStmt {
-    val lhs = dto.lhs.deserialize(src)
-    val rhs = dto.rhs.deserialize(src)
+class IlAssignStmt(val lhs: IlExpr, val rhs: IlExpr) : IlStmt {
+
+    constructor(dto: IlAssignStmtDto, src: IlMethod): this(dto.lhs.deserialize(src) , dto.rhs.deserialize(src))
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlAssignStmt(this)
+    }
+
     override fun toString(): String {
         return "$lhs = $rhs"
     }
@@ -50,95 +59,140 @@ class IlAssignStmt(dto: IlAssignStmtDto, src: IlMethod) : IlStmt {
 
 class IlCallStmt(dto: IlCallStmtDto, src: IlMethod) : IlStmt {
     val call = dto.call.deserialize(src)
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlCallStmt(this)
+    }
+
     override fun toString(): String {
         return call.toString()
     }
 }
 class IlCalliStmt(dto: IlCalliStmtDto, src: IlMethod): IlStmt {
     val calli = dto.calli.deserialize(src)
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        TODO("Not yet implemented")
+    }
 }
-class IlReturnStmt(dto: IlReturnStmtDto, src: IlMethod) : IlStmt {
-    val value: IlExpr? = dto.retVal?.deserialize(src)
+class IlReturnStmt(val value : IlExpr?) : IlStmt {
+
+    constructor(dto: IlReturnStmtDto, src: IlMethod) : this(dto.retVal?.deserialize(src))
+
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlReturnStmt(this)
+    }
+
     override fun toString(): String {
         return "return ${value ?: ""}"
     }
 }
 
 interface IlEhStmt : IlStmt
-class IlThrowStmt(dto: IlThrowStmtDto, src: IlMethod) : IlEhStmt {
-    val value = dto.value.deserialize(src)
+
+class IlThrowStmt(val value: IlExpr) : IlEhStmt {
+    constructor(dto: IlThrowStmtDto, src: IlMethod) : this(dto.value.deserialize(src))
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlThrowStmt(this)
+    }
+
     override fun toString(): String {
         return "throw $value"
     }
 }
 
 class IlRethrowStmt : IlEhStmt {
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlRethrowStmt(this)
+    }
+
     override fun toString(): String {
         return "rethrow"
     }
 }
 
 class IlEndFinallyStmt : IlEhStmt {
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlEndFinallyStmt(this)
+    }
+
     override fun toString(): String {
         return "endfinally"
     }
 }
 
 class IlEndFaultStmt : IlEhStmt {
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlEndFaultStmt(this)
+    }
+
     override fun toString(): String {
         return "endfault"
     }
 }
 
-class IlEndFilterStmt(dto: IlEndFilterStmtDto, src: IlMethod) : IlEhStmt {
-    val value = dto.value.deserialize(src)
+class IlEndFilterStmt(val value: IlExpr) : IlEhStmt {
+    constructor(dto: IlEndFilterStmtDto, src: IlMethod) : this(dto.value.deserialize(src))
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlEndFilterStmt(this)
+    }
+
     override fun toString(): String {
         return "endfilter $value"
     }
 }
 
-interface IlBranchStmt : IlStmt {
-    fun updateTarget(dto: IlBranchStmtDto, src: IlMethod): Unit
-}
+interface IlBranchStmt : IlStmt
 
-class IlGotoStmt : IlBranchStmt {
-    lateinit var target: IlStmt
+class IlGotoStmt(val target: IlStmt) : IlBranchStmt {
 
-    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
-        // TODO NestedFinally
-        val targetIndex = when {
-            dto.target < src.body.size -> dto.target
-            else -> src.body.indices.last
-        }
-        target = src.body[targetIndex]
+    constructor(dto: IlBranchStmtDto, src: IlMethod) : this(src.body[min(dto.target, src.body.size - 1)])
+
+//    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
+//        // TODO NestedFinally
+//        val targetIndex = when {
+//            dto.target < src.body.size -> dto.target
+//            else -> src.body.indices.last
+//        }
+//        target = src.body[targetIndex]
+//    }
+
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlGotoStmt(this)
     }
 
-    private fun hasTargetSet() = ::target.isInitialized
+//    private fun hasTargetSet() = ::target.isInitialized
 
     override fun toString(): String {
-        return when {
-            !hasTargetSet() -> "goto ?"
-            hasTargetSet() && target != this -> "goto $target"
-            else -> "goto self"
-        }
+        return "goto $target"
+//        return when {
+//            !hasTargetSet() -> "goto ?"
+//            hasTargetSet() && target != this -> "goto $target"
+//            else -> "goto self"
+//        }
     }
 
 }
 
-class IlIfStmt(dto: IlIfStmtDto, src: IlMethod) : IlBranchStmt {
-    lateinit var target: IlStmt
-    val condition = dto.cond.deserialize(src)
-    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
-        // TOOD forcedFault
-        val targetIndex = when {
-            dto.target < src.body.size -> dto.target
-            else -> src.body.indices.last
-        }
-        target = src.body[targetIndex]
+class IlIfStmt(val target: IlStmt, val condition: IlExpr) : IlBranchStmt {
+
+    constructor(dto: IlIfStmtDto, src: IlMethod) : this(
+        src.body[min(dto.target, src.body.size - 1)],
+        dto.cond.deserialize(src)
+    )
+
+//    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
+//        // TOOD forcedFault
+//        val targetIndex = when {
+//            dto.target < src.body.size -> dto.target
+//            else -> src.body.indices.last
+//        }
+//        target = src.body[targetIndex]
+//    }
+
+    override fun <T> accept(visitor: IlStmtVisitor<T>): T {
+        return visitor.visitIlIfStmt(this)
     }
 
     override fun toString(): String {
         return "if $condition goto $target"
     }
 }
-
