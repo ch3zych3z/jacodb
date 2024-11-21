@@ -22,6 +22,7 @@ import org.jacodb.api.net.devmocs.IlClasspathMock
 import org.jacodb.api.net.generated.models.IlFieldDto
 
 class IlField(private val declType: IlType, private val dto: IlFieldDto, classpath: IlClasspathMock) : IlInstance {
+    val declaringType = declType
     val fieldType: IlType by lazy { classpath.findType(dto.fieldType)!! }
     val attributes: MutableList<IlAttribute> = mutableListOf()
     val isStatic: Boolean = dto.isStatic
