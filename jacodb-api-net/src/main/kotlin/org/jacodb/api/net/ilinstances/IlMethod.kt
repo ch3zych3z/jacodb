@@ -22,7 +22,8 @@ import org.jacodb.api.net.ilinstances.*
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 class IlMethod(private val declType: IlType, private val dto: IlMethodDto, classpath: IlClasspathMock) : IlInstance {
-    val returnType: IlType? by lazy { classpath.findType(dto.returnType) }
+    val declaringType = declType
+    val returnType: IlType by lazy { classpath.findType(dto.returnType)!! }
     val name: String = dto.name
     val parametes: List<IlParameter> by lazy(PUBLICATION) { dto.parameters.map { IlParameter(it, classpath) }.toMutableList() }
     val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }

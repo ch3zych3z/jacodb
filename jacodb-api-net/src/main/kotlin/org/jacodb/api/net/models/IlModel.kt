@@ -45,7 +45,6 @@ object IlModel : Ext(IlRoot) {
     val IlPointerTypeDto = structdef extends IlTypeDto {
         field("targetType", typeId)
     }
-
     val IlValueTypeDto = basestruct extends IlTypeDto {}
     val IlPrimitiveTypeDto = structdef extends IlValueTypeDto {}
     val IlEnumTypeDto = structdef extends IlValueTypeDto {

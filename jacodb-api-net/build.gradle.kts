@@ -30,6 +30,8 @@ dependencies {
     implementation(Libs.rd_gen)
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.mockito:mockito-core:5.1.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 }
 
 val sourcesBaseDir = projectDir.resolve("src/main/kotlin")

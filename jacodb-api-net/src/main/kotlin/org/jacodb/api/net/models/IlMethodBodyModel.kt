@@ -19,6 +19,7 @@
 package org.jacodb.api.net.models
 
 import com.jetbrains.rd.generator.nova.*
+import org.jacodb.api.net.models.IlMethodBodyModel.IlEnumConstDto
 import org.jacodb.api.net.models.IlModel.typeId
 
 object IlMethodBodyModel : Ext(IlRoot) {
