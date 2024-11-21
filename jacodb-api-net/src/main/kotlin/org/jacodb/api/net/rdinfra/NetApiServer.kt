@@ -74,6 +74,7 @@ class RdServer(port: Int, private val netExePath: String) {
         logWithTime("registering callbacks")
         queue {
             signalModel.asmResponse.advise(lifetime) { response ->
+                // TODO response here is a list of IlType children, deserialize it with
                 logWithTime("response deserialized")
                 unresponded -= 1
             }

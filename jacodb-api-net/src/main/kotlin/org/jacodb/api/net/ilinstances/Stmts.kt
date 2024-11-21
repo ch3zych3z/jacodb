@@ -25,6 +25,7 @@ interface IlStmt {
             return when (dto) {
                 is IlAssignStmtDto -> IlAssignStmt(dto, src)
                 is IlCallStmtDto -> IlCallStmt(dto, src)
+                is IlCalliStmtDto -> IlCalliStmt(dto, src)
                 is IlReturnStmtDto -> IlReturnStmt(dto, src)
                 is IlEndFinallyStmtDto -> IlEndFinallyStmt()
                 is IlEndFaultStmtDto -> IlEndFaultStmt()
@@ -53,7 +54,9 @@ class IlCallStmt(dto: IlCallStmtDto, src: IlMethod) : IlStmt {
         return call.toString()
     }
 }
-
+class IlCalliStmt(dto: IlCalliStmtDto, src: IlMethod): IlStmt {
+    val calli = dto.calli.deserialize(src)
+}
 class IlReturnStmt(dto: IlReturnStmtDto, src: IlMethod) : IlStmt {
     val value: IlExpr? = dto.retVal?.deserialize(src)
     override fun toString(): String {

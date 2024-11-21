@@ -47,6 +47,4 @@ class IlStructType(private val dto: IlStructTypeDto, classpath: IlClasspathMock)
 open class IlReferenceType(private val dto: IlReferenceTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
 class IlArrayType(private val dto: IlArrayTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
 class IlClassType(private val dto: IlClassTypeDto, classpath: IlClasspathMock) : IlType(dto, classpath)
-class IlManagedReference(private val dto: IlManagedReferenceDto, classpath: IlClasspathMock) : IlType(dto, classpath)
-
 
