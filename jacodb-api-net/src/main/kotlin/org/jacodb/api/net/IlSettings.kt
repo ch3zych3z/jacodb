@@ -14,18 +14,23 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.devmocs
+package org.jacodb.api.net
 
-import org.example.ilinstances.IlType
-import org.jacodb.api.net.generated.models.IlTypeDto
-import org.jacodb.api.net.generated.models.TypeId
+import org.jacodb.impl.ValueStoreType
+import org.jacodb.impl.caches.guava.GUAVA_CACHE_PROVIDER_ID
+import java.time.Duration
 
 
-val blobCacheMock: MutableMap<TypeId, IlTypeDto> = mutableMapOf()
 
-class IlClasspathMock {
-    fun findType(id: TypeId?): IlType? {
-        if (id == null) return null
-        return IlType(blobCacheMock[id]!!, this)
-    }
-}
+class CacheSettings(
+    val maxSize: Int = 10_000,
+    val expirationDuration: Duration = Duration.ZERO,
+    val storeType: ValueStoreType = ValueStoreType.SOFT
+)
+
+
+class IlTypeLoaderCacheSettings(
+    val cacheId: String = GUAVA_CACHE_PROVIDER_ID,
+    val types: CacheSettings = CacheSettings(),
+    val instructions: CacheSettings = CacheSettings(),
+)

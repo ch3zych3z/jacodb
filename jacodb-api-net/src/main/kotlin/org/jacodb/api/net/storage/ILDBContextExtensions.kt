@@ -14,9 +14,17 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.ilinstances
+package org.jacodb.api.net.storage
 
-import org.example.ilinstances.IlInstance
+import org.jacodb.api.net.ContextProperty
+import org.jacodb.api.net.ILDBContext
+import org.jacodb.api.storage.ers.Transaction
 
-class IlSignature : IlInstance {
+val TransactionObject = object : ContextProperty<Transaction> {
+    override fun toString() = "Transaction"
 }
+
+fun toILDBContext(txn: Transaction) : ILDBContext =
+    ILDBContext.of(TransactionObject, txn)
+
+val ILDBContext.txn get() : Transaction = this.getContextObject(TransactionObject)

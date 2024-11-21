@@ -17,9 +17,12 @@
 package org.jacodb.api.net.ilinstances
 
 import org.example.ilinstances.*
+import org.jacodb.api.net.IlTypeLoader
+import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.generated.models.*
 
 sealed interface IlExpr {
+    fun <T> accept(visitor: IlExprVisitor<T>) : T
 }
 
 // TODO we may introduce type above typeId and instanceIdRef and use it inside const refs (so there will be no need
@@ -78,58 +81,101 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
 }
 
 class IlUnaryOp(val operand: IlExpr) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlUnaryOp(this)
+    }
+
     override fun toString(): String = "unOp $operand"
 }
 
 class IlBinaryOp(val lhs: IlExpr, val rhs: IlExpr) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlBinaryOp(this)
+    }
+
     override fun toString(): String = "$lhs binOp $rhs"
 }
 
 class IlInitExpr(val type: IlType) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlInitExpr(this)
+    }
+
     override fun toString(): String = "init $type"
 }
 
 class IlNewArrayExpr(val elementType: IlType, val size: IlExpr) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlNewArrayExpr(this)
+    }
+
     override fun toString(): String {
         return "new $elementType[$size]"
     }
 }
 
 class IlNewExpr(val type: IlType, val args: List<IlExpr>) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlNewExpr(this)
+    }
+
     override fun toString(): String {
         return "new $type(${args.joinToString(", ")})"
     }
 }
 
 class IlSizeOfExpr(val observedType: IlType) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlSizeOfExpr(this)
+    }
+
     override fun toString(): String {
         return "sizeOf($observedType)"
     }
 }
 
 class IlArrayLengthExpr(val array: IlExpr) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlArrayLength(this)
+    }
+
     override fun toString(): String {
         return "len($array)"
     }
 }
 
 class IlFieldAccess(val field: IlField, val receiver: IlExpr?) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlFieldAccess(this)
+    }
+
     override fun toString(): String = "${receiver?.toString() ?: ""}$field"
 }
 
 class IlArrayAccess(val array: IlExpr, val index: IlExpr) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlArrayAccess(this)
+    }
+
     override fun toString(): String {
         return "$array[$index]"
     }
 }
 
 class IlCall(val method: IlMethod, val args: List<IlExpr>) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlCall(this)
+    }
+
     override fun toString(): String {
         return "${method.returnType?.toString() ?: ""} ${method.name}(${args.joinToString(", ")})"
     }
 }
 
 class IlCallIndirect(val signature: IlSignature, val ftn: IlExpr, val args: List<IlExpr>) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        TODO("Not yet implemented")
+    }
 
 }
 
@@ -138,6 +184,10 @@ sealed class IlCastExpr(val expectedType: IlType, val operand: IlExpr) : IlExpr 
 }
 
 class IlConvExpr(expectedType: IlType, operand: IlExpr) : IlCastExpr(expectedType, operand) {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlConvExpr(this)
+    }
+
     override fun toString(): String {
         return "$operand conv $expectedType"
 
@@ -145,24 +195,40 @@ class IlConvExpr(expectedType: IlType, operand: IlExpr) : IlCastExpr(expectedTyp
 }
 
 class IlBoxExpr(expectedType: IlType, operand: IlExpr) : IlCastExpr(expectedType, operand) {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlBoxExpr(this)
+    }
+
     override fun toString(): String {
         return "$operand box $expectedType"
     }
 }
 
 class IlUnboxExpr(expectedType: IlType, operand: IlExpr) : IlCastExpr(expectedType, operand) {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlUnboxExpr(this)
+    }
+
     override fun toString(): String {
         return "$operand unbox $expectedType"
     }
 }
 
 class IlCastClassExpr(expectedType: IlType, operand: IlExpr) : IlCastExpr(expectedType, operand) {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlCastClassExpr(this)
+    }
+
     override fun toString(): String {
         return "$operand castclass $expectedType"
     }
 }
 
 class IlIsInstExpr(expectedType: IlType, operand: IlExpr) : IlCastExpr(expectedType, operand) {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlIsInstExpr(this)
+    }
+
     override fun toString(): String {
         return "$operand isinst $expectedType"
     }
@@ -173,30 +239,50 @@ interface IlRefExpr : IlValue
 interface IlDerefExpr : IlValue
 
 class IlManagedRefExpr(val type: IlType, val value: IlExpr) : IlRefExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlManagedRefExpr(this)
+    }
+
     override fun toString(): String {
         return "m& $value"
     }
 }
 
 class IlUnmanagedRefExpr(val type: IlType, val value: IlExpr) : IlRefExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlUnmanagedRefExpr(this)
+    }
+
     override fun toString(): String {
         return "um& $value"
     }
 }
 
 class IlManagedDerefExpr(val type: IlType, val value: IlExpr) : IlDerefExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlManagedDerefExpr(this)
+    }
+
     override fun toString(): String {
         return "m* $value"
     }
 }
 
 class IlUnmanagedDerefExpr(val type: IlType, val value: IlExpr) : IlDerefExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlUnmanagedDerefExpr(this)
+    }
+
     override fun toString(): String {
         return "u* $value"
     }
 }
 
 class IlStackAllocExpr(val type: IlType, val size: IlExpr) : IlExpr {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlStackAllocExpr(this)
+    }
+
     override fun toString(): String {
         return "stackalloc $type $size"
     }
@@ -206,32 +292,46 @@ class IlArgument(private val dto: IlParameterDto) : IlLocal {
     lateinit var paramType: IlType
 
     val name: String = dto.name
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlArg(this)
+    }
+
     override fun toString(): String {
         return name
     }
 }
 
-class IlLocalVar(dto: IlVarDto) : IlLocal {
-    //    val type: IlType = IlInstance.cache.getType(dto.type)
-    val index: Int = dto.index
+class IlLocalVar(val type: IlType, val index: Int) : IlLocal {
+    constructor(dto: IlVarDto, typeLoader: IlTypeLoader):
+            this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlLocalVar(this)
+    }
 
     override fun toString(): String {
         return "local$index"
     }
 }
 
-class IlTempVar(dto: IlVarDto) : IlLocal {
-    //    val type: IlType = IlInstance.cache.getType(dto.type)
-    val index: Int = dto.index
+class IlTempVar(val type: IlType, val index: Int) : IlLocal {
+    constructor(dto: IlVarDto, typeLoader: IlTypeLoader):
+            this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlTempVar(this)
+    }
 
     override fun toString(): String {
         return "temp$index"
     }
 }
 
-class IlErrVar(dto: IlVarDto) : IlLocal {
-    //    val type: IlType = IlInstance.cache.getType(dto.type)
-    val index: Int = dto.index
+class IlErrVar(val type: IlType, val index: Int) : IlLocal {
+    constructor(dto: IlVarDto, typeLoader: IlTypeLoader):
+            this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
+
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitErrVar(this)
+    }
 
     override fun toString(): String {
         return "err$index"

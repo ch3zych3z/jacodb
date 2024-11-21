@@ -14,9 +14,14 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.ilinstances
+package org.jacodb.api.net.features
 
-import org.example.ilinstances.IlInstance
+import org.jacodb.api.net.IlDatabase
 
-class IlSignature : IlInstance {
+interface IlFeature {
+    fun onSignal(signal: IlSignal)
+}
+
+sealed class IlSignal(db: IlDatabase) {
+    class BeforeIndexing(val db: IlDatabase) : IlSignal(db)
 }

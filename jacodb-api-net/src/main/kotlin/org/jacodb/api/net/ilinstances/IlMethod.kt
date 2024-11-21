@@ -16,14 +16,13 @@
 
 package org.example.ilinstances
 
-import org.jacodb.api.net.devmocs.IlClasspathMock
+import org.jacodb.api.net.IlTypeLoader
 import org.jacodb.api.net.generated.models.*
 import org.jacodb.api.net.ilinstances.*
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
-class IlMethod(private val declType: IlType, private val dto: IlMethodDto, classpath: IlClasspathMock) : IlInstance {
-    val declaringType = declType
-    val returnType: IlType by lazy { classpath.findType(dto.returnType)!! }
+class IlMethod(private val declType: IlType, private val dto: IlMethodDto, typeLoader: IlTypeLoader) : IlInstance {
+    val returnType: IlType? by lazy { dto.returnType?.let { typeLoader.findIlTypeOrNull(dto.returnType.typeName) } }
     val name: String = dto.name
     val parametes: List<IlParameter> by lazy(PUBLICATION) { dto.parameters.map { IlParameter(it, classpath) }.toMutableList() }
     val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }
@@ -32,19 +31,19 @@ class IlMethod(private val declType: IlType, private val dto: IlMethodDto, class
 
     // TODO args next to parameters seems defn improper
 //    val args: List<IlArgument> = dto.parameters.map { IlArgument(it) }.toList()
-    val locals: MutableList<IlLocalVar> = mutableListOf()
-    val temps: MutableList<IlTempVar> = mutableListOf()
-    val errs: MutableList<IlErrVar> = mutableListOf()
-    val scopes: MutableList<IlEhScope> = mutableListOf()
+    val locals: List<IlLocalVar> by lazy(PUBLICATION) { dto.locals.map { IlLocalVar(it, typeLoader) }}
+    val temps: List<IlTempVar> by lazy(PUBLICATION) { dto.temps.map { IlTempVar(it, typeLoader) }}
+    val errs: List<IlErrVar> by lazy(PUBLICATION) { dto.errs.map { IlErrVar(it, typeLoader) }}
+    val scopes: List<IlEhScope> by lazy(PUBLICATION) { dto.ehScopes.map { IlEhScope.deserialize(this, it) } }
 
     override fun toString(): String {
         return "${returnType ?: ""} $name(${parametes.joinToString(", ")})"
     }
 }
 
-class IlParameter(private val dto: IlParameterDto, classpath: IlClasspathMock) : IlInstance {
-    val paramType: IlType by lazy(PUBLICATION) { classpath.findType(dto.type)!! }
-    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }
+class IlParameter(private val dto: IlParameterDto, typeLoader: IlTypeLoader) : IlInstance {
+    val paramType: IlType by lazy(PUBLICATION) { typeLoader.findIlTypeOrNull(dto.type.typeName)!! }
+    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, typeLoader) } }
     val index: Int = dto.index
     val name: String = dto.name
     val defaultValue: IlConst? get() = dto.defaultValue?.deserializeConst()
