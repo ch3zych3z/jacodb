@@ -129,6 +129,10 @@ class IlCall(val method: IlMethod, val args: List<IlExpr>) : IlExpr {
     }
 }
 
+class IlCallIndirect(val signature: IlSignature, val ftn: IlExpr, val args: List<IlExpr>) : IlExpr {
+
+}
+
 sealed class IlCastExpr(val expectedType: IlType, val operand: IlExpr) : IlExpr {
 
 }
@@ -208,7 +212,7 @@ class IlArgument(private val dto: IlParameterDto) : IlLocal {
 }
 
 class IlLocalVar(dto: IlVarDto) : IlLocal {
-//    val type: IlType = IlInstance.cache.getType(dto.type)
+    //    val type: IlType = IlInstance.cache.getType(dto.type)
     val index: Int = dto.index
 
     override fun toString(): String {
@@ -217,7 +221,7 @@ class IlLocalVar(dto: IlVarDto) : IlLocal {
 }
 
 class IlTempVar(dto: IlVarDto) : IlLocal {
-//    val type: IlType = IlInstance.cache.getType(dto.type)
+    //    val type: IlType = IlInstance.cache.getType(dto.type)
     val index: Int = dto.index
 
     override fun toString(): String {
@@ -226,7 +230,7 @@ class IlTempVar(dto: IlVarDto) : IlLocal {
 }
 
 class IlErrVar(dto: IlVarDto) : IlLocal {
-//    val type: IlType = IlInstance.cache.getType(dto.type)
+    //    val type: IlType = IlInstance.cache.getType(dto.type)
     val index: Int = dto.index
 
     override fun toString(): String {

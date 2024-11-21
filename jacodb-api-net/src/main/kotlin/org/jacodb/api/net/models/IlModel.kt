@@ -43,7 +43,7 @@ object IlModel : Ext(IlRoot) {
     }
 
     val IlPointerTypeDto = structdef extends IlTypeDto {
-        field("pointedType", typeId)
+        field("targetType", typeId)
     }
 
     val IlValueTypeDto = basestruct extends IlTypeDto {}
@@ -51,13 +51,13 @@ object IlModel : Ext(IlRoot) {
     val IlEnumTypeDto = structdef extends IlValueTypeDto {
         // TODO name to value mapping
         field("underlyingType", typeId)
+        field("names", immutableList(PredefinedType.string))
+        field("values", immutableList(IlMethodBodyModel.IlConstDto))
     }
     val IlStructTypeDto = structdef extends IlValueTypeDto {}
 
     val IlReferenceTypeDto = basestruct extends IlTypeDto {}
-    val IlManagedReferenceDto = structdef extends IlReferenceTypeDto {
-        field("referencedType", typeId)
-    }
+
     val IlClassTypeDto = structdef extends IlReferenceTypeDto {}
     val IlArrayTypeDto = structdef extends IlReferenceTypeDto {
         field("elementType", typeId)
@@ -123,10 +123,11 @@ object IlModel : Ext(IlRoot) {
         field("ehScopes", immutableList(IlEhScopeDto))
         field("body", immutableList(IlMethodBodyModel.IlStmtDto))
     }
+
     val IlSignatureDto = structdef extends IlDto {
         field("returnType", typeId)
         field("isInstance", PredefinedType.bool)
-        field("isGeneric", PredefinedType.bool)
+        field("genericParamCount", PredefinedType.int)
         field("parametersTypes", immutableList(typeId))
     }
 }
