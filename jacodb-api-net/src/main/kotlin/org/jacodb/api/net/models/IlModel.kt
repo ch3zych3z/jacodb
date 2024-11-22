@@ -66,6 +66,7 @@ object IlModel : Ext(IlRoot) {
         field("ctorArgs", immutableList(IlMethodBodyModel.IlConstDto))
         field("namedArgsNames", immutableList(PredefinedType.string))
         field("namedArgsValues", immutableList(IlMethodBodyModel.IlConstDto))
+        field("genericArgs", immutableList(typeId))
     }
 
     private val IlFieldDto = structdef extends IlDto {
