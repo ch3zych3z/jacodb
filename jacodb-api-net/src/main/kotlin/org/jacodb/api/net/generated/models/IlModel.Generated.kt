@@ -86,7 +86,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = 1520836491596652957L
+        const val serializationHash = 6084287713397500581L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -115,7 +115,7 @@ val IProtocol.ilModel get() = getOrCreateExtension(IlModel::class) { @Suppress("
 
 
 /**
- * #### Generated from [IlModel.kt:62]
+ * #### Generated from [IlModel.kt:61]
  */
 class IlArrayTypeDto (
     val elementType: TypeId,
@@ -252,13 +252,14 @@ class IlArrayTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:65]
+ * #### Generated from [IlModel.kt:64]
  */
 class IlAttrDto (
     val attrType: TypeId,
     val ctorArgs: List<IlConstDto>,
     val namedArgsNames: List<String>,
-    val namedArgsValues: List<IlConstDto>
+    val namedArgsValues: List<IlConstDto>,
+    val genericArgs: List<TypeId>
 ) : IlDto (
 ) {
     //companion
@@ -272,7 +273,8 @@ class IlAttrDto (
             val ctorArgs = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
             val namedArgsNames = buffer.readList { buffer.readString() }
             val namedArgsValues = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
-            return IlAttrDto(attrType, ctorArgs, namedArgsNames, namedArgsValues)
+            val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            return IlAttrDto(attrType, ctorArgs, namedArgsNames, namedArgsValues, genericArgs)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlAttrDto)  {
@@ -280,6 +282,7 @@ class IlAttrDto (
             buffer.writeList(value.ctorArgs) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
             buffer.writeList(value.namedArgsNames) { v -> buffer.writeString(v) }
             buffer.writeList(value.namedArgsValues) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
+            buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
         }
         
         
@@ -299,6 +302,7 @@ class IlAttrDto (
         if (ctorArgs != other.ctorArgs) return false
         if (namedArgsNames != other.namedArgsNames) return false
         if (namedArgsValues != other.namedArgsValues) return false
+        if (genericArgs != other.genericArgs) return false
         
         return true
     }
@@ -309,6 +313,7 @@ class IlAttrDto (
         __r = __r*31 + ctorArgs.hashCode()
         __r = __r*31 + namedArgsNames.hashCode()
         __r = __r*31 + namedArgsValues.hashCode()
+        __r = __r*31 + genericArgs.hashCode()
         return __r
     }
     //pretty print
@@ -319,6 +324,7 @@ class IlAttrDto (
             print("ctorArgs = "); ctorArgs.print(printer); println()
             print("namedArgsNames = "); namedArgsNames.print(printer); println()
             print("namedArgsValues = "); namedArgsValues.print(printer); println()
+            print("genericArgs = "); genericArgs.print(printer); println()
         }
         printer.print(")")
     }
@@ -412,7 +418,7 @@ class IlCatchScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:61]
+ * #### Generated from [IlModel.kt:60]
  */
 class IlClassTypeDto (
     asmName: String,
@@ -740,7 +746,7 @@ class IlEhScopeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:51]
+ * #### Generated from [IlModel.kt:50]
  */
 class IlEnumTypeDto (
     val underlyingType: TypeId,
@@ -1693,7 +1699,7 @@ class IlPointerTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:50]
+ * #### Generated from [IlModel.kt:49]
  */
 class IlPrimitiveTypeDto (
     asmName: String,
@@ -1824,7 +1830,7 @@ class IlPrimitiveTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:59]
+ * #### Generated from [IlModel.kt:58]
  */
 abstract class IlReferenceTypeDto (
     asmName: String,
@@ -2085,7 +2091,7 @@ class IlSignatureDto (
 
 
 /**
- * #### Generated from [IlModel.kt:57]
+ * #### Generated from [IlModel.kt:56]
  */
 class IlStructTypeDto (
     asmName: String,
@@ -2456,7 +2462,7 @@ class IlTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:49]
+ * #### Generated from [IlModel.kt:48]
  */
 abstract class IlValueTypeDto (
     asmName: String,
