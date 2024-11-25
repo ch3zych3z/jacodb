@@ -48,9 +48,20 @@ fun ByteArray.getIlTypeDto(): IlTypeDto {
         IlTypeByteId.ENUM.id -> IlEnumTypeDto.read(ctx, buf)
         IlTypeByteId.ARRAY.id -> IlArrayTypeDto.read(ctx, buf)
         IlTypeByteId.CLASS.id -> IlClassTypeDto.read(ctx, buf)
-        else -> throw Exception("unexpected bytearray")
+        else -> throw DtoDeserializationException("Unexpected bytearray")
     }
 }
+
+fun IlTypeDto.getBytes() : ByteArray =
+    when (this) {
+        is IlPointerTypeDto -> this.getBytes()
+        is IlPrimitiveTypeDto -> this.getBytes()
+        is IlStructTypeDto -> this.getBytes()
+        is IlEnumTypeDto -> this.getBytes()
+        is IlArrayTypeDto -> this.getBytes()
+        is IlClassTypeDto -> this.getBytes()
+        else -> throw DtoSerializationException("Unexpected IlType ${this.name}")
+    }
 
 fun IlPointerTypeDto.getBytes(): ByteArray {
     val buf = createAbstractBuffer()
@@ -94,3 +105,6 @@ fun IlClassTypeDto.getBytes(): ByteArray {
     return buf.getArray()
 }
 
+open class DtoConversionException(msg: String) : RuntimeException(msg)
+class DtoSerializationException(msg: String) : DtoConversionException(msg)
+class DtoDeserializationException(msg: String) : DtoConversionException(msg)

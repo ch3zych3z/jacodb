@@ -19,7 +19,6 @@ package org.jacodb.api.net.ilinstances
 import org.example.ilinstances.IlMethod
 import org.jacodb.api.net.core.IlStmtVisitor
 import org.jacodb.api.net.generated.models.*
-import kotlin.math.max
 import kotlin.math.min
 
 interface IlStmt {

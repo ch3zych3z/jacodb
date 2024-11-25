@@ -23,7 +23,7 @@ import kotlin.test.assertIs
 import org.mockito.kotlin.mock
 
 class DtoSerializationExtKtTest {
-
+    private val namesSize = 10
     //region Generated with Explyt. Tests for DtoSerializationExtKt.getBytes(): ByteArray
 
     @Test
