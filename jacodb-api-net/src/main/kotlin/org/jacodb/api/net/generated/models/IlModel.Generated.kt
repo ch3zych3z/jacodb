@@ -86,7 +86,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = 6084287713397500581L
+        const val serializationHash = -2680165846883938225L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -1370,7 +1370,7 @@ class IlLocalVarDto (
  * #### Generated from [IlModel.kt:114]
  */
 class IlMethodDto (
-    val returnType: TypeId?,
+    val returnType: TypeId,
     val attrs: List<IlAttrDto>,
     val name: String,
     val parameters: List<IlParameterDto>,
@@ -1389,7 +1389,7 @@ class IlMethodDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlMethodDto  {
-            val returnType = buffer.readNullable { TypeId.read(ctx, buffer) }
+            val returnType = TypeId.read(ctx, buffer)
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val name = buffer.readString()
             val parameters = buffer.readList { IlParameterDto.read(ctx, buffer) }
@@ -1403,7 +1403,7 @@ class IlMethodDto (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMethodDto)  {
-            buffer.writeNullable(value.returnType) { TypeId.write(ctx, buffer, it) }
+            TypeId.write(ctx, buffer, value.returnType)
             buffer.writeList(value.attrs) { v -> IlAttrDto.write(ctx, buffer, v) }
             buffer.writeString(value.name)
             buffer.writeList(value.parameters) { v -> IlParameterDto.write(ctx, buffer, v) }
@@ -1444,7 +1444,7 @@ class IlMethodDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + if (returnType != null) returnType.hashCode() else 0
+        __r = __r*31 + returnType.hashCode()
         __r = __r*31 + attrs.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + parameters.hashCode()
