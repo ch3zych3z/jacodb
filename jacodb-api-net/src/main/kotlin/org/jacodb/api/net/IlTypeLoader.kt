@@ -20,11 +20,13 @@ import org.jacodb.api.net.ilinstances.IlField
 import org.example.ilinstances.IlMethod
 import org.example.ilinstances.IlType
 import org.jacodb.api.net.features.IlFeaturesChain
+import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.ilinstances.IlStmt
 
 interface IlTypeLoader {
     val db: IlDatabase
     val featuresChain: IlFeaturesChain
+    val allTypes: List<IlTypeDto>
     fun findIlTypeOrNull(name: String): IlType?
 }
 

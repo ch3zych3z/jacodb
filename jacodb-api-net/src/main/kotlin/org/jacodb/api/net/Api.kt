@@ -16,6 +16,7 @@
 
 package org.jacodb.api.net
 
+import org.example.ilinstances.IlType
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.storage.IlDbSymbolInterner
 import org.jacodb.api.storage.ers.EntityRelationshipStorage
@@ -31,8 +32,8 @@ interface IlDatabase : Closeable {
 
 
 interface IlDatabasePersistence {
-    val ers : EntityRelationshipStorage
-
+    val ers: EntityRelationshipStorage
+    val allTypes : List<IlTypeDto>
     val interner: IlDbSymbolInterner
     fun findSymbolById(id: Long) : String
     fun findIdBySymbol(symbol: String) : Long

@@ -16,6 +16,7 @@
 
 package org.jacodb.api.net
 
+import org.jacodb.api.net.database.IlDatabaseImpl
 import org.jacodb.api.net.rdinfra.NetApiServer
 
 
@@ -24,7 +25,15 @@ fun main(args: Array<String>) {
     val exePath = args[1]
     assert(args[2] == "--asm")
     val asmPath = args[3]
-    val api = NetApiServer(exePath, asmPath)
+
+    val settings = IlSettings()
+    val database = IlDatabaseImpl(settings)
+
+    val api = NetApiServer(exePath, asmPath, database)
     api.requestTestAsm()
+
+    val typeLoader = database.typeLoader()
+    val allTypes = typeLoader.allTypes
+
     api.close()
 }
