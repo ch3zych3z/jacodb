@@ -34,8 +34,8 @@ interface IlDatabasePersistence {
     val ers : EntityRelationshipStorage
 
     val interner: IlDbSymbolInterner
-    fun findSymbolById(id: Int) : String
-    fun findIdBySymbol(symbol: String) : Int
+    fun findSymbolById(id: Long) : String
+    fun findIdBySymbol(symbol: String) : Long
 
 
     fun <T> read(action: (ILDBContext) -> T ) : T

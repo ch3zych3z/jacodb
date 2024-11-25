@@ -24,8 +24,8 @@ import kotlin.LazyThreadSafetyMode.PUBLICATION
 class IlMethod(private val declType: IlType, private val dto: IlMethodDto, typeLoader: IlTypeLoader) : IlInstance {
     val returnType: IlType? by lazy { dto.returnType?.let { typeLoader.findIlTypeOrNull(dto.returnType.typeName) } }
     val name: String = dto.name
-    val parametes: List<IlParameter> by lazy(PUBLICATION) { dto.parameters.map { IlParameter(it, classpath) }.toMutableList() }
-    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, classpath) } }
+    val parametes: List<IlParameter> by lazy(PUBLICATION) { dto.parameters.map { IlParameter(it, typeLoader) }.toMutableList() }
+    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, typeLoader) } }
     val body: List<IlStmt> by lazy(PUBLICATION) { dto.body.map { IlStmt.deserialize(this, it) } }
     val resolved: Boolean = dto.resolved
 

@@ -134,13 +134,13 @@ object IlApproximationsEliminator : IlExprVisitor<IlExpr>, IlStmtVisitor<IlStmt>
 
     override fun visitIlInt64Const(const: IlInt64Const): IlExpr = const
 
-    override fun visitIlUInt32Const(const: IlUint8Const): IlExpr = const
+    override fun visitIlUInt8Const(const: IlUInt8Const): IlExpr = const
 
-    override fun visitIlUInt32Const(const: IlUint16Const): IlExpr = const
+    override fun visitIlUInt16Const(const: IlUInt16Const): IlExpr = const
 
-    override fun visitIlUInt32Const(const: IlUint32Const): IlExpr = const
+    override fun visitIlUInt32Const(const: IlUInt32Const): IlExpr = const
 
-    override fun visitIlUInt32Const(const: IlInt64Const): IlExpr = const
+    override fun visitIlUInt64Const(const: IlInt64Const): IlExpr = const
 
 
     override fun visitIlFloatConst(const: IlFloatConst): IlExpr = const
