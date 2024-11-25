@@ -19,10 +19,12 @@ package org.jacodb.api.net
 import org.jacodb.api.net.rdinfra.NetApiServer
 
 
-fun main() {
-    val api = NetApiServer()
+fun main(args: Array<String>) {
+    assert(args[0] == "--exe")
+    val exePath = args[1]
+    assert(args[2] == "--asm")
+    val asmPath = args[3]
+    val api = NetApiServer(exePath, asmPath)
     api.requestTestAsm()
-    // add spin method for api 
-//    api.requestRdAsm()
     api.close()
 }
