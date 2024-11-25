@@ -16,6 +16,7 @@
 
 package org.jacodb.api.net.storage
 
+import org.example.ilinstances.IlType
 import org.jacodb.api.net.ILDBContext
 import org.jacodb.api.net.IlDatabasePersistence
 import org.jacodb.api.net.generated.models.*
@@ -28,6 +29,12 @@ import kotlin.concurrent.withLock
 
 class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : IlDatabasePersistence {
     private val lock = ReentrantLock()
+    override val allTypes: List<IlTypeDto>
+        get() = read { ctx ->
+            val txn = ctx.txn
+            val types = txn.all("Type").map { it.toDto() }.toList()
+            types
+        }
 
     override val interner: IlDbSymbolInterner =
         ILDBSymbolsInternerImpl().apply { setup(this@IlDatabasePersistenceImpl) }
@@ -56,7 +63,7 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
 
     private fun findTypeSources(ctx: ILDBContext, fullName: String): Sequence<IlTypeDto> {
         val txn = ctx.txn
-        return txn.find(type = "type", propertyName = "bytecode", value = fullName).map { it.toDto() }
+        return txn.find(type = "Type", propertyName = "bytecode", value = fullName).map { it.toDto() }
     }
 
     override fun findTypeSourceByNameOrNull(fullName: String): IlTypeDto? = read { ctx ->
@@ -69,7 +76,7 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
         write { ctx ->
             val txn = ctx.txn
             types.forEach { type ->
-                val entity = txn.newEntity("type")
+                val entity = txn.newEntity("Type")
                 entity["name"] = type.name.asSymbolId(interner)
                 entity["assembly"] = type.asmName.asSymbolId(interner)
                 entity.setRawBlob("bytes", type.getBytes())

@@ -19,13 +19,14 @@ package org.jacodb.api.net.typeloader
 import org.example.ilinstances.IlType
 import org.jacodb.api.net.*
 import org.jacodb.api.net.features.IlFeaturesChain
+import org.jacodb.api.net.generated.models.IlTypeDto
 
 class IlTypeLoaderImpl(
     override val db: IlDatabase,
     features: List<IlTypeLoaderFeature>,
 ) : IlTypeLoader {
     override val featuresChain = IlFeaturesChain(features + IlTypeLoaderFeatureImpl())
-
+    override val allTypes: List<IlTypeDto> get() = db.persistence.allTypes
 
     override fun findIlTypeOrNull(name: String): IlType? =
         featuresChain.callUntilResolved<IlTypeSearchFeature, ResolvedIlTypeResult> { feature ->

@@ -125,6 +125,9 @@ object IlApproximationsEliminator : IlExprVisitor<IlExpr>, IlStmtVisitor<IlStmt>
     override fun visitIlBoolConst(const: IlBoolConst): IlExpr = const
 
     override fun visitIlStringConst(const: IlStringConst): IlExpr = const
+    override fun visitIlCharConst(const: IlCharConst): IlExpr {
+        TODO("Not yet implemented")
+    }
 
     override fun visitIlInt8Const(const: IlInt8Const): IlExpr = const
 
@@ -139,13 +142,19 @@ object IlApproximationsEliminator : IlExprVisitor<IlExpr>, IlStmtVisitor<IlStmt>
     override fun visitIlUInt16Const(const: IlUInt16Const): IlExpr = const
 
     override fun visitIlUInt32Const(const: IlUInt32Const): IlExpr = const
+    override fun visitIlUInt64Const(const: IlUInt64Const): IlExpr {
+        TODO("Not yet implemented")
+    }
 
-    override fun visitIlUInt64Const(const: IlInt64Const): IlExpr = const
+//    override fun visitIlUInt64Const(const: IlInt64Const): IlExpr = const
 
 
     override fun visitIlFloatConst(const: IlFloatConst): IlExpr = const
 
     override fun visitIlDoubleConst(const: IlDoubleConst): IlExpr = const
+    override fun visitIlEnumConst(const: IlEnumConst): IlExpr {
+        TODO("Not yet implemented")
+    }
 
     override fun visitIlTypeRefConst(const: IlTypeRef): IlExpr {
         return IlTypeRef(const.referencedType.eliminateApproximation())

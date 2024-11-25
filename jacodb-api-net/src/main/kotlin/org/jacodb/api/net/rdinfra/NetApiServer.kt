@@ -20,6 +20,7 @@ import com.jetbrains.rd.framework.*
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.spinUntil
 import com.jetbrains.rd.util.threading.SynchronousScheduler
+import org.jacodb.api.net.IlDatabase
 import org.jacodb.api.net.generated.models.*
 import java.io.File
 import java.time.LocalTime
@@ -32,7 +33,7 @@ fun logWithTime(message: String) {
 }
 
 
-open class RdServer(port: Int, private val netExePath: String) {
+open class RdServer(port: Int, private val netExePath: String, val db: IlDatabase) {
     private val lifetimeDef = Lifetime.Eternal.createNested()
     protected val lifetime = lifetimeDef.lifetime
     val scheduler = SynchronousScheduler
@@ -73,6 +74,7 @@ open class RdServer(port: Int, private val netExePath: String) {
             signalModel.asmResponse.advise(lifetime) { response ->
                 // TODO response here is a list of IlType children (or IlType itself
                 logWithTime("response deserialized")
+                db.persistence.persist(response.map { it as IlTypeDto })
                 unresponded -= 1
             }
 
@@ -112,8 +114,8 @@ open class RdServer(port: Int, private val netExePath: String) {
     }
 }
 
-class NetApiServer(private val exePath: String, private val requestAsmPath: String) {
-    private val server = RdServer(8083, exePath)
+class NetApiServer(private val exePath: String, private val requestAsmPath: String, db: IlDatabase) {
+    private val server = RdServer(8083, exePath, db)
 
     init {
         server.run()

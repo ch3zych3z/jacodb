@@ -54,31 +54,31 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
 
     override fun onSignal(signal: IlSignal) {
         when (signal) {
-            is IlSignal.BeforeIndexing ->
-                signal.db.persistence.read { ctx ->
-                    val persistence = signal.db.persistence
-                    val approxSymbolId = persistence.findIdBySymbol(APPROXIMATION_ATTRIBUTE)
-                    val txn = ctx.txn
-                    // find approx with name = ....Approximation
-                    // get approximation type name
-                    // filter targeting types
-                    // get namedArgs
-                    // find first named arg target class for approximation value
-                    txn.find(type = "Attribute", propertyName = "nameId", value = approxSymbolId).map { attr ->
-                        // TODO maybe introduce attribute target symbol for types, methods, params and filer types here
-                        val originalTypePropertyId = persistence.findIdBySymbol(ORIGINAL_TYPE_PROPERTY)
-                        val approxTypeId = attr.getLink("target").get<Int>("nameId")
-                        val namedArg = attr.getLink("namedArgs")
-                        assert(namedArg.get<Int>("nameId") == originalTypePropertyId)
-                        val originalTypeId = namedArg.get<Int>(ORIGINAL_TYPE_PROPERTY)
-                        originalTypeId to approxTypeId
-                    }.forEach { (originalId, approxId) ->
-                        val originalTn = originalId!!.asSymbol(persistence.interner).toOriginalTypeName()
-                        val approxTn = approxId!!.asSymbol(persistence.interner).toApproximatedTypeName()
-                        originalToApproximation[originalTn] = approxTn
-                        approximationToOriginal[approxTn] = originalTn
-                    }
-                }
+            is IlSignal.BeforeIndexing -> {}
+//                signal.db.persistence.read { ctx ->
+//                    val persistence = signal.db.persistence
+//                    val approxSymbolId = persistence.findIdBySymbol(APPROXIMATION_ATTRIBUTE)
+//                    val txn = ctx.txn
+//                    // find approx with name = ....Approximation
+//                    // get approximation type name
+//                    // filter targeting types
+//                    // get namedArgs
+//                    // find first named arg target class for approximation value
+//                    txn.find(type = "Attribute", propertyName = "nameId", value = approxSymbolId).map { attr ->
+//                        // TODO maybe introduce attribute target symbol for types, methods, params and filer types here
+//                        val originalTypePropertyId = persistence.findIdBySymbol(ORIGINAL_TYPE_PROPERTY)
+//                        val approxTypeId = attr.getLink("target").get<Int>("nameId")
+//                        val namedArg = attr.getLink("namedArgs")
+//                        assert(namedArg.get<Int>("nameId") == originalTypePropertyId)
+//                        val originalTypeId = namedArg.get<Int>(ORIGINAL_TYPE_PROPERTY)
+//                        originalTypeId to approxTypeId
+//                    }.forEach { (originalId, approxId) ->
+//                        val originalTn = originalId!!.asSymbol(persistence.interner).toOriginalTypeName()
+//                        val approxTn = approxId!!.asSymbol(persistence.interner).toApproximatedTypeName()
+//                        originalToApproximation[originalTn] = approxTn
+//                        approximationToOriginal[approxTn] = originalTn
+//                    }
+//                }
         }
     }
 }
