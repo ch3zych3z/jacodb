@@ -20,14 +20,11 @@ import com.jetbrains.rd.framework.*
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.spinUntil
 import com.jetbrains.rd.util.threading.SynchronousScheduler
-import org.example.ilinstances.IlInstance
 import org.jacodb.api.net.generated.models.*
 import java.io.File
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
-
-private const val SPINNING_TIMEOUT = 1000L
 
 
 fun logWithTime(message: String) {
@@ -35,10 +32,10 @@ fun logWithTime(message: String) {
 }
 
 
-class RdServer(port: Int, private val netExePath: String) {
+open class RdServer(port: Int, private val netExePath: String) {
     private val lifetimeDef = Lifetime.Eternal.createNested()
     protected val lifetime = lifetimeDef.lifetime
-    val scheduler = SynchronousScheduler//(lifetime, "Scheduler")
+    val scheduler = SynchronousScheduler
     val protocol = Protocol(
         "Server", Serializers(), Identities(IdKind.Server), scheduler,
         SocketWire.Server(lifetime, scheduler, port, "Server"), lifetime
@@ -115,8 +112,7 @@ class RdServer(port: Int, private val netExePath: String) {
     }
 }
 
-class NetApiServer {
-    private val exePath = "/Users/petrukhinandrew/RiderProjects/dotnet-tac/TACBuilder/bin/Debug/net8.0/osx-arm64/";
+class NetApiServer(private val exePath: String, private val requestAsmPath: String) {
     private val server = RdServer(8083, exePath)
 
     init {
@@ -124,11 +120,7 @@ class NetApiServer {
     }
 
     fun requestTestAsm() {
-        requestAsm("/Users/petrukhinandrew/RiderProjects/dotnet-tac/TACBuilder.Tests/bin/Release/net8.0/osx-arm64/publish/TACBuilder.Tests.dll")
-    }
-
-    fun requestRdAsm() {
-        requestAsm("/home/andrew/Documents/dotnet-tac/TACBuilder.Tests/bin/Release/net8.0/linux-x64/publish/JetBrains.RdFramework.dll")
+        requestAsm(requestAsmPath)
     }
 
     private fun requestAsm(path: String) {
