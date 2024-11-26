@@ -52,10 +52,7 @@ interface IlInstExtFeature : IlPublicationFeature {
     fun transformInstList(instList: List<IlStmt>): List<IlStmt>
 }
 
-interface IlPublicationEvent {
-    val feature: IlTypeSearchFeature
-    val result: Any
-}
+class IlPublicationEvent(val feature: IlTypeSearchFeature, val result: Any)
 
 interface FeatureCallResult
 
