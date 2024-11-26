@@ -29,7 +29,7 @@ class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
     override var persistence: IlDatabasePersistence
 
     override fun typeLoader(): IlPublication {
-        return IlPublicationImpl(this, emptyList())
+        return IlPublicationImpl(this, emptyList(), settings)
     }
 
     override fun close() {

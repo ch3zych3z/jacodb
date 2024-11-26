@@ -23,7 +23,7 @@ import java.time.Duration
 
 class IlSettings() {
     val ersSpiId = SQL_ERS_SPI
-    val typeLoaderCacheSettings = IlPublicationCacheSettings()
+    val publicationCacheSettings = IlPublicationCacheSettings()
 }
 
 class CacheSettings(
