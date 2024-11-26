@@ -25,12 +25,14 @@ object TestSigDumper {
         val tmpPath = createTempFile()
         val tmpFile = tmpPath.toFile()
         println(tmpPath)
-        val writer = tmpFile.writer()
+        println(tmpFile.absolutePath)
+        val writer = tmpFile.printWriter()
+        val sep = System.lineSeparator()
         types.sortedBy { it.name }.forEach { t ->
-            writer.write(t.name + "\n")
-            t.fields.sortedBy { it.name }.forEach { f -> writer.write("${f.fieldType.typeName} ${f.name}\n") }
+            writer.write(t.name + sep)
+            t.fields.sortedBy { it.name }.forEach { f -> writer.write("${f.fieldType.typeName} ${f.name}${sep}") }
             t.methods.sortedBy { it.name }
-                .forEach { m -> writer.write("${m.returnType!!.typeName} ${m.name} ${m.parameters.size}\n") }
+                .forEach { m -> writer.write("${m.returnType!!.typeName} ${m.name} ${m.parameters.size}$sep") }
         }
         writer.close()
     }

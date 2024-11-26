@@ -24,8 +24,8 @@ import org.jacodb.api.net.IlTypeExtFeature
 import org.jacodb.api.net.ilinstances.IlStmt
 
 object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
-    private val originalToApproximation : MutableMap<OriginalTypeName, ApproximatedTypeName> = mutableMapOf()
-    private val approximationToOriginal : MutableMap<ApproximatedTypeName, OriginalTypeName> = mutableMapOf()
+    private val originalToApproximation: MutableMap<OriginalTypeName, ApproximatedTypeName> = mutableMapOf()
+    private val approximationToOriginal: MutableMap<ApproximatedTypeName, OriginalTypeName> = mutableMapOf()
 
     fun findApproximationByOriginalOrNull(original: String): ApproximatedTypeName? =
         originalToApproximation[original.toOriginalTypeName()]
@@ -85,19 +85,22 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
 const val APPROXIMATION_ATTRIBUTE = "Approximation"
 const val ORIGINAL_TYPE_PROPERTY = "OriginalType"
 
+
 @JvmInline
 value class OriginalTypeName(val name: String) {
     override fun toString(): String = name
 }
+
 fun String.toOriginalTypeName() = OriginalTypeName(this)
 
 @JvmInline
 value class ApproximatedTypeName(val name: String) {
     override fun toString(): String = name
 }
+
 fun String.toApproximatedTypeName() = ApproximatedTypeName(this)
 
-fun IlType.eliminateApproximation() : IlType {
+fun IlType.eliminateApproximation(): IlType {
     val originalName = IlApproximations.findOriginalByApproximationOrNull(this.name)?.name ?: return this
     return publication.findIlTypeOrNull(originalName)!!
 }

@@ -47,6 +47,9 @@ fun IlConstDto.serializePrimitive() : Pair<String, ConstKind> =
         is IlUint64ConstDto -> value.toString() to ConstKind.UINT64
         is IlFloatConstDto -> value.toString() to ConstKind.FLOAT
         is IlDoubleConstDto -> value.toString() to ConstKind.DOUBLE
+        // TODO use typeId in typeDto
+        // than it will be referencedType.typeId
+        // and in type construction just fetch asm name and type name from id
         is IlTypeRefDto -> referencedType.typeName to ConstKind.TYPE_REF // ??
         is IlMethodRefDto -> type.typeName to ConstKind.METHOD_REF // ??
         is IlEnumConstDto -> underlyingValue.serializePrimitive().first to ConstKind.ENUM

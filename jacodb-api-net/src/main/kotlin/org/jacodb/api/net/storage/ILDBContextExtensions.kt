@@ -28,3 +28,4 @@ fun toILDBContext(txn: Transaction) : ILDBContext =
     ILDBContext.of(TransactionObject, txn)
 
 val ILDBContext.txn get() : Transaction = this.getContextObject(TransactionObject)
+
