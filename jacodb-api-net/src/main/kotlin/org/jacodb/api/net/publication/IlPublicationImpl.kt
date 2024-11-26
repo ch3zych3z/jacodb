@@ -27,7 +27,7 @@ class IlPublicationImpl(
     val settings: IlSettings
 ) : IlPublication {
     override val featuresChain = features.filter { it !is IlPublicationCache }
-        .let {it + IlPublicationCache(settings.typeLoaderCacheSettings) + IlPublicationFeatureImpl()}
+        .let {it + IlPublicationCache(settings.publicationCacheSettings) + IlPublicationFeatureImpl()}
         .let { IlFeaturesChain(it) }
     override val allTypes: List<IlTypeDto> get() = db.persistence.allTypes
 
