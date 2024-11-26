@@ -28,7 +28,7 @@ import org.jacodb.api.storage.ers.EntityRelationshipStorageSPI
 class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
     override var persistence: IlDatabasePersistence
 
-    override fun typeLoader(): IlPublication {
+    override fun publication(): IlPublication {
         return IlPublicationImpl(this, emptyList(), settings)
     }
 

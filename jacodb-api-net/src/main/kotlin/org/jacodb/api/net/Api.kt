@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap
 interface IlDatabase : Closeable {
     val persistence : IlDatabasePersistence
 
-    fun typeLoader() : IlPublication
+    fun publication() : IlPublication
 }
 
 
