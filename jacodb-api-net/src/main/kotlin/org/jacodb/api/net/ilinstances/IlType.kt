@@ -17,7 +17,7 @@
 package org.example.ilinstances
 
 import org.jacodb.api.net.IlTypeExtFeature
-import org.jacodb.api.net.IlTypeLoader
+import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.*
 import kotlin.LazyThreadSafetyMode.*
@@ -26,14 +26,16 @@ import org.jacodb.api.net.ilinstances.IlField
 import java.util.*
 
 // typeLoader should be public in particular to resolve refs inside TAC
-open class IlType(private val dto: IlTypeDto, val typeLoader: IlTypeLoader) : IlInstance {
-    val declType: IlType? by lazy(PUBLICATION) { dto.declType?.let { typeLoader.findIlTypeOrNull(it.typeName) } }
+open class IlType(private val dto: IlTypeDto, val publication: IlPublication) : IlInstance {
+    val declType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it.typeName) } }
     val namespace: String = dto.namespaceName
     val name: String = dto.name
-    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, typeLoader) } }
-    val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { typeLoader.findIlTypeOrNull(it.typeName)!! } }
-    val fields: List<IlField> by lazy(PUBLICATION) { dto.fields.map { IlField(this, it, typeLoader) } }
-    val methods: List<IlMethod> by lazy(PUBLICATION) { dto.methods.map { IlMethod(this, it, typeLoader) } }
+    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, publication) } }
+    val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it.typeName)!! } }
+    val fields: List<IlField> by lazy(PUBLICATION) { dto.fields.map { IlField(this, it, publication) }
+        .joinFeatureFields(this, publication.featuresChain) }
+    val methods: List<IlMethod> by lazy(PUBLICATION) { dto.methods.map { IlMethod(this, it, publication) }
+        .joinFeatureMethods(this, publication.featuresChain) }
 
 
     override fun toString(): String {
@@ -41,15 +43,15 @@ open class IlType(private val dto: IlTypeDto, val typeLoader: IlTypeLoader) : Il
     }
 }
 
-class IlPointerType(private val dto: IlPointerTypeDto, typeLoader: IlTypeLoader): IlType(dto, typeLoader)
-open class IlValueType(private val dto: IlValueTypeDto, typeLoader: IlTypeLoader) : IlType(dto, typeLoader)
-class IlEnumType(private val dto: IlEnumTypeDto, typeLoader: IlTypeLoader) : IlType(dto, typeLoader)
-class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, typeLoader: IlTypeLoader) : IlType(dto, typeLoader)
-class IlStructType(private val dto: IlStructTypeDto, typeLoader: IlTypeLoader) : IlType(dto, typeLoader)
+class IlPointerType(private val dto: IlPointerTypeDto, typeLoader: IlPublication): IlType(dto, typeLoader)
+open class IlValueType(private val dto: IlValueTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
+class IlEnumType(private val dto: IlEnumTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
+class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
+class IlStructType(private val dto: IlStructTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
 
-open class IlReferenceType(private val dto: IlReferenceTypeDto, typeLoader: IlTypeLoader) : IlType(dto, typeLoader)
-class IlArrayType(private val dto: IlArrayTypeDto, typeLoader: IlTypeLoader) : IlType(dto, typeLoader)
-class IlClassType(private val dto: IlClassTypeDto, typeLoader: IlTypeLoader) : IlType(dto, typeLoader)
+open class IlReferenceType(private val dto: IlReferenceTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
+class IlArrayType(private val dto: IlArrayTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
+class IlClassType(private val dto: IlClassTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
 
 
 private fun List<IlField>.joinFeatureFields(type: IlType, featuresChain: IlFeaturesChain) : List<IlField> {

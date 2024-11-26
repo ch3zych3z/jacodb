@@ -16,7 +16,6 @@
 
 package org.jacodb.api.net
 
-import org.jacodb.api.storage.ers.EntityRelationshipStorageSPI
 import org.jacodb.impl.ValueStoreType
 import org.jacodb.impl.caches.guava.GUAVA_CACHE_PROVIDER_ID
 import org.jacodb.impl.storage.ers.sql.SQL_ERS_SPI
@@ -24,7 +23,7 @@ import java.time.Duration
 
 class IlSettings() {
     val ersSpiId = SQL_ERS_SPI
-    val typeLoaderCacheSettings = IlTypeLoaderCacheSettings()
+    val typeLoaderCacheSettings = IlPublicationCacheSettings()
 }
 
 class CacheSettings(
@@ -34,7 +33,7 @@ class CacheSettings(
 )
 
 
-class IlTypeLoaderCacheSettings(
+class IlPublicationCacheSettings(
     val cacheId: String = GUAVA_CACHE_PROVIDER_ID,
     val types: CacheSettings = CacheSettings(),
     val instructions: CacheSettings = CacheSettings(),

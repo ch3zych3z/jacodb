@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.typeloader
+package org.jacodb.api.net.publication
 
 import org.example.ilinstances.IlMethod
 import org.jacodb.api.net.*
 import org.jacodb.impl.caches.PluggableCacheProvider
 
 
-class IlTypeLoaderCache(private val settings: IlTypeLoaderCacheSettings) : IlTypeSearchFeature, IlMethodExtFeature {
+class IlPublicationCache(private val settings: IlPublicationCacheSettings) : IlTypeSearchFeature, IlMethodExtFeature {
 
     private val cacheProvider: PluggableCacheProvider = PluggableCacheProvider.getProvider(settings.cacheId)
 
@@ -35,7 +35,7 @@ class IlTypeLoaderCache(private val settings: IlTypeLoaderCacheSettings) : IlTyp
         instructions[method]
 
 
-    override fun on(event: IlTypeLoaderEvent) {
+    override fun on(event: IlPublicationEvent) {
         when (val result = event.result) {
             is ResolvedIlTypeResult -> types[result.name] = result
 

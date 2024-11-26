@@ -19,17 +19,17 @@ package org.jacodb.api.net.database
 import org.jacodb.api.net.IlDatabase
 import org.jacodb.api.net.IlDatabasePersistence
 import org.jacodb.api.net.IlSettings
-import org.jacodb.api.net.IlTypeLoader
+import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.storage.IlDatabasePersistenceImpl
-import org.jacodb.api.net.typeloader.IlTypeLoaderImpl
+import org.jacodb.api.net.publication.IlPublicationImpl
 import org.jacodb.api.storage.ers.EmptyErsSettings
 import org.jacodb.api.storage.ers.EntityRelationshipStorageSPI
 
 class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
     override var persistence: IlDatabasePersistence
 
-    override fun typeLoader(): IlTypeLoader {
-        return IlTypeLoaderImpl(this, emptyList())
+    override fun typeLoader(): IlPublication {
+        return IlPublicationImpl(this, emptyList())
     }
 
     override fun close() {

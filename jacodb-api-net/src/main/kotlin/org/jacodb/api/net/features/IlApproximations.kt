@@ -22,8 +22,6 @@ import org.example.ilinstances.IlType
 import org.jacodb.api.net.IlInstExtFeature
 import org.jacodb.api.net.IlTypeExtFeature
 import org.jacodb.api.net.ilinstances.IlStmt
-import org.jacodb.api.net.storage.asSymbol
-import org.jacodb.api.net.storage.txn
 
 object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
     private val originalToApproximation : MutableMap<OriginalTypeName, ApproximatedTypeName> = mutableMapOf()
@@ -37,13 +35,13 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
 
     override fun fieldsOf(type: IlType): List<IlField>? {
         val approximationTypeName = findApproximationByOriginalOrNull(type.name)?.name ?: return null
-        val approximationType = type.typeLoader.findIlTypeOrNull(approximationTypeName)
+        val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
         return approximationType?.fields
     }
 
     override fun methodsOf(type: IlType): List<IlMethod>? {
         val approximationTypeName = findApproximationByOriginalOrNull(type.name)?.name ?: return null
-        val approximationType = type.typeLoader.findIlTypeOrNull(approximationTypeName)
+        val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
         return approximationType?.methods
     }
 
@@ -54,6 +52,7 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
 
     override fun onSignal(signal: IlSignal) {
         when (signal) {
+            // TODO fill approx maps
             is IlSignal.BeforeIndexing -> {}
 //                signal.db.persistence.read { ctx ->
 //                    val persistence = signal.db.persistence
@@ -78,7 +77,7 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
 //                        originalToApproximation[originalTn] = approxTn
 //                        approximationToOriginal[approxTn] = originalTn
 //                    }
-//                }
+//                }IlDatab
         }
     }
 }
@@ -100,5 +99,5 @@ fun String.toApproximatedTypeName() = ApproximatedTypeName(this)
 
 fun IlType.eliminateApproximation() : IlType {
     val originalName = IlApproximations.findOriginalByApproximationOrNull(this.name)?.name ?: return this
-    return typeLoader.findIlTypeOrNull(originalName)!!
+    return publication.findIlTypeOrNull(originalName)!!
 }

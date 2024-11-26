@@ -18,6 +18,7 @@ package org.jacodb.api.net
 
 import org.jacodb.api.net.database.IlDatabaseImpl
 import org.jacodb.api.net.rdinfra.NetApiServer
+import org.jacodb.api.net.rdinfra.TestSigDumper
 
 
 fun main(args: Array<String>) {
@@ -33,7 +34,10 @@ fun main(args: Array<String>) {
     api.requestTestAsm()
 
     val typeLoader = database.typeLoader()
+
     val allTypes = typeLoader.allTypes
+
+    val dsd = TestSigDumper.dump(allTypes)
 
     api.close()
 }

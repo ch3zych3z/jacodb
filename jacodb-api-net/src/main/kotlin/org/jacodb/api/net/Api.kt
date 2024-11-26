@@ -16,7 +16,6 @@
 
 package org.jacodb.api.net
 
-import org.example.ilinstances.IlType
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.storage.IlDbSymbolInterner
 import org.jacodb.api.storage.ers.EntityRelationshipStorage
@@ -27,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap
 interface IlDatabase : Closeable {
     val persistence : IlDatabasePersistence
 
-    fun typeLoader() : IlTypeLoader
+    fun typeLoader() : IlPublication
 }
 
 

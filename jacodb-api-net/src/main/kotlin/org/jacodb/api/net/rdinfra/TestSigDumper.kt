@@ -24,6 +24,7 @@ object TestSigDumper {
     fun dump(types: List<IlTypeDto>) {
         val tmpPath = createTempFile()
         val tmpFile = tmpPath.toFile()
+        println(tmpPath)
         val writer = tmpFile.writer()
         types.sortedBy { it.name }.forEach { t ->
             writer.write(t.name + "\n")

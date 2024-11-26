@@ -18,10 +18,10 @@ package org.jacodb.api.net.ilinstances
 
 import org.example.ilinstances.IlInstance
 import org.example.ilinstances.IlType
-import org.jacodb.api.net.IlTypeLoader
+import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlFieldDto
 
-class IlField(private val declType: IlType, private val dto: IlFieldDto, typeLoader: IlTypeLoader) : IlInstance {
+class IlField(private val declType: IlType, private val dto: IlFieldDto, typeLoader: IlPublication) : IlInstance {
     val fieldType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.fieldType.typeName)!! }
     val attributes: MutableList<IlAttribute> = mutableListOf()
     val isStatic: Boolean = dto.isStatic
