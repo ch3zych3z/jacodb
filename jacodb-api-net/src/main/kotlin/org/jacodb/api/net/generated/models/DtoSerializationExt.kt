@@ -33,6 +33,7 @@ enum class IlTypeByteId(val id: Byte) {
 private fun dtoSerializationCtx(): SerializationCtx {
     val serializers = Serializers()
     serializers.registerSerializersOwnerOnce(IlMethodBodyModel)
+    serializers.registerSerializersOwnerOnce(IlModel)
     return SerializationCtx(serializers, emptyMap())
 }
 

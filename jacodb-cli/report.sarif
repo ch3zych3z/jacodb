@@ -1,0 +1,936 @@
+{
+    "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+    "version": "2.1.0",
+    "runs": [
+        {
+            "results": [
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Tainted(variable=arg$0, mark=NULLNESS)"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Tainted(variable=arg$0, mark=NULLNESS)"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Tainted(variable=arg$0, mark=NULLNESS)"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Tainted(variable=arg$1, mark=NULLNESS)"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                },
+                {
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "state": {
+                                                "fact": {
+                                                    "text": "Zero"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "level": "warning",
+                    "locations": [
+                    ],
+                    "message": {
+                        "text": "Assigned value is unused"
+                    }
+                }
+            ],
+            "tool": {
+                "driver": {
+                    "informationUri": "https://github.com/UnitTestBot/jacodb/blob/develop/jacodb-analysis/README.md",
+                    "name": "jacodb-analysis",
+                    "organization": "UnitTestBot",
+                    "version": "1.4.5"
+                }
+            }
+        }
+    ]
+}

@@ -17,10 +17,10 @@
 package org.jacodb.api.net.ilinstances
 
 import org.example.ilinstances.IlType
-import org.jacodb.api.net.IlTypeLoader
+import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlAttrDto
 
-class IlAttribute(private val dto: IlAttrDto, private val typeLoader: IlTypeLoader) {
+class IlAttribute(private val dto: IlAttrDto, private val typeLoader: IlPublication) {
     val type: IlType by lazy(LazyThreadSafetyMode.PUBLICATION) { typeLoader.findIlTypeOrNull(dto.attrType.typeName)!! }
     val constructorArgs: List<IlConst> by lazy { dto.ctorArgs.map { it.deserializeConst() }.toList() }
     val namedArgs: Map<String, IlConst> by lazy(LazyThreadSafetyMode.PUBLICATION)

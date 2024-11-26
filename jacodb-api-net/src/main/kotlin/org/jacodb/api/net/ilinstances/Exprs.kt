@@ -17,7 +17,7 @@
 package org.jacodb.api.net.ilinstances
 
 import org.example.ilinstances.*
-import org.jacodb.api.net.IlTypeLoader
+import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.generated.models.*
 
@@ -302,7 +302,7 @@ class IlArgument(private val dto: IlParameterDto) : IlLocal {
 }
 
 class IlLocalVar(val type: IlType, val index: Int) : IlLocal {
-    constructor(dto: IlVarDto, typeLoader: IlTypeLoader):
+    constructor(dto: IlVarDto, typeLoader: IlPublication):
             this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlLocalVar(this)
@@ -314,7 +314,7 @@ class IlLocalVar(val type: IlType, val index: Int) : IlLocal {
 }
 
 class IlTempVar(val type: IlType, val index: Int) : IlLocal {
-    constructor(dto: IlVarDto, typeLoader: IlTypeLoader):
+    constructor(dto: IlVarDto, typeLoader: IlPublication):
             this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlTempVar(this)
@@ -326,7 +326,7 @@ class IlTempVar(val type: IlType, val index: Int) : IlLocal {
 }
 
 class IlErrVar(val type: IlType, val index: Int) : IlLocal {
-    constructor(dto: IlVarDto, typeLoader: IlTypeLoader):
+    constructor(dto: IlVarDto, typeLoader: IlPublication):
             this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
 
     override fun <T> accept(visitor: IlExprVisitor<T>): T {

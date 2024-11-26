@@ -16,15 +16,15 @@
 
 package org.jacodb.api.net.features
 
-import org.jacodb.api.net.IlTypeLoaderFeature
+import org.jacodb.api.net.IlPublicationFeature
 
-class IlFeaturesChain(val features: List<IlTypeLoaderFeature>) {
+class IlFeaturesChain(val features: List<IlPublicationFeature>) {
 
     inline fun <reified T> run(action : T.() -> Unit)  {
         features.filterIsInstance<T>().forEach(action)
     }
 
-    inline fun <reified T : IlTypeLoaderFeature, R> callUntilResolved(action: (T) -> R?) : R? {
+    inline fun <reified T : IlPublicationFeature, R> callUntilResolved(action: (T) -> R?) : R? {
         for (feature in features) {
             if (feature is T) {
                 val res = action(feature)

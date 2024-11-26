@@ -50,6 +50,7 @@ open class RdServer(port: Int, private val netExePath: String, val db: IlDatabas
     fun request(action: () -> Unit) {
         unresponded += 1
         queue { action() }
+        spinUntil { unresponded == 0 }
     }
 
     private fun queue(action: () -> Unit) {

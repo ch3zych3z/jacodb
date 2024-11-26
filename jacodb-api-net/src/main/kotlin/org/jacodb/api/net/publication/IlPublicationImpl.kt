@@ -14,18 +14,21 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.typeloader
+package org.jacodb.api.net.publication
 
 import org.example.ilinstances.IlType
 import org.jacodb.api.net.*
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
 
-class IlTypeLoaderImpl(
+class IlPublicationImpl(
     override val db: IlDatabase,
-    features: List<IlTypeLoaderFeature>,
-) : IlTypeLoader {
-    override val featuresChain = IlFeaturesChain(features + IlTypeLoaderFeatureImpl())
+    features: List<IlPublicationFeature>,
+    val settings: IlSettings
+) : IlPublication {
+    override val featuresChain = features.filter { it !is IlPublicationCache }
+        .let {it + IlPublicationCache(settings.typeLoaderCacheSettings) + IlPublicationFeatureImpl()}
+        .let { IlFeaturesChain(it) }
     override val allTypes: List<IlTypeDto> get() = db.persistence.allTypes
 
     override fun findIlTypeOrNull(name: String): IlType? =
@@ -33,10 +36,10 @@ class IlTypeLoaderImpl(
             feature.findType(name)
         }?.type
 
-    private inner class IlTypeLoaderFeatureImpl() : IlTypeSearchFeature {
+    private inner class IlPublicationFeatureImpl() : IlTypeSearchFeature {
         override fun findType(name: String): ResolvedIlTypeResult {
             val persistence = db.persistence
-            val type = persistence.findTypeSourceByNameOrNull(name)?.let { dto -> IlType(dto, this@IlTypeLoaderImpl) }
+            val type = persistence.findTypeSourceByNameOrNull(name)?.let { dto -> IlType(dto, this@IlPublicationImpl) }
             return ResolvedIlTypeResult(name, type)
             // maybe return null for unknown classes to continue search in chain?
         }

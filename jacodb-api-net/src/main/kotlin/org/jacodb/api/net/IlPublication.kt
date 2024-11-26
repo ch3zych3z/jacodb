@@ -23,36 +23,36 @@ import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.ilinstances.IlStmt
 
-interface IlTypeLoader {
+interface IlPublication {
     val db: IlDatabase
     val featuresChain: IlFeaturesChain
     val allTypes: List<IlTypeDto>
     fun findIlTypeOrNull(name: String): IlType?
 }
 
-interface IlTypeLoaderFeature {
-    fun on(event: IlTypeLoaderEvent) { }
-    fun event(result: Any) : IlTypeLoaderEvent? = null
+interface IlPublicationFeature {
+    fun on(event: IlPublicationEvent) { }
+    fun event(result: Any) : IlPublicationEvent? = null
 }
 
-interface IlTypeSearchFeature : IlTypeLoaderFeature {
+interface IlTypeSearchFeature : IlPublicationFeature {
     fun findType(name: String): ResolvedIlTypeResult?
 }
 
-interface IlTypeExtFeature : IlTypeLoaderFeature {
+interface IlTypeExtFeature : IlPublicationFeature {
     fun fieldsOf(type: IlType): List<IlField>?
     fun methodsOf(type: IlType): List<IlMethod>?
 }
 
-interface IlMethodExtFeature : IlTypeLoaderFeature {
+interface IlMethodExtFeature : IlPublicationFeature {
     fun instList(method: IlMethod): ResolvedInstructionsResult?
 }
 
-interface IlInstExtFeature : IlTypeLoaderFeature {
+interface IlInstExtFeature : IlPublicationFeature {
     fun transformInstList(instList: List<IlStmt>): List<IlStmt>
 }
 
-interface IlTypeLoaderEvent {
+interface IlPublicationEvent {
     val feature: IlTypeSearchFeature
     val result: Any
 }

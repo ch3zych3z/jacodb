@@ -56,8 +56,9 @@ class IlAssignStmt(val lhs: IlExpr, val rhs: IlExpr) : IlStmt {
     }
 }
 
-class IlCallStmt(dto: IlCallStmtDto, src: IlMethod) : IlStmt {
-    val call = dto.call.deserialize(src)
+class IlCallStmt(val call: IlCall) : IlStmt {
+    constructor(dto: IlCallStmtDto, src: IlMethod) : this(dto.call.deserialize(src) as IlCall)
+
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlCallStmt(this)
     }
