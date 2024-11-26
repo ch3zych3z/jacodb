@@ -43,5 +43,9 @@ class IlPublicationImpl(
             return ResolvedIlTypeResult(name, type)
             // maybe return null for unknown classes to continue search in chain?
         }
+
+        override fun event(result: Any): IlPublicationEvent {
+            return IlPublicationEvent(this, result)
+        }
     }
 }
