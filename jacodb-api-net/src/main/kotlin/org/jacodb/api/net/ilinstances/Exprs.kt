@@ -22,12 +22,10 @@ import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.generated.models.*
 
 sealed interface IlExpr {
-    fun <T> accept(visitor: IlExprVisitor<T>) : T
+    fun <T> accept(visitor: IlExprVisitor<T>): T
 }
 
-// TODO we may introduce type above typeId and instanceIdRef and use it inside const refs (so there will be no need
-// to pull classpath)
-fun IlConstDto.deserializeConst(): IlConst = when (this) {
+fun IlConstDto.deserializeConst(publication: IlPublication): IlConst = when (this) {
     is IlNullDto -> IlNull()
     is IlBoolConstDto -> IlBoolConst(value)
     is IlStringConstDto -> IlStringConst(value)
@@ -45,18 +43,20 @@ fun IlConstDto.deserializeConst(): IlConst = when (this) {
 //    is IlTypeRefDto -> IlTypeRef(IlInstance.cache.getType(referencedType))
 //    is IlMethodRefDto -> IlMethodRef(IlInstance.cache.getMethod(method))
 //    is IlFieldRefDto -> IlFieldRef(IlInstance.cache.getField(field))
-    is IlArrayConstDto -> IlArrayConst(values.map { it.deserializeConst() })
+    is IlArrayConstDto -> IlArrayConst(values.map { it.deserializeConst(publication) })
     else -> throw NotImplementedError()
 }
 
-fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
-    is IlUnaryOpDto -> IlUnaryOp(operand.deserialize(ilMethod))
-    is IlBinaryOpDto -> IlBinaryOp(lhs.deserialize(ilMethod), rhs.deserialize(ilMethod))
-    is IlArrayLengthExprDto -> IlArrayLengthExpr(array.deserialize(ilMethod))
+fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr {
+    val publication = ilMethod.declaringType.publication
+    return when (this) {
+        is IlUnaryOpDto -> IlUnaryOp(operand.deserialize(ilMethod))
+        is IlBinaryOpDto -> IlBinaryOp(lhs.deserialize(ilMethod), rhs.deserialize(ilMethod))
+        is IlArrayLengthExprDto -> IlArrayLengthExpr(array.deserialize(ilMethod))
 //    is IlCallDto -> IlCall(IlInstance.cache.getMethod(method), args.map { it.deserialize(ilMethod) })
 //    is IlNewArrayExprDto -> IlNewArrayExpr(IlInstance.cache.getType(type), size.deserialize(ilMethod))
 //    is IlNewExprDto -> IlNewExpr(IlInstance.cache.getType(type), args.map { it.deserialize(ilMethod) })
-//    is IlSizeOfExprDto -> IlSizeOfExpr(IlInstance.cache.getType(targetType))
+        is IlSizeOfExprDto -> IlSizeOfExpr(publication.findIlTypeOrNull(targetType.typeName)!!)
 //    is IlStackAllocExprDto -> IlStackAllocExpr(IlInstance.cache.getType(type), size.deserialize(ilMethod))
 //    is IlManagedRefExprDto -> IlManagedRefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
 //    is IlUnmanagedRefExprDto -> IlUnmanagedRefExpr(IlInstance.cache.getType(type), value.deserialize(ilMethod))
@@ -67,17 +67,20 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr = when (this) {
 //    is IlUnboxExprDto -> IlUnboxExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
 //    is IlCastClassExprDto -> IlCastClassExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
 //    is IlIsInstExprDto -> IlIsInstExpr(IlInstance.cache.getType(type), operand.deserialize(ilMethod))
-    is IlConstDto -> this.deserializeConst()
-//    is IlFieldAccessDto -> IlFieldAccess(IlInstance.cache.getField(field), instance?.deserialize(ilMethod))
-    is IlArrayAccessDto -> IlArrayAccess(array.deserialize(ilMethod), index.deserialize(ilMethod))
-    is IlVarAccessDto -> when (kind) {
-        IlVarKind.local -> ilMethod.locals[index]
-        IlVarKind.temp -> ilMethod.temps[index]
-        IlVarKind.err -> ilMethod.errs[index]
-    }
+        is IlConstDto -> this.deserializeConst(publication)
+        is IlFieldAccessDto -> IlFieldAccess(publication.findIlTypeOrNull(this.type.typeName)?.fields?.first { it == this.field }
+            ?: throw IllegalArgumentException("field decltype not resolved"), instance?.deserialize(ilMethod))
+
+        is IlArrayAccessDto -> IlArrayAccess(array.deserialize(ilMethod), index.deserialize(ilMethod))
+        is IlVarAccessDto -> when (kind) {
+            IlVarKind.local -> ilMethod.locals[index]
+            IlVarKind.temp -> ilMethod.temps[index]
+            IlVarKind.err -> ilMethod.errs[index]
+        }
 
 //    is IlArgAccessDto -> ilMethod.args[index]
-    else -> throw NotImplementedError()
+        else -> throw NotImplementedError()
+    }
 }
 
 class IlUnaryOp(val operand: IlExpr) : IlExpr {
@@ -302,8 +305,9 @@ class IlArgument(private val dto: IlParameterDto) : IlLocal {
 }
 
 class IlLocalVar(val type: IlType, val index: Int) : IlLocal {
-    constructor(dto: IlVarDto, typeLoader: IlPublication):
+    constructor(dto: IlVarDto, typeLoader: IlPublication) :
             this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
+
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlLocalVar(this)
     }
@@ -314,8 +318,9 @@ class IlLocalVar(val type: IlType, val index: Int) : IlLocal {
 }
 
 class IlTempVar(val type: IlType, val index: Int) : IlLocal {
-    constructor(dto: IlVarDto, typeLoader: IlPublication):
+    constructor(dto: IlVarDto, typeLoader: IlPublication) :
             this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
+
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlTempVar(this)
     }
@@ -326,7 +331,7 @@ class IlTempVar(val type: IlType, val index: Int) : IlLocal {
 }
 
 class IlErrVar(val type: IlType, val index: Int) : IlLocal {
-    constructor(dto: IlVarDto, typeLoader: IlPublication):
+    constructor(dto: IlVarDto, typeLoader: IlPublication) :
             this(typeLoader.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
 
     override fun <T> accept(visitor: IlExprVisitor<T>): T {

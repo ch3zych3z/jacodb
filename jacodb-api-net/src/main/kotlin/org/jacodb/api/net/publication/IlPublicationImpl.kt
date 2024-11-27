@@ -23,7 +23,7 @@ import org.jacodb.api.net.generated.models.IlTypeDto
 
 class IlPublicationImpl(
     override val db: IlDatabase,
-    features: List<IlPublicationFeature>,
+    override val features: List<IlPublicationFeature>,
     val settings: IlSettings
 ) : IlPublication {
     override val featuresChain = features.filter { it !is IlPublicationCache }

@@ -25,7 +25,7 @@ import org.jacodb.api.net.ilinstances.IlAttribute
 import org.jacodb.api.net.ilinstances.IlField
 import java.util.*
 
-// typeLoader should be public in particular to resolve refs inside TAC
+// publication should be public in particular to resolve refs inside TAC
 open class IlType(private val dto: IlTypeDto, val publication: IlPublication) : IlInstance {
     val declType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it.typeName) } }
     val namespace: String = dto.namespaceName
