@@ -20,6 +20,7 @@ import org.jacodb.api.net.IlDatabase
 import org.jacodb.api.net.IlDatabasePersistence
 import org.jacodb.api.net.IlSettings
 import org.jacodb.api.net.IlPublication
+import org.jacodb.api.net.IlPublicationFeature
 import org.jacodb.api.net.storage.IlDatabasePersistenceImpl
 import org.jacodb.api.net.publication.IlPublicationImpl
 import org.jacodb.api.storage.ers.EmptyErsSettings
@@ -30,6 +31,10 @@ class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
 
     override fun publication(): IlPublication {
         return IlPublicationImpl(this, emptyList(), settings)
+    }
+
+    override fun publication(features: List<IlPublicationFeature>): IlPublication {
+        return IlPublicationImpl(this, features, settings)
     }
 
     override fun close() {

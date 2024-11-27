@@ -45,11 +45,6 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
         return approximationType?.methods
     }
 
-
-    override fun transformInstList(instList: List<IlStmt>): List<IlStmt> {
-        TODO("Not yet implemented")
-    }
-
     override fun onSignal(signal: IlSignal) {
         when (signal) {
             // TODO fill approx maps
@@ -79,6 +74,13 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
 //                    }
 //                }IlDatab
         }
+    }
+
+    override fun transformInstList(
+        method: IlMethod,
+        instList: List<IlStmt>
+    ): List<IlStmt> {
+        TODO("Not yet implemented")
     }
 }
 

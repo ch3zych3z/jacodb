@@ -25,14 +25,15 @@ import org.jacodb.api.net.ilinstances.IlStmt
 
 interface IlPublication {
     val db: IlDatabase
+    val features: List<IlPublicationFeature>
     val featuresChain: IlFeaturesChain
     val allTypes: List<IlTypeDto>
     fun findIlTypeOrNull(name: String): IlType?
 }
 
 interface IlPublicationFeature {
-    fun on(event: IlPublicationEvent) { }
-    fun event(result: Any) : IlPublicationEvent? = null
+    fun on(event: IlPublicationEvent) {}
+    fun event(result: Any): IlPublicationEvent? = null
 }
 
 interface IlTypeSearchFeature : IlPublicationFeature {
@@ -49,7 +50,7 @@ interface IlMethodExtFeature : IlPublicationFeature {
 }
 
 interface IlInstExtFeature : IlPublicationFeature {
-    fun transformInstList(instList: List<IlStmt>): List<IlStmt>
+    fun transformInstList(method: IlMethod, instList: List<IlStmt>): List<IlStmt>
 }
 
 class IlPublicationEvent(val feature: IlTypeSearchFeature, val result: Any)

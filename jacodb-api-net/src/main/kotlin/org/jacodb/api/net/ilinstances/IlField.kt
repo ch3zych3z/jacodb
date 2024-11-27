@@ -23,6 +23,7 @@ import org.jacodb.api.net.generated.models.IlFieldDto
 
 class IlField(private val declType: IlType, private val dto: IlFieldDto, typeLoader: IlPublication) : IlInstance {
     val fieldType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.fieldType.typeName)!! }
+    val token = 1
     val attributes: MutableList<IlAttribute> = mutableListOf()
     val isStatic: Boolean = dto.isStatic
     val name: String = dto.name

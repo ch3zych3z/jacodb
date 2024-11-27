@@ -20,13 +20,13 @@ import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.storage.IlDbSymbolInterner
 import org.jacodb.api.storage.ers.EntityRelationshipStorage
 import java.io.Closeable
-import java.lang.NullPointerException
 import java.util.concurrent.ConcurrentHashMap
 
 interface IlDatabase : Closeable {
     val persistence : IlDatabasePersistence
 
     fun publication() : IlPublication
+    fun publication(features: List<IlPublicationFeature>): IlPublication
 }
 
 

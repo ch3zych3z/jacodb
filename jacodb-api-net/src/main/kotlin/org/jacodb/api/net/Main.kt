@@ -17,8 +17,8 @@
 package org.jacodb.api.net
 
 import org.jacodb.api.net.database.IlDatabaseImpl
+import org.jacodb.api.net.features.IlMethodInstructionsFeature
 import org.jacodb.api.net.rdinfra.NetApiServer
-import org.jacodb.api.net.rdinfra.TestSigDumper
 
 
 fun main(args: Array<String>) {
@@ -33,11 +33,23 @@ fun main(args: Array<String>) {
     val api = NetApiServer(exePath, asmPath, database)
     api.requestTestAsm()
 
-    val typeLoader = database.typeLoader()
+    val publication = database.publication(listOf(IlMethodInstructionsFeature()))
 
-    val allTypes = typeLoader.allTypes
+    val allTypes = publication.allTypes
+    println("types fetched")
+    allTypes.forEach { typeDto ->
+        val type = publication.findIlTypeOrNull(typeDto.name)
 
-    val dsd = TestSigDumper.dump(allTypes)
+        if (type != null) {
+            val methods = type.methods
+            publication.featuresChain.run<IlMethodExtFeature> {
+                if (methods.isNotEmpty()) {
+                    val res = instList(methods[0])
+                    println(res?.instructions?.size ?: "dunno")
+                }
 
-    api.close()
+            }
+        }
+        api.close()
+    }
 }

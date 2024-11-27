@@ -144,7 +144,7 @@ interface IlBranchStmt : IlStmt
 
 class IlGotoStmt(val target: IlStmt) : IlBranchStmt {
 
-    constructor(dto: IlBranchStmtDto, src: IlMethod) : this(src.body[min(dto.target, src.body.size - 1)])
+    constructor(dto: IlBranchStmtDto, src: IlMethod) : this(IlStmt.deserialize(src, src.body[min(dto.target, src.body.size - 1)]))
 
 //    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
 //        // TODO NestedFinally
@@ -175,7 +175,8 @@ class IlGotoStmt(val target: IlStmt) : IlBranchStmt {
 class IlIfStmt(val target: IlStmt, val condition: IlExpr) : IlBranchStmt {
 
     constructor(dto: IlIfStmtDto, src: IlMethod) : this(
-        src.body[min(dto.target, src.body.size - 1)],
+
+        IlStmt.deserialize(src, src.body[min(dto.target, src.body.size - 1)]),
         dto.cond.deserialize(src)
     )
 
