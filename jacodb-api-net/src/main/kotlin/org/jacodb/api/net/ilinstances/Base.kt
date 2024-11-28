@@ -18,7 +18,7 @@ package org.jacodb.api.net.ilinstances
 
 interface IlValue : IlExpr
 interface IlLocal : IlValue
-interface IlConst : IlValue
-abstract class IlNumericConst<T>(open val value: T) : IlConst {
+interface IlConstant : IlValue
+abstract class IlNumericConstant<T>(open val value: T) : IlConstant {
     override fun toString(): String = "$value"
 }

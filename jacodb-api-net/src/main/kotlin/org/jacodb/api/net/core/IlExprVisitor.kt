@@ -20,49 +20,49 @@ import org.jacodb.api.net.ilinstances.*
 
 interface IlConstVisitor<out T> {
     fun visitIlNullConst(const: IlNull): T
-    fun visitIlBoolConst(const: IlBoolConst): T
-    fun visitIlStringConst(const: IlStringConst): T
-    fun visitIlCharConst(const: IlCharConst): T
+    fun visitIlBoolConst(const: IlBoolConstant): T
+    fun visitIlStringConst(const: IlStringConstant): T
+    fun visitIlCharConst(const: IlCharConstant): T
 
-    fun visitIlInt8Const(const: IlInt8Const): T
-    fun visitIlInt16Const(const: IlInt16Const): T
-    fun visitIlInt32Const(const: IlInt32Const): T
-    fun visitIlInt64Const(const: IlInt64Const): T
-    fun visitIlUInt8Const(const: IlUInt8Const): T
-    fun visitIlUInt16Const(const: IlUInt16Const): T
-    fun visitIlUInt32Const(const: IlUInt32Const): T
-    fun visitIlUInt64Const(const: IlUInt64Const): T
-    fun visitIlFloatConst(const: IlFloatConst): T
-    fun visitIlDoubleConst(const: IlDoubleConst): T
+    fun visitIlInt8Const(const: IlInt8Constant): T
+    fun visitIlInt16Const(const: IlInt16Constant): T
+    fun visitIlInt32Const(const: IlInt32Constant): T
+    fun visitIlInt64Const(const: IlInt64Constant): T
+    fun visitIlUInt8Const(const: IlUInt8Constant): T
+    fun visitIlUInt16Const(const: IlUInt16Constant): T
+    fun visitIlUInt32Const(const: IlUInt32Constant): T
+    fun visitIlUInt64Const(const: IlUInt64Constant): T
+    fun visitIlFloatConst(const: IlFloatConstant): T
+    fun visitIlDoubleConst(const: IlDoubleConstant): T
 
-    fun visitIlEnumConst(const: IlEnumConst): T
+    fun visitIlEnumConst(const: IlEnumConstant): T
     fun visitIlTypeRefConst(const: IlTypeRef): T
     fun visitIlMethodRefConst(const: IlMethodRef): T
     fun visitIlFieldRefConst(const: IlFieldRef): T
-    fun visitIlArrayConst(const: IlArrayConst): T
+    fun visitIlArrayConst(const: IlArrayConstant): T
     
     interface Default<out T> : IlConstVisitor<T> {
         fun visitDefault(value: IlValue): T
 
         override fun visitIlNullConst(const: IlNull): T = visitDefault(const)
-        override fun visitIlBoolConst(const: IlBoolConst): T = visitDefault(const)
-        override fun visitIlStringConst(const: IlStringConst): T = visitDefault(const)
-        override fun visitIlCharConst(const: IlCharConst): T = visitDefault(const)
-        override fun visitIlInt8Const(const: IlInt8Const): T = visitDefault(const)
-        override fun visitIlInt16Const(const: IlInt16Const): T = visitDefault(const)
-        override fun visitIlInt32Const(const: IlInt32Const): T = visitDefault(const)
-        override fun visitIlInt64Const(const: IlInt64Const): T = visitDefault(const)
-        override fun visitIlUInt8Const(const: IlUInt8Const): T = visitDefault(const)
-        override fun visitIlUInt16Const(const: IlUInt16Const): T = visitDefault(const)
-        override fun visitIlUInt32Const(const: IlUInt32Const): T = visitDefault(const)
-        override fun visitIlUInt64Const(const: IlUInt64Const): T = visitDefault(const)
-        override fun visitIlFloatConst(const: IlFloatConst): T = visitDefault(const)
-        override fun visitIlDoubleConst(const: IlDoubleConst): T = visitDefault(const)
-        override fun visitIlEnumConst(const: IlEnumConst): T = visitDefault(const)
+        override fun visitIlBoolConst(const: IlBoolConstant): T = visitDefault(const)
+        override fun visitIlStringConst(const: IlStringConstant): T = visitDefault(const)
+        override fun visitIlCharConst(const: IlCharConstant): T = visitDefault(const)
+        override fun visitIlInt8Const(const: IlInt8Constant): T = visitDefault(const)
+        override fun visitIlInt16Const(const: IlInt16Constant): T = visitDefault(const)
+        override fun visitIlInt32Const(const: IlInt32Constant): T = visitDefault(const)
+        override fun visitIlInt64Const(const: IlInt64Constant): T = visitDefault(const)
+        override fun visitIlUInt8Const(const: IlUInt8Constant): T = visitDefault(const)
+        override fun visitIlUInt16Const(const: IlUInt16Constant): T = visitDefault(const)
+        override fun visitIlUInt32Const(const: IlUInt32Constant): T = visitDefault(const)
+        override fun visitIlUInt64Const(const: IlUInt64Constant): T = visitDefault(const)
+        override fun visitIlFloatConst(const: IlFloatConstant): T = visitDefault(const)
+        override fun visitIlDoubleConst(const: IlDoubleConstant): T = visitDefault(const)
+        override fun visitIlEnumConst(const: IlEnumConstant): T = visitDefault(const)
         override fun visitIlTypeRefConst(const: IlTypeRef): T = visitDefault(const)
         override fun visitIlMethodRefConst(const: IlMethodRef): T = visitDefault(const)
         override fun visitIlFieldRefConst(const: IlFieldRef): T = visitDefault(const)
-        override fun visitIlArrayConst(const: IlArrayConst): T = visitDefault(const)
+        override fun visitIlArrayConst(const: IlArrayConstant): T = visitDefault(const)
     }
 }
 

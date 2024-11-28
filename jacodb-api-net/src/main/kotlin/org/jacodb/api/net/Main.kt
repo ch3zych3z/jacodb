@@ -19,6 +19,7 @@ package org.jacodb.api.net
 import org.jacodb.api.net.database.IlDatabaseImpl
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
 import org.jacodb.api.net.rdinfra.NetApiServer
+import java.lang.Exception
 
 
 fun main(args: Array<String>) {
@@ -35,21 +36,23 @@ fun main(args: Array<String>) {
 
     val publication = database.publication(listOf(IlMethodInstructionsFeature()))
 
+    api.close()
     val allTypes = publication.allTypes
     println("types fetched")
     allTypes.forEach { typeDto ->
-        val type = publication.findIlTypeOrNull(typeDto.name)
+        val type = publication.findIlTypeOrNull(typeDto.fullname)
 
         if (type != null) {
             val methods = type.methods
             publication.featuresChain.run<IlMethodExtFeature> {
                 if (methods.isNotEmpty()) {
-                    val res = instList(methods[0])
+                    println("method ${methods.first().name} from ${methods.first().declaringType.name}")
+                    val res = instList(methods.first())
                     println(res?.instructions?.size ?: "dunno")
+
                 }
 
             }
         }
-        api.close()
     }
 }

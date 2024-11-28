@@ -86,7 +86,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = -2680165846883938225L
+        const val serializationHash = -3729319067140704816L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -115,13 +115,14 @@ val IProtocol.ilModel get() = getOrCreateExtension(IlModel::class) { @Suppress("
 
 
 /**
- * #### Generated from [IlModel.kt:61]
+ * #### Generated from [IlModel.kt:62]
  */
 class IlArrayTypeDto (
     val elementType: TypeId,
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -134,6 +135,7 @@ class IlArrayTypeDto (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -153,6 +155,7 @@ class IlArrayTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -162,13 +165,14 @@ class IlArrayTypeDto (
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val elementType = TypeId.read(ctx, buffer)
-            return IlArrayTypeDto(elementType, asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
+            return IlArrayTypeDto(elementType, asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArrayTypeDto)  {
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -197,6 +201,7 @@ class IlArrayTypeDto (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -215,6 +220,7 @@ class IlArrayTypeDto (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -233,6 +239,7 @@ class IlArrayTypeDto (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -252,7 +259,7 @@ class IlArrayTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:64]
+ * #### Generated from [IlModel.kt:65]
  */
 class IlAttrDto (
     val attrType: TypeId,
@@ -336,7 +343,7 @@ class IlAttrDto (
 
 
 /**
- * #### Generated from [IlModel.kt:105]
+ * #### Generated from [IlModel.kt:106]
  */
 class IlCatchScopeDto (
     tb: Int,
@@ -418,12 +425,13 @@ class IlCatchScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:60]
+ * #### Generated from [IlModel.kt:61]
  */
 class IlClassTypeDto (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -436,6 +444,7 @@ class IlClassTypeDto (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -455,6 +464,7 @@ class IlClassTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -463,13 +473,14 @@ class IlClassTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlClassTypeDto(asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
+            return IlClassTypeDto(asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlClassTypeDto)  {
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -496,6 +507,7 @@ class IlClassTypeDto (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -513,6 +525,7 @@ class IlClassTypeDto (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -530,6 +543,7 @@ class IlClassTypeDto (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -630,7 +644,7 @@ class IlDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:99]
+ * #### Generated from [IlModel.kt:100]
  */
 abstract class IlEhScopeDto (
     val tb: Int,
@@ -746,7 +760,7 @@ class IlEhScopeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:50]
+ * #### Generated from [IlModel.kt:51]
  */
 class IlEnumTypeDto (
     val underlyingType: TypeId,
@@ -755,6 +769,7 @@ class IlEnumTypeDto (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -767,6 +782,7 @@ class IlEnumTypeDto (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -786,6 +802,7 @@ class IlEnumTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -797,13 +814,14 @@ class IlEnumTypeDto (
             val underlyingType = TypeId.read(ctx, buffer)
             val names = buffer.readList { buffer.readString() }
             val values = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
-            return IlEnumTypeDto(underlyingType, names, values, asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
+            return IlEnumTypeDto(underlyingType, names, values, asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlEnumTypeDto)  {
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -836,6 +854,7 @@ class IlEnumTypeDto (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -856,6 +875,7 @@ class IlEnumTypeDto (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -876,6 +896,7 @@ class IlEnumTypeDto (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -895,7 +916,7 @@ class IlEnumTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:97]
+ * #### Generated from [IlModel.kt:98]
  */
 class IlErrVarDto (
     type: TypeId,
@@ -963,7 +984,7 @@ class IlErrVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:110]
+ * #### Generated from [IlModel.kt:111]
  */
 class IlFaultScopeDto (
     tb: Int,
@@ -1045,7 +1066,7 @@ class IlFaultScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:72]
+ * #### Generated from [IlModel.kt:73]
  */
 class IlFieldDto (
     val fieldType: TypeId,
@@ -1123,7 +1144,7 @@ class IlFieldDto (
 
 
 /**
- * #### Generated from [IlModel.kt:107]
+ * #### Generated from [IlModel.kt:108]
  */
 class IlFilterScopeDto (
     val fb: Int,
@@ -1211,7 +1232,7 @@ class IlFilterScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:111]
+ * #### Generated from [IlModel.kt:112]
  */
 class IlFinallyScopeDto (
     tb: Int,
@@ -1293,7 +1314,7 @@ class IlFinallyScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:92]
+ * #### Generated from [IlModel.kt:93]
  */
 class IlLocalVarDto (
     val isPinned: Boolean,
@@ -1367,7 +1388,7 @@ class IlLocalVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:114]
+ * #### Generated from [IlModel.kt:115]
  */
 class IlMethodDto (
     val returnType: TypeId,
@@ -1379,7 +1400,7 @@ class IlMethodDto (
     val temps: List<IlTempVarDto>,
     val errs: List<IlErrVarDto>,
     val ehScopes: List<IlEhScopeDto>,
-    val body: List<IlStmtDto>
+    val rawInstList: List<IlStmtDto>
 ) : IlDto (
 ) {
     //companion
@@ -1398,8 +1419,8 @@ class IlMethodDto (
             val temps = buffer.readList { IlTempVarDto.read(ctx, buffer) }
             val errs = buffer.readList { IlErrVarDto.read(ctx, buffer) }
             val ehScopes = buffer.readList { ctx.serializers.readPolymorphic<IlEhScopeDto>(ctx, buffer, IlEhScopeDto) }
-            val body = buffer.readList { ctx.serializers.readPolymorphic<IlStmtDto>(ctx, buffer, IlStmtDto) }
-            return IlMethodDto(returnType, attrs, name, parameters, resolved, locals, temps, errs, ehScopes, body)
+            val rawInstList = buffer.readList { ctx.serializers.readPolymorphic<IlStmtDto>(ctx, buffer, IlStmtDto) }
+            return IlMethodDto(returnType, attrs, name, parameters, resolved, locals, temps, errs, ehScopes, rawInstList)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMethodDto)  {
@@ -1412,7 +1433,7 @@ class IlMethodDto (
             buffer.writeList(value.temps) { v -> IlTempVarDto.write(ctx, buffer, v) }
             buffer.writeList(value.errs) { v -> IlErrVarDto.write(ctx, buffer, v) }
             buffer.writeList(value.ehScopes) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
-            buffer.writeList(value.body) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
+            buffer.writeList(value.rawInstList) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
         }
         
         
@@ -1437,7 +1458,7 @@ class IlMethodDto (
         if (temps != other.temps) return false
         if (errs != other.errs) return false
         if (ehScopes != other.ehScopes) return false
-        if (body != other.body) return false
+        if (rawInstList != other.rawInstList) return false
         
         return true
     }
@@ -1453,7 +1474,7 @@ class IlMethodDto (
         __r = __r*31 + temps.hashCode()
         __r = __r*31 + errs.hashCode()
         __r = __r*31 + ehScopes.hashCode()
-        __r = __r*31 + body.hashCode()
+        __r = __r*31 + rawInstList.hashCode()
         return __r
     }
     //pretty print
@@ -1469,7 +1490,7 @@ class IlMethodDto (
             print("temps = "); temps.print(printer); println()
             print("errs = "); errs.print(printer); println()
             print("ehScopes = "); ehScopes.print(printer); println()
-            print("body = "); body.print(printer); println()
+            print("rawInstList = "); rawInstList.print(printer); println()
         }
         printer.print(")")
     }
@@ -1481,7 +1502,7 @@ class IlMethodDto (
 
 
 /**
- * #### Generated from [IlModel.kt:79]
+ * #### Generated from [IlModel.kt:80]
  */
 data class IlParameterDto (
     val index: Int,
@@ -1562,13 +1583,14 @@ data class IlParameterDto (
 
 
 /**
- * #### Generated from [IlModel.kt:45]
+ * #### Generated from [IlModel.kt:46]
  */
 class IlPointerTypeDto (
     val targetType: TypeId,
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -1581,6 +1603,7 @@ class IlPointerTypeDto (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -1600,6 +1623,7 @@ class IlPointerTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -1609,13 +1633,14 @@ class IlPointerTypeDto (
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val targetType = TypeId.read(ctx, buffer)
-            return IlPointerTypeDto(targetType, asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
+            return IlPointerTypeDto(targetType, asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlPointerTypeDto)  {
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -1644,6 +1669,7 @@ class IlPointerTypeDto (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -1662,6 +1688,7 @@ class IlPointerTypeDto (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -1680,6 +1707,7 @@ class IlPointerTypeDto (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -1699,12 +1727,13 @@ class IlPointerTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:49]
+ * #### Generated from [IlModel.kt:50]
  */
 class IlPrimitiveTypeDto (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -1717,6 +1746,7 @@ class IlPrimitiveTypeDto (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -1736,6 +1766,7 @@ class IlPrimitiveTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -1744,13 +1775,14 @@ class IlPrimitiveTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlPrimitiveTypeDto(asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
+            return IlPrimitiveTypeDto(asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlPrimitiveTypeDto)  {
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -1777,6 +1809,7 @@ class IlPrimitiveTypeDto (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -1794,6 +1827,7 @@ class IlPrimitiveTypeDto (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -1811,6 +1845,7 @@ class IlPrimitiveTypeDto (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -1830,12 +1865,13 @@ class IlPrimitiveTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:58]
+ * #### Generated from [IlModel.kt:59]
  */
 abstract class IlReferenceTypeDto (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -1848,6 +1884,7 @@ abstract class IlReferenceTypeDto (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -1865,6 +1902,7 @@ abstract class IlReferenceTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -1875,7 +1913,7 @@ abstract class IlReferenceTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlReferenceTypeDto_Unknown(asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlReferenceTypeDto_Unknown(asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -1896,6 +1934,7 @@ class IlReferenceTypeDto_Unknown (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -1910,6 +1949,7 @@ class IlReferenceTypeDto_Unknown (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -1933,6 +1973,7 @@ class IlReferenceTypeDto_Unknown (
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -1960,6 +2001,7 @@ class IlReferenceTypeDto_Unknown (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -1977,6 +2019,7 @@ class IlReferenceTypeDto_Unknown (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -1994,6 +2037,7 @@ class IlReferenceTypeDto_Unknown (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -2013,7 +2057,7 @@ class IlReferenceTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:127]
+ * #### Generated from [IlModel.kt:128]
  */
 class IlSignatureDto (
     val returnType: TypeId,
@@ -2091,12 +2135,13 @@ class IlSignatureDto (
 
 
 /**
- * #### Generated from [IlModel.kt:56]
+ * #### Generated from [IlModel.kt:57]
  */
 class IlStructTypeDto (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -2109,6 +2154,7 @@ class IlStructTypeDto (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -2128,6 +2174,7 @@ class IlStructTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -2136,13 +2183,14 @@ class IlStructTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlStructTypeDto(asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
+            return IlStructTypeDto(asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlStructTypeDto)  {
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -2169,6 +2217,7 @@ class IlStructTypeDto (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -2186,6 +2235,7 @@ class IlStructTypeDto (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -2203,6 +2253,7 @@ class IlStructTypeDto (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -2222,7 +2273,7 @@ class IlStructTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:96]
+ * #### Generated from [IlModel.kt:97]
  */
 class IlTempVarDto (
     type: TypeId,
@@ -2296,6 +2347,7 @@ abstract class IlTypeDto (
     val asmName: String,
     val namespaceName: String,
     val name: String,
+    val fullname: String,
     val declType: TypeId?,
     val genericArgs: List<TypeId>,
     val isGenericParam: Boolean,
@@ -2314,6 +2366,7 @@ abstract class IlTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -2324,7 +2377,7 @@ abstract class IlTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlTypeDto_Unknown(asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlTypeDto_Unknown(asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -2345,6 +2398,7 @@ class IlTypeDto_Unknown (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -2359,6 +2413,7 @@ class IlTypeDto_Unknown (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -2382,6 +2437,7 @@ class IlTypeDto_Unknown (
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -2409,6 +2465,7 @@ class IlTypeDto_Unknown (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -2426,6 +2483,7 @@ class IlTypeDto_Unknown (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -2443,6 +2501,7 @@ class IlTypeDto_Unknown (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -2462,12 +2521,13 @@ class IlTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:48]
+ * #### Generated from [IlModel.kt:49]
  */
 abstract class IlValueTypeDto (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -2480,6 +2540,7 @@ abstract class IlValueTypeDto (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -2497,6 +2558,7 @@ abstract class IlValueTypeDto (
             val asmName = buffer.readString()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
+            val fullname = buffer.readString()
             val declType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
@@ -2507,7 +2569,7 @@ abstract class IlValueTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlValueTypeDto_Unknown(asmName, namespaceName, name, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlValueTypeDto_Unknown(asmName, namespaceName, name, fullname, declType, genericArgs, isGenericParam, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -2528,6 +2590,7 @@ class IlValueTypeDto_Unknown (
     asmName: String,
     namespaceName: String,
     name: String,
+    fullname: String,
     declType: TypeId?,
     genericArgs: List<TypeId>,
     isGenericParam: Boolean,
@@ -2542,6 +2605,7 @@ class IlValueTypeDto_Unknown (
     asmName,
     namespaceName,
     name,
+    fullname,
     declType,
     genericArgs,
     isGenericParam,
@@ -2565,6 +2629,7 @@ class IlValueTypeDto_Unknown (
             buffer.writeString(value.asmName)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
+            buffer.writeString(value.fullname)
             buffer.writeNullable(value.declType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
@@ -2592,6 +2657,7 @@ class IlValueTypeDto_Unknown (
         if (asmName != other.asmName) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
+        if (fullname != other.fullname) return false
         if (declType != other.declType) return false
         if (genericArgs != other.genericArgs) return false
         if (isGenericParam != other.isGenericParam) return false
@@ -2609,6 +2675,7 @@ class IlValueTypeDto_Unknown (
         __r = __r*31 + asmName.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
+        __r = __r*31 + fullname.hashCode()
         __r = __r*31 + if (declType != null) declType.hashCode() else 0
         __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
@@ -2626,6 +2693,7 @@ class IlValueTypeDto_Unknown (
             print("asmName = "); asmName.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
+            print("fullname = "); fullname.print(printer); println()
             print("declType = "); declType.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
@@ -2645,7 +2713,7 @@ class IlValueTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:87]
+ * #### Generated from [IlModel.kt:88]
  */
 abstract class IlVarDto (
     val type: TypeId,

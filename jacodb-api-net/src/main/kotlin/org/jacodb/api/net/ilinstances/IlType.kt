@@ -23,27 +23,37 @@ import org.jacodb.api.net.generated.models.*
 import kotlin.LazyThreadSafetyMode.*
 import org.jacodb.api.net.ilinstances.IlAttribute
 import org.jacodb.api.net.ilinstances.IlField
+import org.jacodb.api.net.ilinstances.IlMethod
 import java.util.*
 
 // publication should be public in particular to resolve refs inside TAC
 open class IlType(private val dto: IlTypeDto, val publication: IlPublication) : IlInstance {
-    val declType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it.typeName) } }
+    val declaringType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it.typeName) } }
+    val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it.typeName)!! } }
+
+    val asmName = dto.asmName
     val namespace: String = dto.namespaceName
     val name: String = dto.name
-    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, publication) } }
-    val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it.typeName)!! } }
-    val fields: List<IlField> by lazy(PUBLICATION) { dto.fields.map { IlField(this, it, publication) }
-        .joinFeatureFields(this, publication.featuresChain) }
-    val methods: List<IlMethod> by lazy(PUBLICATION) { dto.methods.map { IlMethod(this, it, publication) }
-        .joinFeatureMethods(this, publication.featuresChain) }
+    val id: TypeId
+        get() = TypeId(asmName, "$namespace.$name")
 
+    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, publication) } }
+
+    val fields: List<IlField> by lazy(PUBLICATION) {
+        val fields = dto.fields.map { IlField(this, it, publication) }
+        fields.joinFeatureFields(this, publication.featuresChain)
+    }
+    val methods: List<IlMethod> by lazy(PUBLICATION) {
+        val methods = dto.methods.map { IlMethod(this, it) }
+        methods.joinFeatureMethods(this, publication.featuresChain)
+    }
 
     override fun toString(): String {
         return name
     }
 }
 
-class IlPointerType(private val dto: IlPointerTypeDto, typeLoader: IlPublication): IlType(dto, typeLoader)
+class IlPointerType(private val dto: IlPointerTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
 open class IlValueType(private val dto: IlValueTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
 class IlEnumType(private val dto: IlEnumTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
 class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
@@ -54,24 +64,24 @@ class IlArrayType(private val dto: IlArrayTypeDto, typeLoader: IlPublication) : 
 class IlClassType(private val dto: IlClassTypeDto, typeLoader: IlPublication) : IlType(dto, typeLoader)
 
 
-private fun List<IlField>.joinFeatureFields(type: IlType, featuresChain: IlFeaturesChain) : List<IlField> {
-    val additional = TreeSet<IlField> { a, b -> a.name.compareTo(b.name)}
+private fun List<IlField>.joinFeatureFields(type: IlType, featuresChain: IlFeaturesChain): List<IlField> {
+    val additional = TreeSet<IlField> { a, b -> a.name.compareTo(b.name) }
     featuresChain.run<IlTypeExtFeature> {
-        fieldsOf(type)?.let { additional.addAll(it)  }
+        fieldsOf(type)?.let { additional.addAll(it) }
     }
     return appendOrReplace(additional, IlField::name)
 }
 
-private fun List<IlMethod>.joinFeatureMethods(type: IlType, featuresChain: IlFeaturesChain ) : List<IlMethod> {
-    val additional = TreeSet<IlMethod> { a, b -> a.name.compareTo(b.name)}
+private fun List<IlMethod>.joinFeatureMethods(type: IlType, featuresChain: IlFeaturesChain): List<IlMethod> {
+    val additional = TreeSet<IlMethod> { a, b -> a.name.compareTo(b.name) }
     featuresChain.run<IlTypeExtFeature> {
-        methodsOf(type)?.let { additional.addAll(it)  }
+        methodsOf(type)?.let { additional.addAll(it) }
     }
     return appendOrReplace(additional, IlMethod::name)
 }
 
 
-private fun <T> List<T>.appendOrReplace(additional: Set<T>, getKey: (T) -> String) : List<T> {
+private fun <T> List<T>.appendOrReplace(additional: Set<T>, getKey: (T) -> String): List<T> {
     if (additional.isEmpty()) return this
     val additionalMap = additional.associateBy(getKey).toMutableMap()
     return map {

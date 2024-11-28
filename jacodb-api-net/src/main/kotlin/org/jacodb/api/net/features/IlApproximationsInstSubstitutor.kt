@@ -46,8 +46,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlNewExpr(expr: IlNewExpr): IlExpr {
-        val newArgs = expr.args.map { it.accept(this) }
-        return IlNewExpr(expr.type.eliminateApproximation(), newArgs)
+        return IlNewExpr(expr.type.eliminateApproximation())
     }
 
     override fun visitIlSizeOfExpr(expr: IlSizeOfExpr): IlExpr {
@@ -121,22 +120,22 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlNullConst(const: IlNull): IlExpr = const
-    override fun visitIlBoolConst(const: IlBoolConst): IlExpr = const
-    override fun visitIlStringConst(const: IlStringConst): IlExpr = const
-    override fun visitIlCharConst(const: IlCharConst): IlExpr = const
+    override fun visitIlBoolConst(const: IlBoolConstant): IlExpr = const
+    override fun visitIlStringConst(const: IlStringConstant): IlExpr = const
+    override fun visitIlCharConst(const: IlCharConstant): IlExpr = const
 
-    override fun visitIlInt8Const(const: IlInt8Const): IlExpr = const
-    override fun visitIlInt16Const(const: IlInt16Const): IlExpr = const
-    override fun visitIlInt32Const(const: IlInt32Const): IlExpr = const
-    override fun visitIlInt64Const(const: IlInt64Const): IlExpr = const
-    override fun visitIlUInt8Const(const: IlUInt8Const): IlExpr = const
-    override fun visitIlUInt16Const(const: IlUInt16Const): IlExpr = const
-    override fun visitIlUInt32Const(const: IlUInt32Const): IlExpr = const
-    override fun visitIlUInt64Const(const: IlUInt64Const): IlExpr = const
-    override fun visitIlFloatConst(const: IlFloatConst): IlExpr = const
-    override fun visitIlDoubleConst(const: IlDoubleConst): IlExpr = const
-    override fun visitIlEnumConst(const: IlEnumConst): IlExpr =
-        IlEnumConst(const.enumType.eliminateApproximation(), const.underlyingConst.accept(this) as IlConst)
+    override fun visitIlInt8Const(const: IlInt8Constant): IlExpr = const
+    override fun visitIlInt16Const(const: IlInt16Constant): IlExpr = const
+    override fun visitIlInt32Const(const: IlInt32Constant): IlExpr = const
+    override fun visitIlInt64Const(const: IlInt64Constant): IlExpr = const
+    override fun visitIlUInt8Const(const: IlUInt8Constant): IlExpr = const
+    override fun visitIlUInt16Const(const: IlUInt16Constant): IlExpr = const
+    override fun visitIlUInt32Const(const: IlUInt32Constant): IlExpr = const
+    override fun visitIlUInt64Const(const: IlUInt64Constant): IlExpr = const
+    override fun visitIlFloatConst(const: IlFloatConstant): IlExpr = const
+    override fun visitIlDoubleConst(const: IlDoubleConstant): IlExpr = const
+    override fun visitIlEnumConst(const: IlEnumConstant): IlExpr =
+        IlEnumConstant(const.enumType.eliminateApproximation(), const.underlyingConst.accept(this) as IlConstant)
 
     override fun visitIlTypeRefConst(const: IlTypeRef): IlExpr {
         return IlTypeRef(const.referencedType.eliminateApproximation())
@@ -149,9 +148,9 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
         TODO()
     }
 
-    override fun visitIlArrayConst(const: IlArrayConst): IlExpr {
-        val newValues = const.values.map { it.accept(this) as IlConst }
-        return IlArrayConst(newValues)
+    override fun visitIlArrayConst(const: IlArrayConstant): IlExpr {
+        val newValues = const.values.map { it.accept(this) as IlConstant }
+        return IlArrayConstant(newValues)
     }
 
     override fun visitIlAssignStmt(stmt: IlAssignStmt): IlStmt {
@@ -191,6 +190,6 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlIfStmt(stmt: IlIfStmt): IlStmt {
-        return IlIfStmt(stmt.target.accept(this), stmt.condition.accept(this), )
+        return IlIfStmt(stmt.target.accept(this), stmt.condition.accept(this))
     }
 }

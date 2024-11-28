@@ -16,7 +16,6 @@
 
 package org.jacodb.api.net.ilinstances
 
-import org.example.ilinstances.IlMethod
 import org.jacodb.api.net.core.IlStmtVisitor
 import org.jacodb.api.net.generated.models.*
 import kotlin.math.min
@@ -144,15 +143,15 @@ interface IlBranchStmt : IlStmt
 
 class IlGotoStmt(val target: IlStmt) : IlBranchStmt {
 
-    constructor(dto: IlBranchStmtDto, src: IlMethod) : this(IlStmt.deserialize(src, src.body[min(dto.target, src.body.size - 1)]))
+    constructor(dto: IlBranchStmtDto, src: IlMethod) : this(IlStmt.deserialize(src, src.rawInstList[min(dto.target, src.rawInstList.size - 1)]))
 
 //    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
 //        // TODO NestedFinally
 //        val targetIndex = when {
-//            dto.target < src.body.size -> dto.target
-//            else -> src.body.indices.last
+//            dto.target < src.rawInstList.size -> dto.target
+//            else -> src.rawInstList.indices.last
 //        }
-//        target = src.body[targetIndex]
+//        target = src.rawInstList[targetIndex]
 //    }
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
@@ -176,17 +175,17 @@ class IlIfStmt(val target: IlStmt, val condition: IlExpr) : IlBranchStmt {
 
     constructor(dto: IlIfStmtDto, src: IlMethod) : this(
 
-        IlStmt.deserialize(src, src.body[min(dto.target, src.body.size - 1)]),
+        IlStmt.deserialize(src, src.rawInstList[min(dto.target, src.rawInstList.size - 1)]),
         dto.cond.deserialize(src)
     )
 
 //    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
 //        // TOOD forcedFault
 //        val targetIndex = when {
-//            dto.target < src.body.size -> dto.target
-//            else -> src.body.indices.last
+//            dto.target < src.rawInstList.size -> dto.target
+//            else -> src.rawInstList.indices.last
 //        }
-//        target = src.body[targetIndex]
+//        target = src.rawInstList[targetIndex]
 //    }
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {

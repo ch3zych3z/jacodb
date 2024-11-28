@@ -17,7 +17,7 @@
 package org.jacodb.api.net
 
 import org.jacodb.api.net.ilinstances.IlField
-import org.example.ilinstances.IlMethod
+import org.jacodb.api.net.ilinstances.IlMethod
 import org.example.ilinstances.IlType
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
@@ -62,4 +62,4 @@ class ResolvedIlTypeResult(val name: String, val type: IlType?) : FeatureCallRes
 class ResolvedMethodsResult(val type: IlType, val methods: List<IlMethod>?) : FeatureCallResult
 class ResolvedFieldsResult(val type: IlType, val fields: List<IlField>?) : FeatureCallResult
 
-class ResolvedInstructionsResult(val method: IlMethod, val instructions: List<IlStmt>?) : FeatureCallResult
+class ResolvedInstructionsResult(val method: IlMethod, val instructions: List<IlStmt>) : FeatureCallResult

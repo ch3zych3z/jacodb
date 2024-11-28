@@ -22,7 +22,7 @@ import org.jacodb.api.net.generated.models.IlAttrDto
 
 class IlAttribute(private val dto: IlAttrDto, private val publication: IlPublication) {
     val type: IlType by lazy(LazyThreadSafetyMode.PUBLICATION) { publication.findIlTypeOrNull(dto.attrType.typeName)!! }
-    val constructorArgs: List<IlConst> by lazy { dto.ctorArgs.map { it.deserializeConst(publication) }.toList() }
-    val namedArgs: Map<String, IlConst> by lazy(LazyThreadSafetyMode.PUBLICATION)
+    val constructorArgs: List<IlConstant> by lazy { dto.ctorArgs.map { it.deserializeConst(publication) }.toList() }
+    val namedArgs: Map<String, IlConstant> by lazy(LazyThreadSafetyMode.PUBLICATION)
     { dto.namedArgsNames.zip(dto.namedArgsValues).associate { (k, v) -> k to v.deserializeConst(publication) } }
 }

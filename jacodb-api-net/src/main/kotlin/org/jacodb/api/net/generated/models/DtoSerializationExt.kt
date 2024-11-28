@@ -19,7 +19,6 @@ package org.jacodb.api.net.generated.models
 import com.jetbrains.rd.framework.SerializationCtx
 import com.jetbrains.rd.framework.Serializers
 import com.jetbrains.rd.framework.createAbstractBuffer
-import org.jacodb.api.net.ilinstances.IlInt32Const
 
 enum class IlTypeByteId(val id: Byte) {
     POINTER(0),
