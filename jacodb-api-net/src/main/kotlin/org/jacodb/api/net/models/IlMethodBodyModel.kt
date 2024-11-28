@@ -19,13 +19,12 @@
 package org.jacodb.api.net.models
 
 import com.jetbrains.rd.generator.nova.*
-import org.jacodb.api.net.models.IlMethodBodyModel.IlEnumConstDto
 import org.jacodb.api.net.models.IlModel.typeId
 
 object IlMethodBodyModel : Ext(IlRoot) {
-    private val instanceIdRef = structdef {
+    private val instanceId = structdef {
         field("type", typeId)
-        field("instanceToken", PredefinedType.int)
+        field("name", PredefinedType.string)
     }
     private val IlExprDto = basestruct {
         field("type", typeId)
@@ -64,8 +63,8 @@ object IlMethodBodyModel : Ext(IlRoot) {
     private val IlStringConstDto = structdef extends IlConstDto { field("value", PredefinedType.string) }
 
     private val IlTypeRefDto = structdef extends IlConstDto { field("referencedType", typeId) }
-    private val IlMethodRefDto = structdef extends IlConstDto { field("method", instanceIdRef) }
-    private val IlFieldRefDto = structdef extends IlConstDto { field("field", instanceIdRef) }
+    private val IlMethodRefDto = structdef extends IlConstDto { field("method", instanceId) }
+    private val IlFieldRefDto = structdef extends IlConstDto { field("field", instanceId) }
 
     private val IlUnaryOpDto = structdef extends IlExprDto { field("operand", IlExprDto) }
     private val IlBinaryOpDto = structdef extends IlExprDto {
@@ -83,7 +82,7 @@ object IlMethodBodyModel : Ext(IlRoot) {
 
     private val IlFieldAccessDto = structdef extends IlValueDto {
         field("instance", IlExprDto.nullable)
-        field("field", instanceIdRef)
+        field("field", instanceId)
     }
     private val IlArrayAccessDto = structdef extends IlValueDto {
         field("array", IlExprDto)
@@ -96,7 +95,7 @@ object IlMethodBodyModel : Ext(IlRoot) {
     }
     private val IlArrayLengthExprDto = structdef extends IlExprDto { field("array", IlExprDto) }
     private val IlCallDto = structdef extends IlExprDto {
-        field("method", instanceIdRef)
+        field("method", instanceId)
         field("args", immutableList(IlExprDto))
     }
 
@@ -128,7 +127,7 @@ object IlMethodBodyModel : Ext(IlRoot) {
         field("size", IlExprDto)
     }
     private val IlArgListRefDto = structdef extends IlExprDto {
-        field("method", instanceIdRef)
+        field("method", instanceId)
     }
     private val IlCalliDto = structdef extends IlExprDto {
         field("signature", IlModel.IlSignatureDto)
