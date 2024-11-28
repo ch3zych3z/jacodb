@@ -16,7 +16,7 @@
 
 package org.jacodb.api.net.publication
 
-import org.example.ilinstances.IlMethod
+import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.*
 import org.jacodb.impl.caches.PluggableCacheProvider
 

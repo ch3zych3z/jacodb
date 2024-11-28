@@ -64,7 +64,7 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
     private fun findTypeSources(ctx: ILDBContext, fullName: String): Sequence<IlTypeDto> {
         val txn = ctx.txn
         val id = interner.findSymbolIdOrNew(fullName)
-        return txn.find(type = "Type", propertyName = "nameId", value = id ).map { it.toDto() }
+        return txn.find(type = "Type", propertyName = "fullname", value = id ).map { it.toDto() }
     }
 
     override fun findTypeSourceByNameOrNull(fullName: String): IlTypeDto? = read { ctx ->
@@ -78,7 +78,7 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
             val txn = ctx.txn
             types.forEach { type ->
                 val entity = txn.newEntity("Type")
-                entity["nameId"] = type.name.asSymbolId(interner)
+                entity["fullname"] = (type.fullname).asSymbolId(interner)
                 entity["assembly"] = type.asmName.asSymbolId(interner)
                 entity.setRawBlob("bytes", type.getBytes())
                 // type.attrs.forEach { it.saveAttributeInfo(txn, entity) }

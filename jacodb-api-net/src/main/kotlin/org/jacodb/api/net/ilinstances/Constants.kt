@@ -16,86 +16,85 @@
 
 package org.jacodb.api.net.ilinstances
 
-import org.example.ilinstances.IlMethod
 import org.example.ilinstances.IlType
 import org.jacodb.api.net.core.IlExprVisitor
 
-class IlNull : IlConst {
+class IlNull : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlNullConst(this)
 }
 
-data class IlBoolConst(val value: Boolean) : IlConst {
+data class IlBoolConstant(val value: Boolean) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlBoolConst(this)
 
     override fun toString() = "$value"
 }
 
-data class IlStringConst(val value: String) : IlConst {
+data class IlStringConstant(val value: String) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlStringConst(this)
 
     override fun toString() = "`$value`"
 }
 
-data class IlCharConst(override val value: Char) : IlNumericConst<Char>(value) {
+data class IlCharConstant(override val value: Char) : IlNumericConstant<Char>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlCharConst(this)
 }
 
-data class IlInt8Const(override val value: Byte) : IlNumericConst<Byte>(value) {
+data class IlInt8Constant(override val value: Byte) : IlNumericConstant<Byte>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlInt8Const(this)
 }
 
-data class IlUInt8Const(override val value: UByte) : IlNumericConst<UByte>(value) {
+data class IlUInt8Constant(override val value: UByte) : IlNumericConstant<UByte>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlUInt8Const(this)
 }
 
-data class IlInt16Const(override val value: Short) : IlNumericConst<Short>(value) {
+data class IlInt16Constant(override val value: Short) : IlNumericConstant<Short>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlInt16Const(this)
 }
 
-data class IlUInt16Const(override val value: UShort) : IlNumericConst<UShort>(value) {
+data class IlUInt16Constant(override val value: UShort) : IlNumericConstant<UShort>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlUInt16Const(this)
 }
 
-data class IlInt32Const(override val value: Int) : IlNumericConst<Int>(value) {
+data class IlInt32Constant(override val value: Int) : IlNumericConstant<Int>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlInt32Const(this)
 }
 
-data class IlUInt32Const(override val value: UInt) : IlNumericConst<UInt>(value) {
+data class IlUInt32Constant(override val value: UInt) : IlNumericConstant<UInt>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlUInt32Const(this)
 }
 
-data class IlInt64Const(override val value: Long) : IlNumericConst<Long>(value) {
+data class IlInt64Constant(override val value: Long) : IlNumericConstant<Long>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlInt64Const(this)
 }
 
-data class IlUInt64Const(override val value: ULong) : IlNumericConst<ULong>(value) {
+data class IlUInt64Constant(override val value: ULong) : IlNumericConstant<ULong>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlUInt64Const(this)
 }
 
-data class IlFloatConst(override val value: Float) : IlNumericConst<Float>(value) {
+data class IlFloatConstant(override val value: Float) : IlNumericConstant<Float>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlFloatConst(this)
 }
 
-data class IlDoubleConst(override val value: Double) : IlNumericConst<Double>(value) {
+data class IlDoubleConstant(override val value: Double) : IlNumericConstant<Double>(value) {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlDoubleConst(this)
 }
 
-data class IlArrayConst(val values: List<IlConst>) : IlConst {
+data class IlArrayConstant(val values: List<IlConstant>) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlArrayConst(this)
 }
 
-data class IlEnumConst(val enumType: IlType, val underlyingConst: IlConst) : IlConst {
+data class IlEnumConstant(val enumType: IlType, val underlyingConst: IlConstant) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlEnumConst(this)
 }
 
-data class IlTypeRef(val referencedType: IlType) : IlConst {
+data class IlTypeRef(val referencedType: IlType) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlTypeRefConst(this)
 }
 
-data class IlMethodRef(val referencedMethod: IlMethod) : IlConst {
+data class IlMethodRef(val referencedMethod: IlMethod) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlMethodRefConst(this)
 }
 
-data class IlFieldRef(val referencedField: IlField) : IlConst {
+data class IlFieldRef(val referencedField: IlField) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlFieldRefConst(this)
 }

@@ -17,7 +17,7 @@
 package org.jacodb.api.net.features
 
 import org.jacodb.api.net.ilinstances.IlField
-import org.example.ilinstances.IlMethod
+import org.jacodb.api.net.ilinstances.IlMethod
 import org.example.ilinstances.IlType
 import org.jacodb.api.net.IlInstExtFeature
 import org.jacodb.api.net.IlTypeExtFeature

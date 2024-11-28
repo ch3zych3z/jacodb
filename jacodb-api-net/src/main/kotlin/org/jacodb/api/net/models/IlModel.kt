@@ -32,6 +32,7 @@ object IlModel : Ext(IlRoot) {
         field("asmName", PredefinedType.string)
         field("namespaceName", PredefinedType.string)
         field("name", PredefinedType.string)
+        field("fullname", PredefinedType.string)
         field("declType", typeId.nullable)
         field("genericArgs", immutableList(typeId))
         field("isGenericParam", PredefinedType.bool)
@@ -121,7 +122,7 @@ object IlModel : Ext(IlRoot) {
         field("temps", immutableList(IlTempVarDto))
         field("errs", immutableList(IlErrVarDto))
         field("ehScopes", immutableList(IlEhScopeDto))
-        field("body", immutableList(IlMethodBodyModel.IlStmtDto))
+        field("rawInstList", immutableList(IlMethodBodyModel.IlStmtDto))
     }
 
     val IlSignatureDto = structdef extends IlDto {

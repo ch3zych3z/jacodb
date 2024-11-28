@@ -16,6 +16,4 @@
 
 package org.example.ilinstances
 
-interface IlInstance {
-
-}
+interface IlInstance
