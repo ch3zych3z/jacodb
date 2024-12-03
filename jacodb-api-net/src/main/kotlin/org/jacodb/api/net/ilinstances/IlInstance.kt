@@ -18,6 +18,7 @@ package org.jacodb.api.net.ilinstances
 
 import org.jacodb.api.common.CommonMethod
 import org.jacodb.api.common.CommonMethodParameter
+import org.jacodb.api.common.CommonType
 import org.jacodb.api.common.CommonTypeName
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlStmtDto

@@ -26,7 +26,6 @@ import org.jacodb.api.net.ilinstances.IlField
 import org.jacodb.api.net.ilinstances.IlMethod
 import java.util.*
 
-// publication should be public in particular to resolve refs inside TAC
 sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: IlPublication) : IlType {
 
     companion object Resolver {
