@@ -16,26 +16,56 @@
 
 package org.jacodb.api.net.ilinstances.virtual
 
+import org.jacodb.api.net.IlPublication
+import org.jacodb.api.net.features.eliminateApproximation
 import org.jacodb.api.net.ilinstances.IlAttribute
 import org.jacodb.api.net.ilinstances.IlField
 import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
 
-class IlFieldVirtual : IlField {
-    private class Builder {
+class IlFieldVirtual(
+    override val fieldType: IlType,
+    override val name: String,
+    override val isStatic: Boolean,
+    override val attributes: List<IlAttribute>
+) : IlField {
+    private class Builder(publication: IlPublication) {
+        var name: String = "_virtual_"
+            private set
+
+        fun name(value: String) = apply {
+            name = value
+        }
+
+        var fieldType: IlType = publication.void()
+            private set
+
+        fun fieldType(value: IlType) = apply {
+            fieldType = value
+        }
+
+        var isStatic: Boolean = false
+            private set
+
+        fun isStatic(value: Boolean) = apply {
+            isStatic = value
+        }
+
+        var attributes: List<IlAttribute> = listOf()
+            private set
+
+        fun attributes(value: List<IlAttribute>) = apply {
+            attributes = value
+        }
+
         fun build(): IlFieldVirtual {
-            TODO()
+            return IlFieldVirtual(fieldType, name, isStatic, attributes)
         }
     }
 
     companion object {
-        fun IlField.toVirtual() = Builder().build()
+        fun IlField.toVirtual() =
+            Builder(this.fieldType.publication).fieldType(fieldType.eliminateApproximation()).name(this.name)
+                .isStatic(isStatic).attributes(attributes).build()
     }
-    override val fieldType: IlType
-        get() = TODO("Not yet implemented")
-    override val name: String
-        get() = TODO("Not yet implemented")
-    override val isStatic: Boolean
-        get() = TODO("Not yet implemented")
-    override val attributes: List<IlAttribute>
-        get() = TODO("Not yet implemented")
 }
