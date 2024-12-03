@@ -18,22 +18,29 @@ package org.jacodb.api.net.ilinstances.impl
 
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlParameterDto
-import org.jacodb.api.net.ilinstances.IlAttribute
 import org.jacodb.api.net.ilinstances.IlConstant
 import org.jacodb.api.net.ilinstances.IlParameter
+import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.ilinstances.deserializeConst
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 class IlParameterImpl(private val dto: IlParameterDto, val enclosingMethod: IlMethodImpl) : IlParameter {
     private val publication: IlPublication
         get() = enclosingMethod.declaringType.publication
-    val paramType: IlTypeImpl by lazy(PUBLICATION) { publication.findIlTypeOrNull(dto.type.typeName)!! }
-    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, publication) } }
+    override val type: IlType by lazy(PUBLICATION) { publication.findIlTypeOrNull(dto.type.typeName)!! }
+    override val attributes: List<IlAttributeImpl> by lazy(PUBLICATION) {
+        dto.attrs.map {
+            IlAttributeImpl(
+                it,
+                publication
+            )
+        }
+    }
     val index: Int = dto.index
-    val name: String = dto.name
+    override val name: String = dto.name
     val defaultValue: IlConstant? get() = dto.defaultValue?.deserializeConst(publication)
 
     override fun toString(): String {
-        return paramType.toString()
+        return type.toString()
     }
 }

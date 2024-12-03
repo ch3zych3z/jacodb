@@ -20,6 +20,7 @@ import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import org.jacodb.api.net.*
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
+import org.jacodb.api.net.ilinstances.IlType
 
 class IlPublicationImpl(
     override val db: IlDatabase,
@@ -31,12 +32,12 @@ class IlPublicationImpl(
         .let { IlFeaturesChain(it) }
     override val allTypes: List<IlTypeDto> get() = db.persistence.allTypes
 
-    override fun findIlTypeOrNull(name: String): IlTypeImpl? =
+    override fun findIlTypeOrNull(name: String): IlType? =
         featuresChain.callUntilResolved<IlTypeSearchFeature, ResolvedIlTypeResult> { feature ->
             feature.findType(name)
         }?.type
 
-    override fun findIlTypes(name: String): List<IlTypeImpl> =
+    override fun findIlTypes(name: String): List<IlType> =
         featuresChain.callUntilResolved<IlTypeSearchAllFeature, ResolvedIlTypesResult> { feature ->
             feature.findTypes(name)
         }?.types ?: emptyList()
