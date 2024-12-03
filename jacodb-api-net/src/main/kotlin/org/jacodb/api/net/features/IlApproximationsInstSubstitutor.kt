@@ -185,11 +185,12 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
         return IlThrowStmt(stmt.value.accept(this))
     }
 
+    // TODO CRITICAL
     override fun visitIlGotoStmt(stmt: IlGotoStmt): IlStmt {
-        return IlGotoStmt(stmt.target.accept(this))
+        return stmt //IlGotoStmt(stmt.target.accept(this))
     }
 
     override fun visitIlIfStmt(stmt: IlIfStmt): IlStmt {
-        return IlIfStmt(stmt.target.accept(this), stmt.condition.accept(this))
+        return stmt // IlIfStmt(stmt.target.accept(this), stmt.condition.accept(this))
     }
 }

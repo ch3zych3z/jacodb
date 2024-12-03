@@ -14,12 +14,7 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.ilinstances
+package org.jacodb.api.net.ilinstances.virtual
 
-interface IlInstance
-
-interface IlType : IlInstance
-interface IlField : IlInstance
-interface IlMethod : IlInstance
-
-interface IlParameter: IlInstance
+class IlFieldVirtual {
+}

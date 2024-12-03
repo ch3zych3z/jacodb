@@ -16,8 +16,10 @@
 
 package org.jacodb.api.net.ilinstances
 
-import org.example.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import org.jacodb.api.net.core.IlExprVisitor
+import org.jacodb.api.net.ilinstances.impl.IlFieldImpl
+import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 
 class IlNull : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlNullConst(this)
@@ -83,18 +85,18 @@ data class IlArrayConstant(val values: List<IlConstant>) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlArrayConst(this)
 }
 
-data class IlEnumConstant(val enumType: IlType, val underlyingConst: IlConstant) : IlConstant {
+data class IlEnumConstant(val enumType: IlTypeImpl, val underlyingConst: IlConstant) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlEnumConst(this)
 }
 
-data class IlTypeRef(val referencedType: IlType) : IlConstant {
+data class IlTypeRef(val referencedType: IlTypeImpl) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlTypeRefConst(this)
 }
 
-data class IlMethodRef(val referencedMethod: IlMethod) : IlConstant {
+data class IlMethodRef(val referencedMethod: IlMethodImpl) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlMethodRefConst(this)
 }
 
-data class IlFieldRef(val referencedField: IlField) : IlConstant {
+data class IlFieldRef(val referencedField: IlFieldImpl) : IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlFieldRefConst(this)
 }

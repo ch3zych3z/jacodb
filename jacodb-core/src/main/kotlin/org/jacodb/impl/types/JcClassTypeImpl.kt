@@ -260,7 +260,8 @@ private fun JcClasspath.substitute(
     parameters: List<JvmType>,
     substitutor: JcSubstitutor?
 ): JcSubstitutor {
-    val genericsSubstitutor = features?.firstNotNullOfOrNull { it as? JcGenericsSubstitutionFeature } ?: SafeSubstitution
+    val genericsSubstitutor =
+        features?.firstNotNullOfOrNull { it as? JcGenericsSubstitutionFeature } ?: SafeSubstitution
     return genericsSubstitutor.substitute(findClass(name), parameters, substitutor)
 }
 

@@ -52,7 +52,12 @@ fun ByteArray.getIlTypeDto(): IlTypeDto {
     }
 }
 
-fun IlTypeDto.getBytes() : ByteArray =
+fun ByteArray.unsafeString(): String {
+    val buf = createAbstractBuffer(this)
+    return ctx.serializers.readPolymorphic<IlStringConstDto>(ctx, buf).value
+}
+
+fun IlTypeDto.getBytes(): ByteArray =
     when (this) {
         is IlPointerTypeDto -> this.getBytes()
         is IlPrimitiveTypeDto -> this.getBytes()
@@ -102,6 +107,18 @@ fun IlClassTypeDto.getBytes(): ByteArray {
     val buf = createAbstractBuffer()
     buf.writeByte(IlTypeByteId.CLASS.id)
     IlClassTypeDto.write(ctx, buf, this)
+    return buf.getArray()
+}
+
+fun IlConstDto.getBytes(): ByteArray {
+    val buf = createAbstractBuffer()
+    ctx.serializers.writePolymorphic(ctx, buf, this)
+    return buf.getArray()
+}
+
+fun List<IlConstDto>.getBytes(): ByteArray {
+    val buf = createAbstractBuffer()
+    forEach { t -> ctx.serializers.writePolymorphic(ctx, buf, t) }
     return buf.getArray()
 }
 

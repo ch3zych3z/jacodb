@@ -41,6 +41,7 @@ interface IlDatabasePersistence {
     fun <T> read(action: (ILDBContext) -> T ) : T
     fun <T> write(action: (ILDBContext) -> T) : T
     fun findTypeSourceByNameOrNull(fullName: String) : IlTypeDto?
+    fun findTypeSourcesByName(fullName: String): List<IlTypeDto>
     fun persist(types: List<IlTypeDto>)
 }
 
