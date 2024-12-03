@@ -14,24 +14,34 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.ilinstances
+package org.jacodb.api.net.ilinstances.impl
 
-import org.example.ilinstances.IlInstance
-import org.example.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.IlMethod
+import org.jacodb.api.net.ilinstances.IlParameter
 import org.jacodb.api.net.IlMethodExtFeature
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.ResolvedInstructionsResult
 import org.jacodb.api.net.generated.models.*
+import org.jacodb.api.net.ilinstances.IlArgument
+import org.jacodb.api.net.ilinstances.IlAttribute
+import org.jacodb.api.net.ilinstances.IlConstant
+import org.jacodb.api.net.ilinstances.IlErrVar
+import org.jacodb.api.net.ilinstances.IlLocalVar
+import org.jacodb.api.net.ilinstances.IlStmt
+import org.jacodb.api.net.ilinstances.IlTempVar
+import org.jacodb.api.net.ilinstances.deserializeConst
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
-class IlMethod(val declaringType: IlType, private val dto: IlMethodDto) : IlInstance {
+class IlMethodImpl(val declaringType: IlTypeImpl, private val dto: IlMethodDto) : IlMethod {
     private val publication: IlPublication
         get() = declaringType.publication
-    val returnType: IlType? by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType.typeName) } }
-    val name: String = dto.name
 
-    val parametes: List<IlParameter> by lazy(PUBLICATION) {
-        dto.parameters.map { IlParameter(it, this) }.toMutableList()
+    val returnType: IlTypeImpl? by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType.typeName) } }
+
+    val name: String = dto.name
+    val signature: String get() = "${dto.returnType.typeName} $name(${dto.parameters.joinToString(",") { it.type.typeName }})"
+    val parametes: List<IlParameterImpl> by lazy(PUBLICATION) {
+        dto.parameters.map { IlParameterImpl(it, this) }.toMutableList()
     }
     val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, publication) } }
     val rawInstList: List<IlStmtDto>
@@ -55,20 +65,6 @@ class IlMethod(val declaringType: IlType, private val dto: IlMethodDto) : IlInst
     }
 }
 
-class IlParameter(private val dto: IlParameterDto, val enclosingMethod: IlMethod) : IlInstance {
-    private val publication: IlPublication
-        get() = enclosingMethod.declaringType.publication
-    val paramType: IlType by lazy(PUBLICATION) { publication.findIlTypeOrNull(dto.type.typeName)!! }
-    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, publication) } }
-    val index: Int = dto.index
-    val name: String = dto.name
-    val defaultValue: IlConstant? get() = dto.defaultValue?.deserializeConst(publication)
-
-    override fun toString(): String {
-        return paramType.toString()
-    }
-}
-
 abstract class IlEhScope {
     abstract val tb: IlStmt
     abstract val te: IlStmt
@@ -76,7 +72,7 @@ abstract class IlEhScope {
     abstract val he: IlStmt
 
     companion object {
-        fun deserialize(src: IlMethod, dto: IlEhScopeDto): IlEhScope {
+        fun deserialize(src: IlMethodImpl, dto: IlEhScopeDto): IlEhScope {
             TODO()
 //            return when (dto) {
 //                is IlFilterScopeDto -> IlFilterScope(

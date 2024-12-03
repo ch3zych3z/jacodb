@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.ilinstances
+package org.jacodb.api.net.ilinstances.impl
 
-import org.example.ilinstances.IlInstance
-import org.example.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.IlField
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlFieldDto
+import org.jacodb.api.net.ilinstances.IlAttribute
 
-class IlField(private val declType: IlType, private val dto: IlFieldDto, typeLoader: IlPublication) : IlInstance {
-    val fieldType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.fieldType.typeName)!! }
+class IlFieldImpl(private val declType: IlTypeImpl, private val dto: IlFieldDto, typeLoader: IlPublication) : IlField {
+    val fieldType: IlTypeImpl by lazy { typeLoader.findIlTypeOrNull(dto.fieldType.typeName)!! }
     val token = 1
     val attributes: MutableList<IlAttribute> = mutableListOf()
     val isStatic: Boolean = dto.isStatic

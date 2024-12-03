@@ -16,9 +16,9 @@
 
 package org.jacodb.api.net
 
-import org.jacodb.api.net.ilinstances.IlField
-import org.jacodb.api.net.ilinstances.IlMethod
-import org.example.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.impl.IlFieldImpl
+import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
+import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.ilinstances.IlStmt
@@ -28,11 +28,13 @@ interface IlPublication {
     val features: List<IlPublicationFeature>
     val featuresChain: IlFeaturesChain
     val allTypes: List<IlTypeDto>
-    fun findIlTypeOrNull(name: String): IlType?
+    fun findIlTypeOrNull(name: String): IlTypeImpl?
+    fun findIlTypes(name: String): List<IlTypeImpl>
 }
 
 interface IlPublicationFeature {
     fun on(event: IlPublicationEvent) {}
+
     fun event(result: Any): IlPublicationEvent? = null
 }
 
@@ -40,26 +42,31 @@ interface IlTypeSearchFeature : IlPublicationFeature {
     fun findType(name: String): ResolvedIlTypeResult?
 }
 
+interface IlTypeSearchAllFeature : IlPublicationFeature {
+    fun findTypes(name: String): ResolvedIlTypesResult
+}
+
 interface IlTypeExtFeature : IlPublicationFeature {
-    fun fieldsOf(type: IlType): List<IlField>?
-    fun methodsOf(type: IlType): List<IlMethod>?
+    fun fieldsOf(type: IlTypeImpl): List<IlFieldImpl>?
+    fun methodsOf(type: IlTypeImpl): List<IlMethodImpl>?
 }
 
 interface IlMethodExtFeature : IlPublicationFeature {
-    fun instList(method: IlMethod): ResolvedInstructionsResult?
+    fun instList(method: IlMethodImpl): ResolvedInstructionsResult?
 }
 
 interface IlInstExtFeature : IlPublicationFeature {
-    fun transformInstList(method: IlMethod, instList: List<IlStmt>): List<IlStmt>
+    fun transformInstList(method: IlMethodImpl, instList: List<IlStmt>): List<IlStmt>
 }
 
 class IlPublicationEvent(val feature: IlTypeSearchFeature, val result: Any)
 
 interface FeatureCallResult
 
-class ResolvedIlTypeResult(val name: String, val type: IlType?) : FeatureCallResult
+class ResolvedIlTypeResult(val name: String, val type: IlTypeImpl?) : FeatureCallResult
+class ResolvedIlTypesResult(val name: String, val types: List<IlTypeImpl>) : FeatureCallResult
 
-class ResolvedMethodsResult(val type: IlType, val methods: List<IlMethod>?) : FeatureCallResult
-class ResolvedFieldsResult(val type: IlType, val fields: List<IlField>?) : FeatureCallResult
+class ResolvedMethodsResult(val type: IlTypeImpl, val methods: List<IlMethodImpl>?) : FeatureCallResult
+class ResolvedFieldsResult(val type: IlTypeImpl, val fields: List<IlFieldImpl>?) : FeatureCallResult
 
-class ResolvedInstructionsResult(val method: IlMethod, val instructions: List<IlStmt>) : FeatureCallResult
+class ResolvedInstructionsResult(val method: IlMethodImpl, val instructions: List<IlStmt>) : FeatureCallResult

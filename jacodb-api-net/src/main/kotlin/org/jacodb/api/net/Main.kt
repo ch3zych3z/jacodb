@@ -17,7 +17,9 @@
 package org.jacodb.api.net
 
 import org.jacodb.api.net.database.IlDatabaseImpl
+import org.jacodb.api.net.features.IlApproximations
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
+import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.NetApiServer
 import java.lang.Exception
 
@@ -34,25 +36,32 @@ fun main(args: Array<String>) {
     val api = NetApiServer(exePath, asmPath, database)
     api.requestTestAsm()
 
-    val publication = database.publication(listOf(IlMethodInstructionsFeature()))
+    val publication = database.publication(
+        listOf(
+            IlPublicationCache(settings.publicationCacheSettings),
+            IlMethodInstructionsFeature(),
+            IlApproximations
+        )
+    )
 
     api.close()
     val allTypes = publication.allTypes
     println("types fetched")
     allTypes.forEach { typeDto ->
         val type = publication.findIlTypeOrNull(typeDto.fullname)
+        if (type == null)
+            println("not found ${typeDto.fullname}")
+        if (type != null && type.fullname == "System.Collections.Generic.IList`1[T]704643078") {
+            val fields = type.fields
+            println(fields.joinToString { it.name })
 
-        if (type != null) {
-            val methods = type.methods
-            publication.featuresChain.run<IlMethodExtFeature> {
-                if (methods.isNotEmpty()) {
-                    println("method ${methods.first().name} from ${methods.first().declaringType.name}")
-                    val res = instList(methods.first())
-                    println(res?.instructions?.size ?: "dunno")
-
-                }
-
-            }
+//            methods.forEach {
+//                val insts =
+//                    publication.featuresChain.callUntilResolved<IlMethodExtFeature, ResolvedInstructionsResult> { feature ->
+//                        feature.instList(it)
+//                    }
+//            }
+//            return@forEach
         }
     }
 }

@@ -16,13 +16,15 @@
 
 package org.jacodb.api.net.storage
 
-import org.example.ilinstances.IlType
 import org.jacodb.api.net.ILDBContext
 import org.jacodb.api.net.IlDatabasePersistence
+import org.jacodb.api.net.features.APPROXIMATION_ATTRIBUTE
+import org.jacodb.api.net.features.ORIGINAL_TYPE_PROPERTY
 import org.jacodb.api.net.generated.models.*
 import org.jacodb.api.storage.ers.Entity
 import org.jacodb.api.storage.ers.EntityRelationshipStorage
 import org.jacodb.api.storage.ers.Transaction
+import org.jacodb.api.storage.ers.compressed
 import org.jacodb.api.storage.ers.links
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -44,14 +46,11 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
     override fun findIdBySymbol(symbol: String): Long = symbol.asSymbolId(interner)
 
     override fun <T> read(action: (ILDBContext) -> T): T {
-        return if (ers.isInRam) { // RAM storage doesn't support explicit readonly transactions
+        return if (ers.isInRam) // RAM storage doesn't support explicit readonly transactions
             ers.transactionalOptimistic(attempts = 10) { txn ->
                 action(toILDBContext(txn))
-            }
-        } else {
-            ers.transactional(readonly = true) { txn ->
-                action(toILDBContext(txn))
-            }
+            } else ers.transactional(readonly = true) { txn ->
+            action(toILDBContext(txn))
         }
     }
 
@@ -64,13 +63,19 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
     private fun findTypeSources(ctx: ILDBContext, fullName: String): Sequence<IlTypeDto> {
         val txn = ctx.txn
         val id = interner.findSymbolIdOrNew(fullName)
-        return txn.find(type = "Type", propertyName = "fullname", value = id ).map { it.toDto() }
+        return txn.find(type = "Type", propertyName = "fullname", value = id).map { it.toDto() }
     }
 
     override fun findTypeSourceByNameOrNull(fullName: String): IlTypeDto? = read { ctx ->
-        findTypeSources(ctx, fullName).firstOrNull()
+        val seq = findTypeSources(ctx, fullName).toList()
+//        if (seq.size != 1)
+//            throw Exception("found")
+        seq.firstOrNull()
     }
 
+    override fun findTypeSourcesByName(fullName: String): List<IlTypeDto> = read { ctx ->
+        findTypeSources(ctx, fullName).toList()
+    }
 
     override fun persist(types: List<IlTypeDto>) {
         if (types.isEmpty()) return
@@ -78,42 +83,35 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
             val txn = ctx.txn
             types.forEach { type ->
                 val entity = txn.newEntity("Type")
-                entity["fullname"] = (type.fullname).asSymbolId(interner)
+                entity["fullname"] = type.fullname.asSymbolId(interner)
                 entity["assembly"] = type.asmName.asSymbolId(interner)
                 entity.setRawBlob("bytes", type.getBytes())
-                // type.attrs.forEach { it.saveAttributeInfo(txn, entity) }
+                type.attrs.forEach { it.save(txn, entity) }
+            }
+        }
+    }
+
+
+    // TODO target groups: type, method, field, parameter
+    // TODO bindings to TypeDTO
+    // TODO: support only types now
+    private fun IlAttrDto.save(txn: Transaction, target: Entity): Entity {
+        return txn.newEntity("Attribute").also { attr ->
+            links(attr, "target") += target
+            attr["fullname"] = attrType.typeName.asSymbolId(interner).compressed
+            attr["assembly"] = attrType.asmName.asSymbolId(interner)
+
+            attr.setRawBlob("values", ctorArgs.getBytes())
+
+            namedArgsNames.zip(namedArgsValues).forEach { (name, value) ->
+                attr.setRawBlob(name, value.getBytes())
+            }
+            if (attrType.typeName == APPROXIMATION_ATTRIBUTE) {
+                println(attr.getRawBlob(ORIGINAL_TYPE_PROPERTY)?.unsafeString())
             }
         }
     }
 }
 
-    // TODO target groups: type, method, field, parameter
-    // TODO bindings to TypeDTO
-//    private fun IlAttrDto.saveAttributeInfo(txn: Transaction, target: Entity) {
-//        val entity = txn.newEntity("Attribute")
-//        links(entity, "target") += target
-//        entity["nameId"] = attrType.typeName.asSymbolId(interner)
-//        entity["asmId"] = attrType.asmName.asSymbolId(interner)
-//
-//        val ctorArgLinks = links(entity, "ctorArgs")
-//        ctorArgs.forEach {
-//            val (const, kind) = it.serialize()
-//            val ctorArgEntity = txn.newEntity("AttrCtorArg")
-//            ctorArgEntity["kind"] = kind
-//            ctorArgEntity["value"] = const.asSymbolId(interner)
-//            ctorArgLinks += ctorArgEntity
-//        }
-//        val namedArgLinks = links(entity, "namedArgs")
-//        namedArgsNames.zip(namedArgsValues).forEach { (name, value) ->
-//            val (const, kind) = value.serialize()
-//            val namedArgEntity = txn.newEntity("AttrNamedArg")
-//            namedArgEntity["kind"] = kind
-//            namedArgEntity["nameId"] = name.asSymbolId(interner)
-//            namedArgEntity["value"] = const.asSymbolId(interner)
-//            namedArgLinks += namedArgEntity
-//        }
-//    }
-//}
-
-fun Entity.toDto() : IlTypeDto =
+fun Entity.toDto(): IlTypeDto =
     this.getRawBlob(name = "bytes")?.getIlTypeDto() ?: throw RuntimeException("Bytes for entity $this were not found")

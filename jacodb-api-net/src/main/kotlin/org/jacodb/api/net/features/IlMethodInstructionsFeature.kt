@@ -16,18 +16,17 @@
 
 package org.jacodb.api.net.features
 
-import org.jacodb.api.net.ilinstances.IlMethod
+import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 import org.jacodb.api.net.IlInstExtFeature
 import org.jacodb.api.net.IlMethodExtFeature
 import org.jacodb.api.net.ResolvedInstructionsResult
 import org.jacodb.api.net.ilinstances.IlStmt
-import kotlin.collections.orEmpty
 
 class IlMethodInstructionsFeature : IlMethodExtFeature {
-    private val IlMethod.methodFeatures
-        get() = declaringType.publication.features?.filterIsInstance<IlInstExtFeature>().orEmpty()
+    private val IlMethodImpl.methodFeatures
+        get() = declaringType.publication.features.filterIsInstance<IlInstExtFeature>()
 
-    override fun instList(method: IlMethod): ResolvedInstructionsResult {
+    override fun instList(method: IlMethodImpl): ResolvedInstructionsResult {
         var insts = method.rawInstList.map { IlStmt.deserialize(method, it) }
         return ResolvedInstructionsResult(method, method.methodFeatures.fold(insts) { value, feature ->
             feature.transformInstList(method, value)

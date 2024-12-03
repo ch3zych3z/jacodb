@@ -21,6 +21,8 @@ import org.jacodb.api.net.IlDatabasePersistence
 import org.jacodb.api.net.IlSettings
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.IlPublicationFeature
+import org.jacodb.api.net.features.IlApproximations
+import org.jacodb.api.net.features.IlSignal
 import org.jacodb.api.net.storage.IlDatabasePersistenceImpl
 import org.jacodb.api.net.publication.IlPublicationImpl
 import org.jacodb.api.storage.ers.EmptyErsSettings
@@ -28,13 +30,16 @@ import org.jacodb.api.storage.ers.EntityRelationshipStorageSPI
 
 class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
     override var persistence: IlDatabasePersistence
-
     override fun publication(): IlPublication {
         return IlPublicationImpl(this, emptyList(), settings)
     }
 
     override fun publication(features: List<IlPublicationFeature>): IlPublication {
-        return IlPublicationImpl(this, features, settings)
+        return IlPublicationImpl(
+            this,
+            features,
+            settings
+        ).also { impl -> IlApproximations.onSignal(IlSignal.BeforeIndexing(this)) }
     }
 
     override fun close() {

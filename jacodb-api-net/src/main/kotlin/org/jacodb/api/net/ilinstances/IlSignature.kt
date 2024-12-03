@@ -16,7 +16,5 @@
 
 package org.jacodb.api.net.ilinstances
 
-import org.example.ilinstances.IlInstance
-
 class IlSignature : IlInstance {
 }
