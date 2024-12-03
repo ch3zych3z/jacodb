@@ -14,19 +14,16 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.ilinstances.impl
+package org.jacodb.api.net.ilinstances.virtual
 
-import org.jacodb.api.net.ilinstances.IlField
-import org.jacodb.api.net.IlPublication
-import org.jacodb.api.net.generated.models.IlFieldDto
+import org.jacodb.api.net.ilinstances.IlAttribute
+import org.jacodb.api.net.ilinstances.IlParameter
 import org.jacodb.api.net.ilinstances.IlType
-
-class IlFieldImpl(private val declType: IlTypeImpl, private val dto: IlFieldDto, typeLoader: IlPublication) : IlField {
-    override val fieldType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.fieldType.typeName)!! }
-    override val attributes: MutableList<IlAttributeImpl> = mutableListOf()
-    override val isStatic: Boolean = dto.isStatic
-    override val name: String = dto.name
-    override fun toString(): String {
-        return if (isStatic) "$declType.$name" else "$.$name"
-    }
+class IlParameterVirtual: IlParameter {
+    override val type: IlType
+        get() = TODO("Not yet implemented")
+    override val attributes: List<IlAttribute>
+        get() = TODO("Not yet implemented")
+    override val name: String
+        get() = TODO("Not yet implemented")
 }

@@ -18,13 +18,12 @@ package org.jacodb.api.net.ilinstances
 
 import org.jacodb.api.net.core.IlStmtVisitor
 import org.jacodb.api.net.generated.models.*
-import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 
 interface IlStmt {
     fun <T> accept(visitor: IlStmtVisitor<T>): T
 
     companion object {
-        fun deserialize(src: IlMethodImpl, dto: IlStmtDto): IlStmt {
+        fun deserialize(src: IlMethod, dto: IlStmtDto): IlStmt {
             return when (dto) {
                 is IlAssignStmtDto -> IlAssignStmt(dto, src)
                 is IlCallStmtDto -> IlCallStmt(dto, src)
@@ -45,7 +44,7 @@ interface IlStmt {
 
 class IlAssignStmt(val lhs: IlExpr, val rhs: IlExpr) : IlStmt {
 
-    constructor(dto: IlAssignStmtDto, src: IlMethodImpl) : this(dto.lhs.deserialize(src), dto.rhs.deserialize(src))
+    constructor(dto: IlAssignStmtDto, src: IlMethod) : this(dto.lhs.deserialize(src), dto.rhs.deserialize(src))
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlAssignStmt(this)
@@ -57,7 +56,7 @@ class IlAssignStmt(val lhs: IlExpr, val rhs: IlExpr) : IlStmt {
 }
 
 class IlCallStmt(val call: IlCall) : IlStmt {
-    constructor(dto: IlCallStmtDto, src: IlMethodImpl) : this(dto.call.deserialize(src) as IlCall)
+    constructor(dto: IlCallStmtDto, src: IlMethod) : this(dto.call.deserialize(src) as IlCall)
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlCallStmt(this)
@@ -68,7 +67,7 @@ class IlCallStmt(val call: IlCall) : IlStmt {
     }
 }
 
-class IlCalliStmt(dto: IlCalliStmtDto, src: IlMethodImpl) : IlStmt {
+class IlCalliStmt(dto: IlCalliStmtDto, src: IlMethod) : IlStmt {
     val calli = dto.calli.deserialize(src)
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         TODO("Not yet implemented")
@@ -77,7 +76,7 @@ class IlCalliStmt(dto: IlCalliStmtDto, src: IlMethodImpl) : IlStmt {
 
 class IlReturnStmt(val value: IlExpr?) : IlStmt {
 
-    constructor(dto: IlReturnStmtDto, src: IlMethodImpl) : this(dto.retVal?.deserialize(src))
+    constructor(dto: IlReturnStmtDto, src: IlMethod) : this(dto.retVal?.deserialize(src))
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlReturnStmt(this)
@@ -91,7 +90,7 @@ class IlReturnStmt(val value: IlExpr?) : IlStmt {
 interface IlEhStmt : IlStmt
 
 class IlThrowStmt(val value: IlExpr) : IlEhStmt {
-    constructor(dto: IlThrowStmtDto, src: IlMethodImpl) : this(dto.value.deserialize(src))
+    constructor(dto: IlThrowStmtDto, src: IlMethod) : this(dto.value.deserialize(src))
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlThrowStmt(this)
@@ -133,7 +132,7 @@ class IlEndFaultStmt : IlEhStmt {
 }
 
 class IlEndFilterStmt(val value: IlExpr) : IlEhStmt {
-    constructor(dto: IlEndFilterStmtDto, src: IlMethodImpl) : this(dto.value.deserialize(src))
+    constructor(dto: IlEndFilterStmtDto, src: IlMethod) : this(dto.value.deserialize(src))
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlEndFilterStmt(this)
@@ -151,7 +150,7 @@ class IlGotoStmt(val target: Int /*IlStmt*/) : IlBranchStmt {
 
     constructor(
         dto: IlBranchStmtDto,
-        src: IlMethodImpl
+        src: IlMethod
     ) : this(dto.target) //IlStmt.deserialize(src, src.rawInstList[min(dto.target, src.rawInstList.size - 1)]))
 
 //    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
@@ -183,7 +182,7 @@ class IlGotoStmt(val target: Int /*IlStmt*/) : IlBranchStmt {
 // TODO CRITICAL
 class IlIfStmt(val target: Int /*IlStmt*/, val condition: IlExpr) : IlBranchStmt {
 
-    constructor(dto: IlIfStmtDto, src: IlMethodImpl) : this(
+    constructor(dto: IlIfStmtDto, src: IlMethod) : this(
         dto.target,
 //        IlStmt.deserialize(src, src.rawInstList[min(dto.target, src.rawInstList.size - 1)]),
         dto.cond.deserialize(src)

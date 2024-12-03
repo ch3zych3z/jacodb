@@ -16,38 +16,41 @@
 
 package org.jacodb.api.net.ilinstances.impl
 
+import org.jacodb.api.common.cfg.CommonInst
+import org.jacodb.api.common.cfg.ControlFlowGraph
 import org.jacodb.api.net.ilinstances.IlMethod
-import org.jacodb.api.net.ilinstances.IlParameter
 import org.jacodb.api.net.IlMethodExtFeature
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.ResolvedInstructionsResult
 import org.jacodb.api.net.generated.models.*
 import org.jacodb.api.net.ilinstances.IlArgument
-import org.jacodb.api.net.ilinstances.IlAttribute
-import org.jacodb.api.net.ilinstances.IlConstant
 import org.jacodb.api.net.ilinstances.IlErrVar
 import org.jacodb.api.net.ilinstances.IlLocalVar
 import org.jacodb.api.net.ilinstances.IlStmt
 import org.jacodb.api.net.ilinstances.IlTempVar
-import org.jacodb.api.net.ilinstances.deserializeConst
+import org.jacodb.api.net.ilinstances.IlType
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
-class IlMethodImpl(val declaringType: IlTypeImpl, private val dto: IlMethodDto) : IlMethod {
+class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMethodDto) : IlMethod {
     private val publication: IlPublication
         get() = declaringType.publication
 
-    val returnType: IlTypeImpl? by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType.typeName) } }
+    override fun flowGraph(): ControlFlowGraph<CommonInst> {
+        TODO()
+    }
 
-    val name: String = dto.name
-    val signature: String get() = "${dto.returnType.typeName} $name(${dto.parameters.joinToString(",") { it.type.typeName }})"
-    val parametes: List<IlParameterImpl> by lazy(PUBLICATION) {
+    override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType.typeName)!! } }
+
+    override val name: String = dto.name
+    override val signature: String get() = "${dto.returnType.typeName} $name(${dto.parameters.joinToString(",") { it.type.typeName }})"
+    override val parameters: List<IlParameterImpl> by lazy(PUBLICATION) {
         dto.parameters.map { IlParameterImpl(it, this) }.toMutableList()
     }
-    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, publication) } }
-    val rawInstList: List<IlStmtDto>
+    val attributes: List<IlAttributeImpl> by lazy(PUBLICATION) { dto.attrs.map { IlAttributeImpl(it, publication) } }
+    override val rawInstList: List<IlStmtDto>
         get() = dto.rawInstList
 
-    val instList: List<IlStmt> by lazy {
+    override val instList: List<IlStmt> by lazy {
         publication.featuresChain.callUntilResolved<IlMethodExtFeature, ResolvedInstructionsResult> { it.instList(this) }!!.instructions
     }
 
@@ -61,7 +64,7 @@ class IlMethodImpl(val declaringType: IlTypeImpl, private val dto: IlMethodDto) 
 //    val scopes: List<IlEhScope> by lazy(PUBLICATION) { dto.ehScopes.map { IlEhScope.deserialize(this, it) } }
 
     override fun toString(): String {
-        return "${returnType ?: ""} $name(${parametes.joinToString(", ")})"
+        return "${returnType ?: ""} $name(${parameters.joinToString(", ")})"
     }
 }
 

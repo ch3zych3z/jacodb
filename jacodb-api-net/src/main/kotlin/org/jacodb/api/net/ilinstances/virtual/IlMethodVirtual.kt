@@ -16,5 +16,43 @@
 
 package org.jacodb.api.net.ilinstances.virtual
 
-class IlMethodVirtual {
+import org.jacodb.api.common.cfg.CommonInst
+import org.jacodb.api.common.cfg.ControlFlowGraph
+import org.jacodb.api.net.generated.models.IlStmtDto
+import org.jacodb.api.net.ilinstances.IlMethod
+import org.jacodb.api.net.ilinstances.IlParameter
+import org.jacodb.api.net.ilinstances.IlStmt
+import org.jacodb.api.net.ilinstances.IlType
+
+
+class IlMethodVirtual : IlMethod {
+
+    internal class Builder {
+        fun build(): IlMethodVirtual {
+            TODO()
+        }
+    }
+
+    companion object {
+        fun IlMethod.toVirtual() = Builder().build()
+    }
+
+    override val declaringType: IlType
+        get() = TODO("Not yet implemented")
+    override val returnType: IlType
+        get() = TODO("Not yet implemented")
+    override val name: String
+        get() = TODO("Not yet implemented")
+    override val signature: String
+        get() = TODO("Not yet implemented")
+    override val rawInstList: List<IlStmtDto>
+        get() = TODO("Not yet implemented")
+    override val instList: List<IlStmt>
+        get() = TODO("Not yet implemented")
+    override val parameters: List<IlParameter>
+        get() = TODO("Not yet implemented")
+
+    override fun flowGraph(): ControlFlowGraph<CommonInst> {
+        TODO("Not yet implemented")
+    }
 }

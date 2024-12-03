@@ -14,14 +14,17 @@
  *  limitations under the License.
  */
 
-package org.jacodb.api.net.ilinstances
+package org.jacodb.api.net.ilinstances.impl
 
-import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlAttrDto
+import org.jacodb.api.net.ilinstances.IlAttribute
+import org.jacodb.api.net.ilinstances.IlConstant
+import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.deserializeConst
 
-class IlAttribute(private val dto: IlAttrDto, private val publication: IlPublication) {
-    val type: IlTypeImpl by lazy(LazyThreadSafetyMode.PUBLICATION) { publication.findIlTypeOrNull(dto.attrType.typeName)!! }
+class IlAttributeImpl(private val dto: IlAttrDto, private val publication: IlPublication): IlAttribute {
+    override val type: IlType by lazy(LazyThreadSafetyMode.PUBLICATION) { publication.findIlTypeOrNull(dto.attrType.typeName)!! }
     val constructorArgs: List<IlConstant> by lazy { dto.ctorArgs.map { it.deserializeConst(publication) }.toList() }
     val namedArgs: Map<String, IlConstant> by lazy(LazyThreadSafetyMode.PUBLICATION)
     { dto.namedArgsNames.zip(dto.namedArgsValues).associate { (k, v) -> k to v.deserializeConst(publication) } }

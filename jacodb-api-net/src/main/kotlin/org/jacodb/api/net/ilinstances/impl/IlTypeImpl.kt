@@ -22,14 +22,15 @@ import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.*
 import kotlin.LazyThreadSafetyMode.*
-import org.jacodb.api.net.ilinstances.IlAttribute
+import org.jacodb.api.net.ilinstances.IlField
+import org.jacodb.api.net.ilinstances.IlMethod
 import java.util.*
 
 // publication should be public in particular to resolve refs inside TAC
-sealed class IlTypeImpl (private val dto: IlTypeDto, val publication: IlPublication) : IlType {
+sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: IlPublication) : IlType {
 
     companion object Resolver {
-        fun from (dto: IlTypeDto, pub: IlPublication): IlTypeImpl {
+        fun from(dto: IlTypeDto, pub: IlPublication): IlTypeImpl {
             return when (dto) {
                 is IlPointerTypeDto -> IlPointerType(dto, pub)
                 is IlEnumTypeDto -> IlEnumType(dto, pub)
@@ -44,23 +45,31 @@ sealed class IlTypeImpl (private val dto: IlTypeDto, val publication: IlPublicat
         }
     }
 
-    val declaringType: IlTypeImpl? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it.typeName) } }
-    val genericArgs: List<IlTypeImpl> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it.typeName)!! } }
+    override val declaringType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it.typeName) } }
+    override val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it.typeName)!! } }
 
-    val asmName = dto.asmName
+    override val asmName = dto.asmName
     val namespace: String = dto.namespaceName
-    val name: String = dto.name
-    val fullname = dto.fullname
+    override val name: String = dto.name
+    override val fullname = dto.fullname
+    override val typeName = fullname
     val id: TypeId
         get() = TypeId(asmName, "$namespace.$name")
 
-    val attributes: List<IlAttribute> by lazy(PUBLICATION) { dto.attrs.map { IlAttribute(it, publication) } }
+    override val attributes: List<IlAttributeImpl> by lazy(PUBLICATION) {
+        dto.attrs.map {
+            IlAttributeImpl(
+                it,
+                publication
+            )
+        }
+    }
 
-    val fields: List<IlFieldImpl> by lazy(PUBLICATION) {
+    override val fields: List<IlField> by lazy(PUBLICATION) {
         val fields = dto.fields.map { IlFieldImpl(this, it, publication) }
         fields.joinFeatureFields(this, publication.featuresChain)
     }
-    val methods: List<IlMethodImpl> by lazy(PUBLICATION) {
+    override val methods: List<IlMethod> by lazy(PUBLICATION) {
         val methods = dto.methods.map { IlMethodImpl(this, it) }
         methods.joinFeatureMethods(this, publication.featuresChain)
     }
@@ -81,20 +90,23 @@ class IlArrayType(private val dto: IlArrayTypeDto, typeLoader: IlPublication) : 
 class IlClassType(private val dto: IlClassTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
 
 
-private fun List<IlFieldImpl>.joinFeatureFields(type: IlTypeImpl, featuresChain: IlFeaturesChain): List<IlFieldImpl> {
-    val additional = TreeSet<IlFieldImpl> { a, b -> a.name.compareTo(b.name) }
+private fun List<IlFieldImpl>.joinFeatureFields(type: IlTypeImpl, featuresChain: IlFeaturesChain): List<IlField> {
+    val additional = TreeSet<IlField> { a, b -> a.name.compareTo(b.name) }
     featuresChain.run<IlTypeExtFeature> {
         fieldsOf(type)?.let { additional.addAll(it) }
     }
-    return appendOrReplace(additional, IlFieldImpl::name)
+    return appendOrReplace(additional, IlField::name)
 }
 
-private fun List<IlMethodImpl>.joinFeatureMethods(type: IlTypeImpl, featuresChain: IlFeaturesChain): List<IlMethodImpl> {
-    val additional = TreeSet<IlMethodImpl> { a, b -> a.name.compareTo(b.name) }
+private fun List<IlMethodImpl>.joinFeatureMethods(
+    type: IlTypeImpl,
+    featuresChain: IlFeaturesChain
+): List<IlMethod> {
+    val additional = TreeSet<IlMethod> { a, b -> a.name.compareTo(b.name) }
     featuresChain.run<IlTypeExtFeature> {
         methodsOf(type)?.let { additional.addAll(it) }
     }
-    return appendOrReplace(additional, IlMethodImpl::name)
+    return appendOrReplace(additional, IlMethod::name)
 }
 
 

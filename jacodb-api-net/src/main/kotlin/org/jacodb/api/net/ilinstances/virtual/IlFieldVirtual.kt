@@ -16,5 +16,26 @@
 
 package org.jacodb.api.net.ilinstances.virtual
 
-class IlFieldVirtual {
+import org.jacodb.api.net.ilinstances.IlAttribute
+import org.jacodb.api.net.ilinstances.IlField
+import org.jacodb.api.net.ilinstances.IlType
+
+class IlFieldVirtual : IlField {
+    private class Builder {
+        fun build(): IlFieldVirtual {
+            TODO()
+        }
+    }
+
+    companion object {
+        fun IlField.toVirtual() = Builder().build()
+    }
+    override val fieldType: IlType
+        get() = TODO("Not yet implemented")
+    override val name: String
+        get() = TODO("Not yet implemented")
+    override val isStatic: Boolean
+        get() = TODO("Not yet implemented")
+    override val attributes: List<IlAttribute>
+        get() = TODO("Not yet implemented")
 }

@@ -18,6 +18,7 @@ package org.jacodb.api.net.publication
 
 import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 import org.jacodb.api.net.*
+import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.impl.caches.PluggableCacheProvider
 
 
@@ -26,11 +27,11 @@ class IlPublicationCache(private val settings: IlPublicationCacheSettings) : IlT
     private val cacheProvider: PluggableCacheProvider = PluggableCacheProvider.getProvider(settings.cacheId)
 
     private val types = newSegment<String, ResolvedIlTypeResult>(settings.types)
-    private val instructions = newSegment<IlMethodImpl, ResolvedInstructionsResult>(settings.instructions)
+    private val instructions = newSegment<IlMethod, ResolvedInstructionsResult>(settings.instructions)
     override fun findType(name: String): ResolvedIlTypeResult? = types[name]
 
 
-    override fun instList(method: IlMethodImpl): ResolvedInstructionsResult? {
+    override fun instList(method: IlMethod): ResolvedInstructionsResult? {
         return instructions[method]
     }
 

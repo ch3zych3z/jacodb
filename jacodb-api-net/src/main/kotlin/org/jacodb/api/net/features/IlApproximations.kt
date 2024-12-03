@@ -16,13 +16,17 @@
 
 package org.jacodb.api.net.features
 
-import org.jacodb.api.net.ilinstances.impl.IlFieldImpl
-import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
-import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import org.jacodb.api.net.IlInstExtFeature
 import org.jacodb.api.net.IlTypeExtFeature
 import org.jacodb.api.net.generated.models.unsafeString
+import org.jacodb.api.net.ilinstances.IlField
+import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.IlStmt
+import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
+import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
+import org.jacodb.api.net.ilinstances.virtual.IlFieldVirtual.Companion.toVirtual
+import org.jacodb.api.net.ilinstances.virtual.IlMethodVirtual.Companion.toVirtual
 import org.jacodb.api.net.storage.asSymbol
 import org.jacodb.api.net.storage.asSymbolId
 import org.jacodb.api.net.storage.txn
@@ -40,16 +44,16 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
     fun findOriginalByApproximationOrNull(approximation: String): OriginalTypeName? =
         approximationToOriginal[approximation.toApproximatedTypeName()]
 
-    override fun fieldsOf(type: IlTypeImpl): List<IlFieldImpl>? {
+    override fun fieldsOf(type: IlType): List<IlField>? {
         val approximationTypeName = findApproximationByOriginalOrNull(type.fullname)?.name ?: return null
         val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
-        return approximationType?.fields
+        return approximationType?.fields?.map { it.toVirtual() }
     }
 
-    override fun methodsOf(type: IlTypeImpl): List<IlMethodImpl>? {
+    override fun methodsOf(type: IlType): List<IlMethod>? {
         val approximationTypeName = findApproximationByOriginalOrNull(type.name)?.name ?: return null
         val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
-        return approximationType?.methods
+        return approximationType?.methods?.map { it.toVirtual() }
     }
 
     override fun onSignal(signal: IlSignal) {
@@ -79,7 +83,7 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
 
 
     override fun transformInstList(
-        method: IlMethodImpl,
+        method: IlMethod,
         instList: List<IlStmt>
     ): List<IlStmt> {
         // TODO
@@ -105,7 +109,7 @@ value class ApproximatedTypeName(val name: String) {
 
 fun String.toApproximatedTypeName() = ApproximatedTypeName(this)
 
-fun IlTypeImpl.eliminateApproximation(): IlTypeImpl {
+fun IlType.eliminateApproximation(): IlType {
     val originalName = IlApproximations.findOriginalByApproximationOrNull(this.name)?.name ?: return this
     return publication.findIlTypeOrNull(originalName)!!
 }

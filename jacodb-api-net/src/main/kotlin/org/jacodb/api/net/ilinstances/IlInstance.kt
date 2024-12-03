@@ -16,10 +16,52 @@
 
 package org.jacodb.api.net.ilinstances
 
+import org.jacodb.api.common.CommonMethod
+import org.jacodb.api.common.CommonMethodParameter
+import org.jacodb.api.common.CommonTypeName
+import org.jacodb.api.net.IlPublication
+import org.jacodb.api.net.generated.models.IlStmtDto
+
 interface IlInstance
 
-interface IlType : IlInstance
-interface IlField : IlInstance
-interface IlMethod : IlInstance
+interface IlType : IlInstance, CommonTypeName {
+    val publication: IlPublication
+    val declaringType: IlType?
+    val genericArgs: List<IlType>
+    override val typeName: String
+    val fullname: String
+    val asmName: String
+    val name: String
 
-interface IlParameter: IlInstance
+    val attributes: List<IlAttribute>
+
+    val fields: List<IlField>
+    val methods: List<IlMethod>
+}
+
+interface IlField : IlInstance {
+    val fieldType: IlType
+    val name: String
+    val isStatic: Boolean
+    val attributes: List<IlAttribute>
+}
+
+interface IlMethod : IlInstance, CommonMethod {
+    val declaringType: IlType
+    override val returnType: IlType
+    override val name: String
+    val signature: String
+    val rawInstList: List<IlStmtDto>
+    val instList: List<IlStmt>
+    override val parameters: List<IlParameter>
+}
+
+interface IlParameter : IlInstance, CommonMethodParameter {
+    override val type: IlType
+    val attributes: List<IlAttribute>
+    val name: String
+}
+
+interface IlAttribute : IlInstance {
+    val type: IlType
+}
