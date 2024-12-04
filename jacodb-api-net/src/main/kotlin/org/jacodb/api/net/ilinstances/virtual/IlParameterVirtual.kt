@@ -19,11 +19,9 @@ package org.jacodb.api.net.ilinstances.virtual
 import org.jacodb.api.net.ilinstances.IlAttribute
 import org.jacodb.api.net.ilinstances.IlParameter
 import org.jacodb.api.net.ilinstances.IlType
-class IlParameterVirtual: IlParameter {
-    override val type: IlType
-        get() = TODO("Not yet implemented")
-    override val attributes: List<IlAttribute>
-        get() = TODO("Not yet implemented")
+
+class IlParameterVirtual(
+    override val type: IlType,
+    override val attributes: List<IlAttribute>,
     override val name: String
-        get() = TODO("Not yet implemented")
-}
+) : IlParameter

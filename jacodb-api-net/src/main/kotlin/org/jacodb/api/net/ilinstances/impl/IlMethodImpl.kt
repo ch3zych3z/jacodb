@@ -42,17 +42,28 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
     override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType.typeName)!! } }
 
     override val name: String = dto.name
-    override val signature: String get() = "${dto.returnType.typeName} $name(${dto.parameters.joinToString(",") { it.type.typeName }})"
     override val parameters: List<IlParameterImpl> by lazy(PUBLICATION) {
         dto.parameters.map { IlParameterImpl(it, this) }.toMutableList()
     }
-    val attributes: List<IlAttributeImpl> by lazy(PUBLICATION) { dto.attrs.map { IlAttributeImpl(it, publication) } }
+    override val attributes: List<IlAttributeImpl> by lazy(PUBLICATION) {
+        dto.attrs.map {
+            IlAttributeImpl(
+                it,
+                publication
+            )
+        }
+    }
     override val rawInstList: List<IlStmtDto>
         get() = dto.rawInstList
 
-    override val instList: List<IlStmt> by lazy {
-        publication.featuresChain.callUntilResolved<IlMethodExtFeature, ResolvedInstructionsResult> { it.instList(this) }!!.instructions
-    }
+    override val instList: List<IlStmt>
+        get() =
+            publication.featuresChain.callUntilResolved<IlMethodExtFeature, ResolvedInstructionsResult> {
+                it.instList(
+                    this
+                )
+            }!!.instructions
+
 
     val resolved: Boolean = dto.resolved
 
@@ -64,7 +75,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
 //    val scopes: List<IlEhScope> by lazy(PUBLICATION) { dto.ehScopes.map { IlEhScope.deserialize(this, it) } }
 
     override fun toString(): String {
-        return "${returnType ?: ""} $name(${parameters.joinToString(", ")})"
+        return "$returnType $name(${parameters.joinToString(", ")})"
     }
 }
 

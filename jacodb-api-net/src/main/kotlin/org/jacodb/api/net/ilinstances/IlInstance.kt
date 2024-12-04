@@ -48,10 +48,12 @@ interface IlField : IlInstance {
 }
 
 interface IlMethod : IlInstance, CommonMethod {
+    val attributes: List<IlAttribute>
     val declaringType: IlType
     override val returnType: IlType
     override val name: String
-    val signature: String
+    val signature: String get() = "${returnType.typeName} $name(${parameters.joinToString(",") { it.type.typeName }})"
+
     val rawInstList: List<IlStmtDto>
     val instList: List<IlStmt>
     override val parameters: List<IlParameter>

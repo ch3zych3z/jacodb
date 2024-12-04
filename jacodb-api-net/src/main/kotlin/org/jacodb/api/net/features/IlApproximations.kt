@@ -23,10 +23,8 @@ import org.jacodb.api.net.ilinstances.IlField
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.IlStmt
 import org.jacodb.api.net.ilinstances.IlType
-import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
-import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
-import org.jacodb.api.net.ilinstances.virtual.IlFieldVirtual.Companion.toVirtual
-import org.jacodb.api.net.ilinstances.virtual.IlMethodVirtual.Companion.toVirtual
+import org.jacodb.api.net.ilinstances.virtual.IlFieldVirtual.Companion.toVirtualOf
+import org.jacodb.api.net.ilinstances.virtual.IlMethodVirtual.Companion.toVirtualOf
 import org.jacodb.api.net.storage.asSymbol
 import org.jacodb.api.net.storage.asSymbolId
 import org.jacodb.api.net.storage.txn
@@ -47,13 +45,13 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
     override fun fieldsOf(type: IlType): List<IlField>? {
         val approximationTypeName = findApproximationByOriginalOrNull(type.fullname)?.name ?: return null
         val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
-        return approximationType?.fields?.map { it.toVirtual() }
+        return approximationType?.fields?.map { it.toVirtualOf(type) }
     }
 
     override fun methodsOf(type: IlType): List<IlMethod>? {
         val approximationTypeName = findApproximationByOriginalOrNull(type.name)?.name ?: return null
         val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
-        return approximationType?.methods?.map { it.toVirtual() }
+        return approximationType?.methods?.map { it.toVirtualOf(type) }
     }
 
     override fun onSignal(signal: IlSignal) {

@@ -68,8 +68,6 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
 
     override fun findTypeSourceByNameOrNull(fullName: String): IlTypeDto? = read { ctx ->
         val seq = findTypeSources(ctx, fullName).toList()
-//        if (seq.size != 1)
-//            throw Exception("found")
         seq.firstOrNull()
     }
 
