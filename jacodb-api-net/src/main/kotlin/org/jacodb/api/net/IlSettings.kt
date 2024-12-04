@@ -18,11 +18,13 @@ package org.jacodb.api.net
 
 import org.jacodb.impl.ValueStoreType
 import org.jacodb.impl.caches.guava.GUAVA_CACHE_PROVIDER_ID
+import org.jacodb.impl.storage.ers.kv.KV_ERS_SPI
+import org.jacodb.impl.storage.ers.ram.RAM_ERS_SPI
 import org.jacodb.impl.storage.ers.sql.SQL_ERS_SPI
 import java.time.Duration
 
 class IlSettings() {
-    val ersSpiId = SQL_ERS_SPI
+    val ersSpiId = RAM_ERS_SPI
     val publicationCacheSettings = IlPublicationCacheSettings()
 }
 

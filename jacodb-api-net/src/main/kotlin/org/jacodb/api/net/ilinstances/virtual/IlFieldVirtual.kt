@@ -24,6 +24,7 @@ import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
 
 class IlFieldVirtual(
+    private val declaringType: IlType,
     override val fieldType: IlType,
     override val name: String,
     override val isStatic: Boolean,
@@ -35,6 +36,11 @@ class IlFieldVirtual(
 
         fun name(value: String) = apply {
             name = value
+        }
+
+        lateinit var declaringType: IlType
+        fun declaringType(type: IlType) = apply {
+            declaringType = type
         }
 
         var fieldType: IlType = publication.void()
@@ -51,7 +57,7 @@ class IlFieldVirtual(
             isStatic = value
         }
 
-        var attributes: List<IlAttribute> = listOf()
+        var attributes: List<IlAttribute> = emptyList()
             private set
 
         fun attributes(value: List<IlAttribute>) = apply {
@@ -59,13 +65,13 @@ class IlFieldVirtual(
         }
 
         fun build(): IlFieldVirtual {
-            return IlFieldVirtual(fieldType, name, isStatic, attributes)
+            return IlFieldVirtual(declaringType, fieldType, name, isStatic, attributes)
         }
     }
 
     companion object {
-        fun IlField.toVirtual() =
-            Builder(this.fieldType.publication).fieldType(fieldType.eliminateApproximation()).name(this.name)
-                .isStatic(isStatic).attributes(attributes).build()
+        fun IlField.toVirtualOf(type: IlType) =
+            Builder(this.fieldType.publication).declaringType(type).fieldType(fieldType.eliminateApproximation())
+                .name(this.name).isStatic(isStatic).attributes(attributes).build()
     }
 }

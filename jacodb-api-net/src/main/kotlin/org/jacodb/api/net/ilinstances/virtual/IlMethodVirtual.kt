@@ -18,39 +18,85 @@ package org.jacodb.api.net.ilinstances.virtual
 
 import org.jacodb.api.common.cfg.CommonInst
 import org.jacodb.api.common.cfg.ControlFlowGraph
+import org.jacodb.api.net.IlMethodExtFeature
+import org.jacodb.api.net.IlPublication
+import org.jacodb.api.net.ResolvedInstructionsResult
 import org.jacodb.api.net.generated.models.IlStmtDto
-import org.jacodb.api.net.ilinstances.IlMethod
-import org.jacodb.api.net.ilinstances.IlParameter
-import org.jacodb.api.net.ilinstances.IlStmt
-import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.*
+import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
 
 
-class IlMethodVirtual : IlMethod {
+class IlMethodVirtual(
+    override val declaringType: IlType,
+    override val returnType: IlType,
+    override val name: String,
+    override val attributes: List<IlAttribute>,
+    override val parameters: List<IlParameter>,
+    override val rawInstList: List<IlStmtDto>
+) : IlMethod {
 
-    internal class Builder {
-        fun build(): IlMethodVirtual {
-            TODO()
+    private class Builder(publication: IlPublication) {
+        lateinit var declaringType: IlType
+            private set
+
+        fun declaringType(value: IlType) = apply {
+            declaringType = value
         }
+
+        var returnType: IlType = publication.void()
+            private set
+
+        fun returnType(value: IlType) = apply {
+            returnType = value
+        }
+
+        var name: String = "_virtual_"
+            private set
+
+        fun name(value: String) = apply {
+            name = value
+        }
+
+        var attributes: List<IlAttribute> = emptyList()
+            private set
+
+        fun attributes(value: List<IlAttribute>) = apply {
+            attributes = value
+        }
+
+        var parameters: List<IlParameter> = emptyList()
+            private set
+
+        fun parameters(value: List<IlParameter>) = apply {
+            parameters = value.map { IlParameterVirtual(it.type, it.attributes, it.name) }
+        }
+
+        var rawInstList: List<IlStmtDto> = emptyList()
+            private set
+
+        fun rawInstList(value: List<IlStmtDto>) = apply {
+            rawInstList = value
+        }
+
+
+        fun build(): IlMethodVirtual =
+            IlMethodVirtual(declaringType, returnType, name, attributes, parameters, rawInstList)
     }
+
+    val publication: IlPublication get() = declaringType.publication
+
+    override val instList: List<IlStmt>
+        get() = publication.featuresChain.callUntilResolved<IlMethodExtFeature, ResolvedInstructionsResult> {
+            it.instList(
+                this
+            )
+        }!!.instructions
 
     companion object {
-        fun IlMethod.toVirtual() = Builder().build()
+        fun IlMethod.toVirtualOf(type: IlType) =
+            Builder(type.publication).declaringType(type).returnType(returnType).name(name).attributes(attributes)
+                .parameters(parameters).rawInstList(rawInstList).build()
     }
-
-    override val declaringType: IlType
-        get() = TODO("Not yet implemented")
-    override val returnType: IlType
-        get() = TODO("Not yet implemented")
-    override val name: String
-        get() = TODO("Not yet implemented")
-    override val signature: String
-        get() = TODO("Not yet implemented")
-    override val rawInstList: List<IlStmtDto>
-        get() = TODO("Not yet implemented")
-    override val instList: List<IlStmt>
-        get() = TODO("Not yet implemented")
-    override val parameters: List<IlParameter>
-        get() = TODO("Not yet implemented")
 
     override fun flowGraph(): ControlFlowGraph<CommonInst> {
         TODO("Not yet implemented")
