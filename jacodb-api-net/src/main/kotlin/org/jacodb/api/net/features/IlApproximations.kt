@@ -84,8 +84,7 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
         method: IlMethod,
         instList: List<IlStmt>
     ): List<IlStmt> {
-        // TODO
-        return instList
+        return instList.map { it.accept(IlApproximationsInstSubstitutor) }
     }
 }
 

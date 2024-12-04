@@ -21,7 +21,6 @@ import org.jacodb.api.net.features.IlApproximations
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
 import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.NetApiServer
-import java.lang.Exception
 
 
 fun main(args: Array<String>) {
@@ -51,7 +50,7 @@ fun main(args: Array<String>) {
         val type = publication.findIlTypeOrNull(typeDto.fullname)
         if (type == null)
             println("not found ${typeDto.fullname}")
-        if (type != null && type.fullname == "System.Collections.Generic.IList`1[T]704643078") {
+        if (type != null && type.fullname == "TACBuilder.Tests.Approximations.Approximated") {
             val fields = type.fields
             println(fields.joinToString { it.name })
 
