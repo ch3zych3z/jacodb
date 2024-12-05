@@ -16,6 +16,7 @@
 
 package org.jacodb.api.net.storage
 
+import com.jetbrains.rd.util.putLong
 import org.jacodb.api.net.ILDBContext
 import org.jacodb.api.net.IlDatabasePersistence
 import org.jacodb.api.net.features.APPROXIMATION_ATTRIBUTE
@@ -26,6 +27,8 @@ import org.jacodb.api.storage.ers.EntityRelationshipStorage
 import org.jacodb.api.storage.ers.Transaction
 import org.jacodb.api.storage.ers.compressed
 import org.jacodb.api.storage.ers.links
+import org.jacodb.api.storage.ers.nonSearchable
+import java.nio.ByteBuffer
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -75,7 +78,7 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
         findTypeSources(ctx, fullName).toList()
     }
 
-    override fun persist(types: List<IlTypeDto>) {
+    override fun persistTypes(types: List<IlTypeDto>) {
         if (types.isEmpty()) return
         write { ctx ->
             val txn = ctx.txn
@@ -89,6 +92,25 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
         }
     }
 
+    override fun persistAsmHierarchy(asms: List<String>, referenced: List<List<String>>) {
+        fun Long.toByteArray(): ByteArray {
+            val buffer = ByteBuffer.allocate(Long.SIZE_BYTES)
+            buffer.putLong(this)
+            return buffer.array()
+        }
+        asms.zip(referenced).forEach { pair ->
+            write { ctx ->
+                val txn = ctx.txn
+                val entity = txn.newEntity("Assembly")
+                entity["name"] = pair.first.asSymbolId(interner)
+                val buf = ByteArray(asms.size * Long.SIZE_BYTES)
+                pair.second.map { it.asSymbolId(interner) }.forEachIndexed { index, long ->
+                    buf.putLong(long, index * Long.SIZE_BYTES)
+                }
+                entity["refs"] = buf.compressed.nonSearchable
+            }
+        }
+    }
 
     // TODO target groups: type, method, field, parameter
     // TODO bindings to TypeDTO

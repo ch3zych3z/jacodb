@@ -21,17 +21,13 @@ import org.jacodb.api.net.*
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.storage.txn
 
 class IlPublicationImpl(
-    override val db: IlDatabase,
-    override val features: List<IlPublicationFeature>,
-    val settings: IlSettings
+    override val db: IlDatabase, override val features: List<IlPublicationFeature>, val settings: IlSettings
 ) : IlPublication {
-    override val featuresChain = features
-        .let { it + IlPublicationFeatureImpl() }
-        .let { IlFeaturesChain(it) }
+    override val featuresChain = features.let { it + IlPublicationFeatureImpl() }.let { IlFeaturesChain(it) }
     override val allTypes: List<IlTypeDto> get() = db.persistence.allTypes
-
     override fun findIlTypeOrNull(name: String): IlType? =
         featuresChain.callUntilResolved<IlTypeSearchFeature, ResolvedIlTypeResult> { feature ->
             feature.findType(name)
@@ -42,7 +38,8 @@ class IlPublicationImpl(
             feature.findTypes(name)
         }?.types ?: emptyList()
 
-    private inner class IlPublicationFeatureImpl() : IlTypeSearchFeature, IlTypeSearchAllFeature {
+    private inner class IlPublicationFeatureImpl() : IlTypeSearchFeature, IlTypeSearchAllFeature,
+        IlTypeSearchExactFeature {
         override fun findType(name: String): ResolvedIlTypeResult {
             val persistence = db.persistence
             val type = persistence.findTypeSourceByNameOrNull(name)
@@ -59,6 +56,21 @@ class IlPublicationImpl(
 
         override fun event(result: Any): IlPublicationEvent {
             return IlPublicationEvent(this, result)
+        }
+
+        override fun findExactType(fullName: String, asmName: String?): ResolvedIlTypeResult {
+            val persistence = db.persistence
+            val lookup = persistence.findTypeSourcesByName(fullName)
+            if (lookup.size == 1)
+                return ResolvedIlTypeResult(fullName, IlTypeImpl.from(lookup.first(), this@IlPublicationImpl))
+            if (asmName == null || lookup.size == 0) return ResolvedIlTypeResult(fullName, null)
+            val exactLookup = lookup.filter {
+                it.asmName == asmName
+            }
+            // TODO use asm hierarchy here
+            if (exactLookup.size != 1) return ResolvedIlTypeResult(fullName, null)
+            return ResolvedIlTypeResult(fullName, IlTypeImpl.from(exactLookup.first(), this@IlPublicationImpl))
+
         }
     }
 }

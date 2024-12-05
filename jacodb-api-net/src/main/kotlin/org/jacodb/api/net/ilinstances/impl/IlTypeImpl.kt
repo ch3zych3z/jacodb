@@ -46,7 +46,12 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
 
     override val declaringType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it.typeName) } }
     override val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it.typeName)!! } }
-
+    override val baseType: IlType? by lazy(PUBLICATION) {
+        dto.baseType?.let { publication.findIlTypeOrNull(it.typeName) }
+    }
+    override val interfaces: List<IlType> by lazy(PUBLICATION) {
+        dto.interfaces.mapNotNull { publication.findIlTypeOrNull(it.typeName) }
+    }
     override val asmName = dto.asmName
     val namespace: String = dto.namespaceName
     override val name: String = dto.name
