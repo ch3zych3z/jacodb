@@ -35,8 +35,9 @@ import kotlin.jvm.JvmStatic
  * #### Generated from [IlSigModel.kt:23]
  */
 class IlSigModel private constructor(
-    private val _callForAsm: RdCall<Request, List<IlTypeDto>>,
-    private val _asmRequest: RdSignal<Request>,
+    private val _publication: RdCall<PublicationRequest, PublicationResponse>,
+    private val _callForAsm: RdCall<PublicationRequest, List<IlTypeDto>>,
+    private val _asmRequest: RdSignal<PublicationRequest>,
     private val _asmResponse: RdSignal<List<IlDto>>
 ) : RdExtBase() {
     //companion
@@ -44,7 +45,8 @@ class IlSigModel private constructor(
     companion object : ISerializersOwner {
         
         override fun registerSerializersCore(serializers: ISerializers)  {
-            serializers.register(Request)
+            serializers.register(PublicationRequest)
+            serializers.register(PublicationResponse)
         }
         
         
@@ -53,15 +55,16 @@ class IlSigModel private constructor(
         private val __IlTypeDtoListSerializer = AbstractPolymorphic(IlTypeDto).list()
         private val __IlDtoListSerializer = AbstractPolymorphic(IlDto).list()
         
-        const val serializationHash = 9130847229297571826L
+        const val serializationHash = -1254477867872549445L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlSigModel
     override val serializationHash: Long get() = IlSigModel.serializationHash
     
     //fields
-    val callForAsm: IRdCall<Request, List<IlTypeDto>> get() = _callForAsm
-    val asmRequest: IAsyncSignal<Request> get() = _asmRequest
+    val publication: IRdCall<PublicationRequest, PublicationResponse> get() = _publication
+    val callForAsm: IRdCall<PublicationRequest, List<IlTypeDto>> get() = _callForAsm
+    val asmRequest: IAsyncSignal<PublicationRequest> get() = _asmRequest
     val asmResponse: IAsyncSignal<List<IlDto>> get() = _asmResponse
     //methods
     //initializer
@@ -71,6 +74,7 @@ class IlSigModel private constructor(
     }
     
     init {
+        bindableChildren.add("publication" to _publication)
         bindableChildren.add("callForAsm" to _callForAsm)
         bindableChildren.add("asmRequest" to _asmRequest)
         bindableChildren.add("asmResponse" to _asmResponse)
@@ -79,8 +83,9 @@ class IlSigModel private constructor(
     //secondary constructor
     internal constructor(
     ) : this(
-        RdCall<Request, List<IlTypeDto>>(Request, __IlTypeDtoListSerializer),
-        RdSignal<Request>(Request),
+        RdCall<PublicationRequest, PublicationResponse>(PublicationRequest, PublicationResponse),
+        RdCall<PublicationRequest, List<IlTypeDto>>(PublicationRequest, __IlTypeDtoListSerializer),
+        RdSignal<PublicationRequest>(PublicationRequest),
         RdSignal<List<IlDto>>(__IlDtoListSerializer)
     )
     
@@ -90,6 +95,7 @@ class IlSigModel private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlSigModel (")
         printer.indent {
+            print("publication = "); _publication.print(printer); println()
             print("callForAsm = "); _callForAsm.print(printer); println()
             print("asmRequest = "); _asmRequest.print(printer); println()
             print("asmResponse = "); _asmResponse.print(printer); println()
@@ -99,6 +105,7 @@ class IlSigModel private constructor(
     //deepClone
     override fun deepClone(): IlSigModel   {
         return IlSigModel(
+            _publication.deepClonePolymorphic(),
             _callForAsm.deepClonePolymorphic(),
             _asmRequest.deepClonePolymorphic(),
             _asmResponse.deepClonePolymorphic()
@@ -113,22 +120,22 @@ val IlModel.ilSigModel get() = getOrCreateExtension("ilSigModel", ::IlSigModel)
 /**
  * #### Generated from [IlSigModel.kt:24]
  */
-data class Request (
-    val rootAsm: String
+data class PublicationRequest (
+    val rootAsms: List<String>
 ) : IPrintable {
     //companion
     
-    companion object : IMarshaller<Request> {
-        override val _type: KClass<Request> = Request::class
+    companion object : IMarshaller<PublicationRequest> {
+        override val _type: KClass<PublicationRequest> = PublicationRequest::class
         
         @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): Request  {
-            val rootAsm = buffer.readString()
-            return Request(rootAsm)
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): PublicationRequest  {
+            val rootAsms = buffer.readList { buffer.readString() }
+            return PublicationRequest(rootAsms)
         }
         
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: Request)  {
-            buffer.writeString(value.rootAsm)
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: PublicationRequest)  {
+            buffer.writeList(value.rootAsms) { v -> buffer.writeString(v) }
         }
         
         
@@ -142,23 +149,92 @@ data class Request (
         if (this === other) return true
         if (other == null || other::class != this::class) return false
         
-        other as Request
+        other as PublicationRequest
         
-        if (rootAsm != other.rootAsm) return false
+        if (rootAsms != other.rootAsms) return false
         
         return true
     }
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + rootAsm.hashCode()
+        __r = __r*31 + rootAsms.hashCode()
         return __r
     }
     //pretty print
     override fun print(printer: PrettyPrinter)  {
-        printer.println("Request (")
+        printer.println("PublicationRequest (")
         printer.indent {
-            print("rootAsm = "); rootAsm.print(printer); println()
+            print("rootAsms = "); rootAsms.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlSigModel.kt:27]
+ */
+data class PublicationResponse (
+    val reachableAsms: List<String>,
+    val referencedAsms: List<List<String>>,
+    val reachableTypes: List<IlTypeDto>
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<PublicationResponse> {
+        override val _type: KClass<PublicationResponse> = PublicationResponse::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): PublicationResponse  {
+            val reachableAsms = buffer.readList { buffer.readString() }
+            val referencedAsms = buffer.readList { buffer.readList { buffer.readString() } }
+            val reachableTypes = buffer.readList { ctx.serializers.readPolymorphic<IlTypeDto>(ctx, buffer, IlTypeDto) }
+            return PublicationResponse(reachableAsms, referencedAsms, reachableTypes)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: PublicationResponse)  {
+            buffer.writeList(value.reachableAsms) { v -> buffer.writeString(v) }
+            buffer.writeList(value.referencedAsms) { v -> buffer.writeList(v) { v -> buffer.writeString(v) } }
+            buffer.writeList(value.reachableTypes) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as PublicationResponse
+        
+        if (reachableAsms != other.reachableAsms) return false
+        if (referencedAsms != other.referencedAsms) return false
+        if (reachableTypes != other.reachableTypes) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + reachableAsms.hashCode()
+        __r = __r*31 + referencedAsms.hashCode()
+        __r = __r*31 + reachableTypes.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("PublicationResponse (")
+        printer.indent {
+            print("reachableAsms = "); reachableAsms.print(printer); println()
+            print("referencedAsms = "); referencedAsms.print(printer); println()
+            print("reachableTypes = "); reachableTypes.print(printer); println()
         }
         printer.print(")")
     }

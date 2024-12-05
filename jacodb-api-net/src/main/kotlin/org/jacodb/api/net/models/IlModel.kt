@@ -34,6 +34,8 @@ object IlModel : Ext(IlRoot) {
         field("name", PredefinedType.string)
         field("fullname", PredefinedType.string)
         field("declType", typeId.nullable)
+        field("baseType", typeId.nullable)
+        field("interfaces", immutableList(typeId))
         field("genericArgs", immutableList(typeId))
         field("isGenericParam", PredefinedType.bool)
         field("isValueType", PredefinedType.bool)

@@ -28,6 +28,8 @@ interface IlInstance
 interface IlType : IlInstance, CommonTypeName {
     val publication: IlPublication
     val declaringType: IlType?
+    val baseType: IlType?
+    val interfaces: List<IlType>
     val genericArgs: List<IlType>
     override val typeName: String
     val fullname: String
