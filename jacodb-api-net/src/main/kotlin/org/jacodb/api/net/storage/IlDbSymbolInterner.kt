@@ -39,7 +39,7 @@ interface IlDbSymbolInterner {
 
 private const val symbolsMapName = "org.jacodb.impl.Symbols"
 
-class ILDBSymbolsInternerImpl : IlDbSymbolInterner, Closeable {
+class IlDbSymbolsInternerImpl : IlDbSymbolInterner, Closeable {
 
     private val symbolsIdGen = AtomicLong()
     private val symbolsCache = ConcurrentHashMap<String, Long>()

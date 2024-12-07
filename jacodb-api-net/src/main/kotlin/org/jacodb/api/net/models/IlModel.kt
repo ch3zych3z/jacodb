@@ -38,6 +38,7 @@ object IlModel : Ext(IlRoot) {
         field("interfaces", immutableList(typeId))
         field("genericArgs", immutableList(typeId))
         field("isGenericParam", PredefinedType.bool)
+        field("isGenericDefinition", PredefinedType.bool)
         field("isValueType", PredefinedType.bool)
         field("isManaged", PredefinedType.bool)
         field("attrs", immutableList(IlAttrDto))

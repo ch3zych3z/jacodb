@@ -42,7 +42,7 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
         }
 
     override val interner: IlDbSymbolInterner =
-        ILDBSymbolsInternerImpl().apply { setup(this@IlDatabasePersistenceImpl) }
+        IlDbSymbolsInternerImpl().apply { setup(this@IlDatabasePersistenceImpl) }
 
     override fun findSymbolById(id: Long): String = id.asSymbol(interner)
 
