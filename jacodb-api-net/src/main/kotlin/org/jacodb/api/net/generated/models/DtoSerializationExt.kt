@@ -19,6 +19,7 @@ package org.jacodb.api.net.generated.models
 import com.jetbrains.rd.framework.SerializationCtx
 import com.jetbrains.rd.framework.Serializers
 import com.jetbrains.rd.framework.createAbstractBuffer
+import java.lang.reflect.Type
 
 enum class IlTypeByteId(val id: Byte) {
     POINTER(0),
@@ -125,3 +126,14 @@ fun List<IlConstDto>.getBytes(): ByteArray {
 open class DtoConversionException(msg: String) : RuntimeException(msg)
 class DtoSerializationException(msg: String) : DtoConversionException(msg)
 class DtoDeserializationException(msg: String) : DtoConversionException(msg)
+
+fun TypeId.getBytes(): ByteArray {
+    val buf = createAbstractBuffer()
+    TypeId.write(ctx, buf, this)
+    return buf.getArray()
+}
+
+fun ByteArray.getTypeId(): TypeId {
+    val buf = createAbstractBuffer(this)
+    return TypeId.read(ctx, buf)
+}

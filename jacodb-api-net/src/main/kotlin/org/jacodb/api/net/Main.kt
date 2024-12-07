@@ -18,6 +18,7 @@ package org.jacodb.api.net
 
 import com.jetbrains.rd.framework.Protocol
 import com.jetbrains.rd.framework.impl.RpcTimeouts
+import com.jetbrains.rd.framework.util.NetUtils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.completeWith
 import kotlinx.coroutines.runBlocking
@@ -36,19 +37,15 @@ suspend fun <T> Protocol.onScheduler(block: () -> T): T {
     return deffered.await()
 }
 
-fun <T> Protocol.onSchedulerBlocking(block: () -> T): T = runBlocking { onScheduler(block) }
-
 fun main(args: Array<String>) {
     assert(args[0] == "--exe")
     val exePath = args[1]
-    assert(args[2] == "--asm")
-//    val asmPath = args[3]
-    val asmRoot = "/Users/petrukhinandrew/RiderProjects/AmbigousTypeNames/AmbigousTypeNames/bin/Release/net8.0/osx-arm64/publish/"
-    val asmPaths = listOf("AmbigousTypeNames.dll", "A.dll", "B.dll", "C.dll", "D.dll").map { asmRoot + it}
+    assert(args[2] == "--asms")
+    val asmPaths = args.drop(3)
     val settings = IlSettings()
     val database = IlDatabaseImpl(settings)
-
-    val server = RdServer(8083, exePath, database)
+    val freePort = NetUtils.findFreePort(0)
+    val server = RdServer(freePort, exePath, database)
     server.protocol.scheduler.queue {
         val res =
             server.protocol.ilModel.ilSigModel.publication.sync(PublicationRequest(asmPaths), RpcTimeouts.longRunning)
@@ -75,14 +72,6 @@ fun main(args: Array<String>) {
                 val fields = type.fields
                 println(fields.joinToString { it.name })
             }
-
-//            methods.forEach {
-//                val insts =
-//                    publication.featuresChain.callUntilResolved<IlMethodExtFeature, ResolvedInstructionsResult> { feature ->
-//                        feature.instList(it)
-//                    }
-//            }
-//            return@forEach
         }
         server.close()
     }
