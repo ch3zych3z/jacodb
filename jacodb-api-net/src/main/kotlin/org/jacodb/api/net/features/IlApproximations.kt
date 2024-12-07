@@ -17,6 +17,7 @@
 package org.jacodb.api.net.features
 
 import org.jacodb.api.net.IlInstExtFeature
+import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.IlTypeExtFeature
 import org.jacodb.api.net.generated.models.unsafeString
 import org.jacodb.api.net.ilinstances.IlField
@@ -32,7 +33,7 @@ import org.jacodb.api.storage.ers.compressed
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
-object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
+object IlApproximations : IlFeature<Any?, Any?>, IlTypeExtFeature, IlInstExtFeature {
     private val originalToApproximation: ConcurrentMap<OriginalTypeName, ApproximatedTypeName> = ConcurrentHashMap()
     private val approximationToOriginal: ConcurrentMap<ApproximatedTypeName, OriginalTypeName> = ConcurrentHashMap()
 
@@ -52,6 +53,13 @@ object IlApproximations : IlFeature, IlTypeExtFeature, IlInstExtFeature {
         val approximationTypeName = findApproximationByOriginalOrNull(type.name)?.name ?: return null
         val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
         return approximationType?.methods?.map { it.toVirtualOf(type) }
+    }
+
+    override suspend fun query(
+        publication: IlPublication,
+        request: Any?
+    ): Sequence<Any?> {
+        return emptySequence()
     }
 
     override fun onSignal(signal: IlSignal) {

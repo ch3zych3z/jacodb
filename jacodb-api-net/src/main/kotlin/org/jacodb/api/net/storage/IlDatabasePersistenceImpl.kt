@@ -80,12 +80,15 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
 
     override fun persistTypes(types: List<IlTypeDto>) {
         if (types.isEmpty()) return
+        val typeEntities = hashMapOf<String, Entity>()
         write { ctx ->
             val txn = ctx.txn
             types.forEach { type ->
                 val entity = txn.newEntity("Type")
                 entity["fullname"] = type.fullname.asSymbolId(interner)
                 entity["assembly"] = type.asmName.asSymbolId(interner)
+                entity["baseType"] = type.baseType?.getBytes()?.compressed?.nonSearchable
+
                 entity.setRawBlob("bytes", type.getBytes())
                 type.attrs.forEach { it.save(txn, entity) }
             }
@@ -120,7 +123,6 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
             links(attr, "target") += target
             attr["fullname"] = attrType.typeName.asSymbolId(interner).compressed
             attr["assembly"] = attrType.asmName.asSymbolId(interner)
-
             attr.setRawBlob("values", ctorArgs.getBytes())
 
             namedArgsNames.zip(namedArgsValues).forEach { (name, value) ->

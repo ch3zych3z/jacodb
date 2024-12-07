@@ -17,11 +17,20 @@
 package org.jacodb.api.net.features
 
 import org.jacodb.api.net.IlDatabase
+import org.jacodb.api.net.IlPublication
 
-interface IlFeature {
+interface IlFeature<Request, Response> {
+    suspend fun query(publication: IlPublication, request: Request): Sequence<Response>
     fun onSignal(signal: IlSignal)
 }
 
 sealed class IlSignal(db: IlDatabase) {
     class BeforeIndexing(val db: IlDatabase) : IlSignal(db)
+}
+
+suspend fun <Request, Response> IlPublication.query(
+    feature: IlFeature<Request, Response>,
+    req: Request
+): Sequence<Response> {
+    return feature.query(this, req)
 }

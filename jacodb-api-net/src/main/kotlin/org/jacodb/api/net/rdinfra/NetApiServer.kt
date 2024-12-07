@@ -18,45 +18,19 @@ package org.jacodb.api.net.rdinfra
 
 import com.jetbrains.rd.framework.*
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.spinUntil
-import com.jetbrains.rd.util.threading.SingleThreadScheduler
 import com.jetbrains.rd.util.threading.SynchronousScheduler
 import org.jacodb.api.net.IlDatabase
-import org.jacodb.api.net.generated.models.*
 import java.io.File
-import java.time.LocalTime
-import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
-import kotlin.system.exitProcess
 
-
-fun logWithTime(message: String) {
-    println("${LocalTime.now()}: $message ")
-}
-
-fun IWire.onDisconnect(lifetime: Lifetime = Lifetime.Eternal, callback: () -> Unit) {
-    var wasConnected = false
-    connected.advise(lifetime) { isConnected ->
-        if (!isConnected && wasConnected) {
-            callback()
-        }
-        wasConnected = isConnected
-    }
-}
-
-open class RdServer(port: Int, private val netExePath: String, val db: IlDatabase) {
+open class RdServer(private val port: Int, private val netExePath: String, val db: IlDatabase) {
     val lifetimeDef = Lifetime.Eternal.createNested()
     val lifetime = lifetimeDef.lifetime
     val scheduler = SynchronousScheduler
     val protocol = createProtocol(lifetime)
 
-    private lateinit var netProcess: Process
-    private var unresponded = 0
+    private var netProcess: Process = spawnDotNetProcess(netExePath)
     private fun createProtocol(processLifetime: Lifetime): Protocol {
-//        val scheduler = SingleThreadScheduler(
-//            processLifetime,
-//            "scheduler"
-//        )
         return Protocol(
             "protocol",
             Serializers(),
@@ -65,7 +39,7 @@ open class RdServer(port: Int, private val netExePath: String, val db: IlDatabas
             SocketWire.Server(
                 processLifetime,
                 scheduler,
-                8083,
+                port,
                 "socket"
             ),
             processLifetime
@@ -79,37 +53,14 @@ open class RdServer(port: Int, private val netExePath: String, val db: IlDatabas
                 netProcess.destroy()
         }
     }
-    init {
-        netProcess = spawnDotNetProcess(netExePath)
 
-    }
 
     private fun spawnDotNetProcess(exePath: String): Process {
-        val process = ProcessBuilder("./TACBuilder", "--rd")
+        val process = ProcessBuilder("./TACBuilder", "-m", "rd", "-p", port.toString())
             .directory(File(exePath))
             .redirectOutput(ProcessBuilder.Redirect.INHERIT)
             .redirectError(ProcessBuilder.Redirect.INHERIT)
             .start()
         return process
-    }
-}
-
-class NetApiServer(private val exePath: String, private val requestAsmPath: String, private val db: IlDatabase) {
-    private val server = RdServer(8083, exePath, db)
-//    init {
-//        server.run()
-//    }
-
-    fun requestTestAsm() {
-        requestAsm(requestAsmPath)
-    }
-
-    private fun requestAsm(path: String) {
-//        var response = server.signalModel.publication.sync(PublicationRequest(path))
-//        db.persistence.persist(response.reachableTypes)
-    }
-
-    fun close() {
-        server.close()
     }
 }

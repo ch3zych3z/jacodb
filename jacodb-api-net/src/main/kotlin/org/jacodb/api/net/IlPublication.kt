@@ -50,6 +50,7 @@ interface IlTypeSearchAllFeature : IlPublicationFeature {
 }
 
 interface IlTypeSearchExactFeature : IlPublicationFeature {
+    // TODO add cache
     fun findExactType(fullname: String, asmName: String? = null): ResolvedIlTypeResult
 }
 
