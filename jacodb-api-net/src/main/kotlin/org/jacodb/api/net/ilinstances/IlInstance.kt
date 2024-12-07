@@ -31,6 +31,8 @@ interface IlType : IlInstance, CommonTypeName {
     val baseType: IlType?
     val interfaces: List<IlType>
     val genericArgs: List<IlType>
+    val isGenericParameter: Boolean
+    val isGenericDefinition: Boolean
     override val typeName: String
     val fullname: String
     val asmName: String
