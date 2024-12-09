@@ -151,15 +151,15 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlAssignStmt(stmt: IlAssignStmt): IlStmt {
-        return IlAssignStmt(stmt.lhv.accept(this) as IlValue, stmt.rhv.accept(this))
+        return IlAssignStmt(stmt.location, stmt.lhv.accept(this) as IlValue, stmt.rhv.accept(this))
     }
 
     override fun visitIlCallStmt(stmt: IlCallStmt): IlStmt {
-        return IlCallStmt(stmt.call.accept(this) as IlCall)
+        return IlCallStmt(stmt.location, stmt.call.accept(this) as IlCall)
     }
 
     override fun visitIlReturnStmt(stmt: IlReturnStmt): IlStmt {
-        return IlReturnStmt(stmt.value?.accept(this))
+        return IlReturnStmt(stmt.location, stmt.returnValue?.accept(this) as IlValue)
     }
 
     override fun visitIlEndFinallyStmt(stmt: IlEndFinallyStmt): IlStmt {
@@ -175,11 +175,11 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlEndFilterStmt(stmt: IlEndFilterStmt): IlStmt {
-        return IlEndFilterStmt(stmt.value.accept(this))
+        return IlEndFilterStmt(stmt.location, stmt.value.accept(this))
     }
 
     override fun visitIlThrowStmt(stmt: IlThrowStmt): IlStmt {
-        return IlThrowStmt(stmt.value.accept(this))
+        return IlThrowStmt(stmt.location, stmt.value.accept(this))
     }
 
     // TODO CRITICAL
