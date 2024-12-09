@@ -88,11 +88,11 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
 
     override fun visitIlFieldAccess(expr: IlFieldAccess): IlExpr {
         // TODO eliminate from field
-        return IlFieldAccess(expr.field, expr.receiver?.accept(this))
+        return IlFieldAccess(expr.field, expr.instance?.accept(this) as IlValue?)
     }
 
     override fun visitIlArrayAccess(expr: IlArrayAccess): IlExpr {
-        return IlArrayAccess(expr.array.accept(this), expr.index.accept(this))
+        return IlArrayAccess(expr.array.accept(this) as IlValue, expr.index.accept(this) as IlValue)
     }
 
     override fun visitIlLocalVar(expr: IlLocalVar): IlExpr {
@@ -151,7 +151,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlAssignStmt(stmt: IlAssignStmt): IlStmt {
-        return IlAssignStmt(stmt.lhs.accept(this), stmt.rhs.accept(this))
+        return IlAssignStmt(stmt.lhv.accept(this) as IlValue, stmt.rhv.accept(this))
     }
 
     override fun visitIlCallStmt(stmt: IlCallStmt): IlStmt {

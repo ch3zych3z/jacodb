@@ -16,180 +16,22 @@
 
 package org.jacodb.api.net.ilinstances
 
+import org.jacodb.api.common.cfg.CommonArgument
+import org.jacodb.api.common.cfg.CommonArrayAccess
+import org.jacodb.api.common.cfg.CommonExpr
+import org.jacodb.api.common.cfg.CommonFieldRef
 import org.jacodb.api.net.IlPublication
-import org.jacodb.api.net.IlTypeSearchExactFeature
-import org.jacodb.api.net.ResolvedIlTypeResult
 import org.jacodb.api.net.core.IlExprVisitor
-import org.jacodb.api.net.generated.models.*
+import org.jacodb.api.net.generated.models.IlParameterDto
+import org.jacodb.api.net.generated.models.IlVarDto
 import org.jacodb.api.net.ilinstances.impl.IlArrayType
-import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.nuint
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.uint32
 
-sealed interface IlExpr {
+sealed interface IlExpr : CommonExpr {
     val type: IlType
+    override val typeName: String
+        get() = type.fullname
+
     fun <T> accept(visitor: IlExprVisitor<T>): T
-}
-
-fun IlConstDto.deserializeConst(publication: IlPublication): IlConstant {
-    val constType = publication.findIlTypeOrNull(type.typeName)!!
-    return when (this) {
-        is IlNullDto -> IlNull(constType)
-        is IlBoolConstDto -> IlBoolConstant(constType, value)
-        is IlStringConstDto -> IlStringConstant(constType, value)
-        is IlCharConstDto -> IlCharConstant(constType, value)
-        is IlInt8ConstDto -> IlInt8Constant(constType, value)
-        is IlUint8ConstDto -> IlUInt8Constant(constType, value)
-        is IlInt16ConstDto -> IlInt16Constant(constType, value)
-        is IlUint16ConstDto -> IlUInt16Constant(constType, value)
-        is IlInt32ConstDto -> IlInt32Constant(constType, value)
-        is IlUint32ConstDto -> IlUInt32Constant(constType, value)
-        is IlInt64ConstDto -> IlInt64Constant(constType, value)
-        is IlUint64ConstDto -> IlUInt64Constant(constType, value)
-        is IlFloatConstDto -> IlFloatConstant(constType, value)
-        is IlDoubleConstDto -> IlDoubleConstant(constType, value)
-        is IlTypeRefDto -> IlTypeRef(constType, publication.findIlTypeOrNull(referencedType.typeName)!!)
-        is IlMethodRefDto -> IlMethodRef(
-            constType,
-            publication.findIlTypeOrNull(this.method.type.typeName)!!.methods.first { method -> method.signature == this.method.name })
-
-        is IlFieldRefDto -> IlFieldRef(
-            constType,
-            publication.findIlTypeOrNull(this.field.type.typeName)!!.fields.first { field -> field.name == this.field.name })
-
-        is IlArrayConstDto -> IlArrayConstant(constType as IlArrayType, values.map { it.deserializeConst(publication) })
-        is IlEnumConstDto -> IlEnumConstant(
-            constType,
-            publication.findIlTypeOrNull(this.underlyingType.typeName)!!,
-            underlyingValue.deserializeConst(publication)
-        )
-
-        else -> throw NotImplementedError()
-    }
-}
-
-fun IlUnaryOpDto.deserialize(ilMethod: IlMethod): IlExpr {
-    val exprType =
-        ilMethod.declaringType.publication.featuresChain.callUntilResolved<IlTypeSearchExactFeature, ResolvedIlTypeResult> { t ->
-            t.findExactType(
-                type.typeName,
-                type.asmName
-            )
-        }!!.type!!
-    return when (this) {
-        is IlNegOpDto -> IlNegOp(exprType, operand.deserialize(ilMethod))
-        is IlNotOpDto -> IlNotOp(exprType, operand.deserialize(ilMethod))
-        else -> throw IllegalArgumentException("Unexpected unaryOp type $this")
-    }
-}
-
-fun IlBinaryOpDto.deserialize(ilMethod: IlMethod): IlExpr {
-    val binOpType = ilMethod.declaringType.publication.findIlTypeOrNull(type.typeName)!!
-    val lhsExpr = lhs.deserialize(ilMethod)
-    val rhsExpr = rhs.deserialize(ilMethod)
-    return when (this) {
-        is IlAddOpDto -> IlAddOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlSubOpDto -> IlSubOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlMulOpDto -> IlMulOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlDivOpDto -> IlDivOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlRemOpDto -> IlRemOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlAndOpDto -> IlAndOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlOrOpDto -> IlOrOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlXorOpDto -> IlXorOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlShlOpDto -> IlShlOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlShrOpDto -> IlShrOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlCeqOpDto -> IlCeqOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlCneOpDto -> IlCneOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlCgtOpDto -> IlCgtOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlCgeOpDto -> IlCgeOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlCltOpDto -> IlCltOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        is IlCleOpDto -> IlCleOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
-        else -> throw IllegalArgumentException("Unexpected binOp type $this")
-    }
-}
-
-fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr {
-    val publication = ilMethod.declaringType.publication
-    return when (this) {
-        is IlUnaryOpDto -> this.deserialize(ilMethod)
-        is IlBinaryOpDto -> this.deserialize(ilMethod)
-        is IlArrayLengthExprDto -> IlArrayLengthExpr(publication.nuint(), array.deserialize(ilMethod))
-        is IlCallDto -> {
-            val declType = publication.findIlTypeOrNull(this.method.type.typeName)
-            if (declType == null)
-                throw IllegalArgumentException("method decltype not resolved")
-            val methods = declType.methods
-            if (methods.isEmpty())
-                throw IllegalArgumentException("methods expected in type ${declType.name}")
-            val callMethod = methods.filter { m -> m.signature == method.name }
-            if (callMethod.size != 1)
-                throw IllegalArgumentException("unexpected number of methods found for given name")
-            IlCall(
-                callMethod.first(),
-                args.map { it.deserialize(ilMethod) })
-        }
-
-        is IlNewArrayExprDto -> {
-            var arrType = publication.findIlTypeOrNull(type.typeName)!! as IlArrayType
-            IlNewArrayExpr(arrType, size.deserialize(ilMethod))
-        }
-
-        is IlNewExprDto -> IlNewExpr(
-            publication.findIlTypeOrNull(type.typeName)!!
-        )
-
-        is IlSizeOfExprDto -> IlSizeOfExpr(publication.uint32(), publication.findIlTypeOrNull(targetType.typeName)!!)
-        is IlStackAllocExprDto -> IlStackAllocExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
-            size.deserialize(ilMethod)
-        )
-
-        is IlManagedRefExprDto -> IlManagedRefExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
-            value.deserialize(ilMethod)
-        )
-
-        is IlUnmanagedRefExprDto -> IlUnmanagedRefExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
-            value.deserialize(ilMethod)
-        )
-
-        is IlManagedDerefExprDto -> IlManagedDerefExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
-            value.deserialize(ilMethod)
-        )
-
-        is IlUnmanagedDerefExprDto -> IlUnmanagedDerefExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
-            value.deserialize(ilMethod)
-        )
-
-        is IlConvExprDto -> IlConvCastExpr(publication.findIlTypeOrNull(type.typeName)!!, operand.deserialize(ilMethod))
-        is IlBoxExprDto -> IlBoxExpr(publication.findIlTypeOrNull(type.typeName)!!, operand.deserialize(ilMethod))
-        is IlUnboxExprDto -> IlUnboxExpr(publication.findIlTypeOrNull(type.typeName)!!, operand.deserialize(ilMethod))
-
-        is IlIsInstExprDto -> IlIsInstExpr(publication.findIlTypeOrNull(type.typeName)!!, operand.deserialize(ilMethod))
-        is IlConstDto -> this.deserializeConst(publication)
-        is IlFieldAccessDto -> {
-            val fieldType = publication.findIlTypeOrNull(this.field.type.typeName)
-            if (fieldType == null) throw IllegalArgumentException("field decltype not found")
-            val fields = fieldType.fields
-            val fld = fields.firstOrNull { it.name == this.field.name }
-            if (fld == null) throw IllegalArgumentException("not such field in given class")
-            IlFieldAccess(fld, instance?.deserialize(ilMethod))
-        }
-
-        is IlArrayAccessDto -> IlArrayAccess(array.deserialize(ilMethod), index.deserialize(ilMethod))
-        // TODO remove force casts
-        is IlVarAccessDto -> when (kind) {
-            IlVarKind.local -> (ilMethod as IlMethodImpl).locals[index]
-            IlVarKind.temp -> (ilMethod as IlMethodImpl).temps[index]
-            IlVarKind.err -> (ilMethod as IlMethodImpl).errs[index]
-        }
-
-        is IlArgAccessDto -> (ilMethod as IlMethodImpl).args[index]
-        else -> throw NotImplementedError()
-    }
 }
 
 open class IlUnaryOp(override val type: IlType, val operand: IlExpr) : IlExpr {
@@ -308,16 +150,16 @@ class IlArrayLengthExpr(override val type: IlType, val array: IlExpr) : IlExpr {
     }
 }
 
-class IlFieldAccess(val field: IlField, val receiver: IlExpr?) : IlExpr {
+class IlFieldAccess(val field: IlField, override val instance: IlValue?) : IlExpr, CommonFieldRef {
     override val type: IlType get() = this.field.fieldType
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlFieldAccess(this)
     }
 
-    override fun toString(): String = "${receiver?.toString() ?: ""}$field"
+    override fun toString(): String = "${instance?.toString() ?: ""}$field"
 }
 
-class IlArrayAccess(val array: IlExpr, val index: IlExpr) : IlExpr {
+class IlArrayAccess(override val array: IlValue, override val index: IlValue) : IlExpr, CommonArrayAccess {
     override val type: IlType
         get() = (array.type as IlArrayType).elementType
 
@@ -454,7 +296,7 @@ class IlStackAllocExpr(override val type: IlType, val size: IlExpr) : IlExpr {
     }
 }
 
-class IlArgument(private val method: IlMethod, private val dto: IlParameterDto) : IlLocal {
+class IlArgument(private val method: IlMethod, private val dto: IlParameterDto) : IlLocal, CommonArgument {
     override val type: IlType by lazy { method.declaringType.publication.findIlTypeOrNull(dto.type.typeName)!! }
     val name: String = dto.name
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
