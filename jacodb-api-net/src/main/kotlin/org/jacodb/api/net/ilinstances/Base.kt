@@ -16,7 +16,9 @@
 
 package org.jacodb.api.net.ilinstances
 
-interface IlValue : IlExpr
+import org.jacodb.api.common.cfg.CommonValue
+
+interface IlValue : IlExpr, CommonValue
 interface IlLocal : IlValue
 interface IlConstant : IlValue
 abstract class IlNumericConstant<T>(open val value: T) : IlConstant {

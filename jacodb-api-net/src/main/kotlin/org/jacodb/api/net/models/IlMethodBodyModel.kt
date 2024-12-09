@@ -71,8 +71,8 @@ object IlMethodBodyModel : Ext(IlRoot) {
     private val IlNotOpDto = structdef extends IlUnaryOpDto {}
 
     private val IlBinaryOpDto = basestruct extends IlExprDto {
-        field("lhs", IlExprDto)
-        field("rhs", IlExprDto)
+        field("lhv", IlExprDto)
+        field("rhv", IlExprDto)
         field("isChecked", PredefinedType.bool)
         field("isUnsigned", PredefinedType.bool)
     }
@@ -159,8 +159,8 @@ object IlMethodBodyModel : Ext(IlRoot) {
     val IlStmtDto = basestruct {}
 
     private val IlAssignStmtDto = structdef extends IlStmtDto {
-        field("lhs", IlValueDto)
-        field("rhs", IlExprDto)
+        field("lhv", IlValueDto)
+        field("rhv", IlExprDto)
     }
 
     private val IlCallStmtDto = structdef extends IlStmtDto {

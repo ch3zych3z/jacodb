@@ -16,6 +16,7 @@
 
 package org.jacodb.api.net.ilinstances
 
+import org.jacodb.api.common.cfg.CommonAssignInst
 import org.jacodb.api.net.core.IlStmtVisitor
 import org.jacodb.api.net.generated.models.*
 
@@ -42,16 +43,19 @@ interface IlStmt {
     }
 }
 
-class IlAssignStmt(val lhs: IlExpr, val rhs: IlExpr) : IlStmt {
+class IlAssignStmt(val lhv: IlValue, val rhv: IlExpr) : IlStmt {
 
-    constructor(dto: IlAssignStmtDto, src: IlMethod) : this(dto.lhs.deserialize(src), dto.rhs.deserialize(src))
+    constructor(dto: IlAssignStmtDto, src: IlMethod) : this(
+        dto.lhs.deserialize(src) as IlValue,
+        dto.rhs.deserialize(src)
+    )
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlAssignStmt(this)
     }
 
     override fun toString(): String {
-        return "$lhs = $rhs"
+        return "$lhv = $rhv"
     }
 }
 

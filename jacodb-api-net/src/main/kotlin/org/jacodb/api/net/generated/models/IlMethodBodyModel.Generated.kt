@@ -246,8 +246,8 @@ class IlAddOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlAddOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -335,8 +335,8 @@ class IlAndOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlAndOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -745,8 +745,8 @@ class IlAssignStmtDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlAssignStmtDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
         }
         printer.print(")")
     }
@@ -867,8 +867,8 @@ class IlBinaryOpDto_Unknown (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlBinaryOpDto_Unknown (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1646,8 +1646,8 @@ class IlCeqOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCeqOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1735,8 +1735,8 @@ class IlCgeOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCgeOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1824,8 +1824,8 @@ class IlCgtOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCgtOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1980,8 +1980,8 @@ class IlCleOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCleOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -2069,8 +2069,8 @@ class IlCltOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCltOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -2158,8 +2158,8 @@ class IlCneOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCneOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -2516,8 +2516,8 @@ class IlDivOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlDivOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -3963,8 +3963,8 @@ class IlMulOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlMulOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -4470,8 +4470,8 @@ class IlOrOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlOrOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -4660,8 +4660,8 @@ class IlRemOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlRemOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -4861,8 +4861,8 @@ class IlShlOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlShlOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -4950,8 +4950,8 @@ class IlShrOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlShrOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -5321,8 +5321,8 @@ class IlSubOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlSubOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -6298,8 +6298,8 @@ class IlXorOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlXorOpDto (")
         printer.indent {
-            print("lhs = "); lhs.print(printer); println()
-            print("rhs = "); rhs.print(printer); println()
+            print("lhv = "); lhs.print(printer); println()
+            print("rhv = "); rhs.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
