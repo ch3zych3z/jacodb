@@ -22,13 +22,16 @@ import org.jacodb.api.net.IlMethodExtFeature
 import org.jacodb.api.net.ResolvedInstructionsResult
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.IlStmt
+import org.jacodb.api.net.ilinstances.impl.IlStmtLocationImpl
 
 class IlMethodInstructionsFeature : IlMethodExtFeature {
     private val IlMethod.methodFeatures
         get() = declaringType.publication.features.filterIsInstance<IlInstExtFeature>()
 
     override fun instList(method: IlMethod): ResolvedInstructionsResult {
-        var insts = method.rawInstList.map { IlStmt.deserialize(method, it) }
+        // FIXME
+        val emptyLocation = IlStmtLocationImpl(method, -42)
+        var insts = method.rawInstList.map { IlStmt.deserialize(emptyLocation, method, it) }
         return ResolvedInstructionsResult(method, method.methodFeatures.fold(insts) { value, feature ->
             feature.transformInstList(method, value)
         })
