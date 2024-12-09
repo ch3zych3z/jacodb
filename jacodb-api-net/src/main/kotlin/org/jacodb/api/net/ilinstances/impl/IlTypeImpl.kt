@@ -94,7 +94,10 @@ class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, typeLoader: IlPublica
 class IlStructType(private val dto: IlStructTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
 
 open class IlReferenceType(private val dto: IlReferenceTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
-class IlArrayType(private val dto: IlArrayTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
+class IlArrayType(private val dto: IlArrayTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader) {
+    val elementType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.elementType.typeName)!! }
+}
+
 class IlClassType(private val dto: IlClassTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
 
 

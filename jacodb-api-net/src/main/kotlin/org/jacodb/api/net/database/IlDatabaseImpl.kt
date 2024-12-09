@@ -22,7 +22,9 @@ import org.jacodb.api.net.IlSettings
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.IlPublicationFeature
 import org.jacodb.api.net.features.IlApproximations
+import org.jacodb.api.net.features.IlFeature
 import org.jacodb.api.net.features.IlSignal
+import org.jacodb.api.net.features.InMemoryIlHierarchy
 import org.jacodb.api.net.storage.IlDatabasePersistenceImpl
 import org.jacodb.api.net.publication.IlPublicationImpl
 import org.jacodb.api.storage.ers.EmptyErsSettings
@@ -35,11 +37,17 @@ class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
     }
 
     override fun publication(features: List<IlPublicationFeature>): IlPublication {
+        featuresRegistry.broadcast(IlSignal.BeforeIndexing(this))
         return IlPublicationImpl(
             this,
             features,
             settings
         ).also { impl -> IlApproximations.onSignal(IlSignal.BeforeIndexing(this)) }
+    }
+
+    val featuresRegistry = listOf(IlApproximations, InMemoryIlHierarchy)
+    fun List<IlFeature<*, *>>.broadcast(signal: IlSignal) {
+        featuresRegistry.forEach { f -> f.onSignal(signal) }
     }
 
     override fun close() {

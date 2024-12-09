@@ -28,6 +28,7 @@ import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
 
 class IlMethodVirtual(
     override val declaringType: IlType,
+    override val isStatic: Boolean,
     override val returnType: IlType,
     override val name: String,
     override val attributes: List<IlAttribute>,
@@ -43,6 +44,10 @@ class IlMethodVirtual(
             declaringType = value
         }
 
+        var isStatic: Boolean = false
+            private set
+
+        fun isStatic(value: Boolean) = apply { isStatic = value }
         var returnType: IlType = publication.void()
             private set
 
@@ -80,7 +85,7 @@ class IlMethodVirtual(
 
 
         fun build(): IlMethodVirtual =
-            IlMethodVirtual(declaringType, returnType, name, attributes, parameters, rawInstList)
+            IlMethodVirtual(declaringType, isStatic, returnType, name, attributes, parameters, rawInstList)
     }
 
     val publication: IlPublication get() = declaringType.publication
@@ -94,7 +99,8 @@ class IlMethodVirtual(
 
     companion object {
         fun IlMethod.toVirtualOf(type: IlType) =
-            Builder(type.publication).declaringType(type).returnType(returnType).name(name).attributes(attributes)
+            Builder(type.publication).declaringType(type).isStatic(isStatic).returnType(returnType).name(name)
+                .attributes(attributes)
                 .parameters(parameters).rawInstList(rawInstList).build()
     }
 

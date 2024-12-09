@@ -66,11 +66,33 @@ object IlMethodBodyModel : Ext(IlRoot) {
     private val IlMethodRefDto = structdef extends IlConstDto { field("method", instanceId) }
     private val IlFieldRefDto = structdef extends IlConstDto { field("field", instanceId) }
 
-    private val IlUnaryOpDto = structdef extends IlExprDto { field("operand", IlExprDto) }
-    private val IlBinaryOpDto = structdef extends IlExprDto {
+    private val IlUnaryOpDto = basestruct extends IlExprDto { field("operand", IlExprDto) }
+    private val IlNegOpDto = structdef extends IlUnaryOpDto {}
+    private val IlNotOpDto = structdef extends IlUnaryOpDto {}
+
+    private val IlBinaryOpDto = basestruct extends IlExprDto {
         field("lhs", IlExprDto)
         field("rhs", IlExprDto)
+        field("isChecked", PredefinedType.bool)
+        field("isUnsigned", PredefinedType.bool)
     }
+
+    private val IlAddOpDto = structdef extends IlBinaryOpDto {}
+    private val IlSubOpDto = structdef extends IlBinaryOpDto {}
+    private val IlMulOpDto = structdef extends IlBinaryOpDto {}
+    private val IlDivOpDto = structdef extends IlBinaryOpDto {}
+    private val IlRemOpDto = structdef extends IlBinaryOpDto {}
+    private val IlAndOpDto = structdef extends IlBinaryOpDto {}
+    private val IlOrOpDto = structdef extends IlBinaryOpDto {}
+    private val IlXorOpDto = structdef extends IlBinaryOpDto {}
+    private val IlShlOpDto = structdef extends IlBinaryOpDto {}
+    private val IlShrOpDto = structdef extends IlBinaryOpDto {}
+    private val IlCeqOpDto = structdef extends IlBinaryOpDto {}
+    private val IlCneOpDto = structdef extends IlBinaryOpDto {}
+    private val IlCgtOpDto = structdef extends IlBinaryOpDto {}
+    private val IlCgeOpDto = structdef extends IlBinaryOpDto {}
+    private val IlCltOpDto = structdef extends IlBinaryOpDto {}
+    private val IlCleOpDto = structdef extends IlBinaryOpDto {}
 
     private val IlNewExprDto = structdef extends IlExprDto {
     }

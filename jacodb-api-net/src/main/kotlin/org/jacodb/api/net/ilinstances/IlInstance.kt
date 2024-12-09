@@ -52,8 +52,10 @@ interface IlField : IlInstance {
 }
 
 interface IlMethod : IlInstance, CommonMethod {
+
     val attributes: List<IlAttribute>
     val declaringType: IlType
+    val isStatic: Boolean
     override val returnType: IlType
     override val name: String
     val signature: String get() = "${returnType.typeName} $name(${parameters.joinToString(",") { it.type.typeName }})"

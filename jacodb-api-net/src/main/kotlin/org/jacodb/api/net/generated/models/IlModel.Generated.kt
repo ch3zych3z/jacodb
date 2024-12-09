@@ -86,7 +86,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = -5498946025153824894L
+        const val serializationHash = 822066295397104068L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -1456,6 +1456,7 @@ class IlLocalVarDto (
 class IlMethodDto (
     val returnType: TypeId,
     val attrs: List<IlAttrDto>,
+    val isStatic: Boolean,
     val name: String,
     val parameters: List<IlParameterDto>,
     val resolved: Boolean,
@@ -1475,6 +1476,7 @@ class IlMethodDto (
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlMethodDto  {
             val returnType = TypeId.read(ctx, buffer)
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
+            val isStatic = buffer.readBool()
             val name = buffer.readString()
             val parameters = buffer.readList { IlParameterDto.read(ctx, buffer) }
             val resolved = buffer.readBool()
@@ -1483,12 +1485,13 @@ class IlMethodDto (
             val errs = buffer.readList { IlErrVarDto.read(ctx, buffer) }
             val ehScopes = buffer.readList { ctx.serializers.readPolymorphic<IlEhScopeDto>(ctx, buffer, IlEhScopeDto) }
             val rawInstList = buffer.readList { ctx.serializers.readPolymorphic<IlStmtDto>(ctx, buffer, IlStmtDto) }
-            return IlMethodDto(returnType, attrs, name, parameters, resolved, locals, temps, errs, ehScopes, rawInstList)
+            return IlMethodDto(returnType, attrs, isStatic, name, parameters, resolved, locals, temps, errs, ehScopes, rawInstList)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMethodDto)  {
             TypeId.write(ctx, buffer, value.returnType)
             buffer.writeList(value.attrs) { v -> IlAttrDto.write(ctx, buffer, v) }
+            buffer.writeBool(value.isStatic)
             buffer.writeString(value.name)
             buffer.writeList(value.parameters) { v -> IlParameterDto.write(ctx, buffer, v) }
             buffer.writeBool(value.resolved)
@@ -1514,6 +1517,7 @@ class IlMethodDto (
         
         if (returnType != other.returnType) return false
         if (attrs != other.attrs) return false
+        if (isStatic != other.isStatic) return false
         if (name != other.name) return false
         if (parameters != other.parameters) return false
         if (resolved != other.resolved) return false
@@ -1530,6 +1534,7 @@ class IlMethodDto (
         var __r = 0
         __r = __r*31 + returnType.hashCode()
         __r = __r*31 + attrs.hashCode()
+        __r = __r*31 + isStatic.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + parameters.hashCode()
         __r = __r*31 + resolved.hashCode()
@@ -1546,6 +1551,7 @@ class IlMethodDto (
         printer.indent {
             print("returnType = "); returnType.print(printer); println()
             print("attrs = "); attrs.print(printer); println()
+            print("isStatic = "); isStatic.print(printer); println()
             print("name = "); name.print(printer); println()
             print("parameters = "); parameters.print(printer); println()
             print("resolved = "); resolved.print(printer); println()
@@ -2189,7 +2195,7 @@ class IlReferenceTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:131]
+ * #### Generated from [IlModel.kt:132]
  */
 class IlSignatureDto (
     val returnType: TypeId,
