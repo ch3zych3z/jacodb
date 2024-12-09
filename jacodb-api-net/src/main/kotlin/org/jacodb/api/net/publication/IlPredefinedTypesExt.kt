@@ -21,5 +21,9 @@ import org.jacodb.api.net.ilinstances.IlType
 
 object IlPredefinedTypesExt {
     fun IlPublication.void(): IlType = findIlTypeOrNull("System.Void")!!
-    fun IlPublication.int(): IlType = findIlTypeOrNull("System.Int")!!
+    fun IlPublication.int32(): IlType = findIlTypeOrNull("System.Int32")!!
+    fun IlPublication.uint32(): IlType = findIlTypeOrNull("System.UInt32")!!
+    fun IlPublication.nint(): IlType = findIlTypeOrNull("System.IntPtr")!!
+    fun IlPublication.nuint(): IlType = findIlTypeOrNull("System.UIntPtr")!!
+
 }

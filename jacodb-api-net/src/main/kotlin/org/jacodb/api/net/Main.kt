@@ -21,10 +21,10 @@ import com.jetbrains.rd.framework.impl.RpcTimeouts
 import com.jetbrains.rd.framework.util.NetUtils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.completeWith
-import kotlinx.coroutines.runBlocking
 import org.jacodb.api.net.database.IlDatabaseImpl
 import org.jacodb.api.net.features.IlApproximations
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
+import org.jacodb.api.net.features.InMemoryIlHierarchy
 import org.jacodb.api.net.generated.models.PublicationRequest
 import org.jacodb.api.net.generated.models.ilModel
 import org.jacodb.api.net.generated.models.ilSigModel

@@ -118,6 +118,7 @@ object IlModel : Ext(IlRoot) {
     private val IlMethodDto = structdef extends IlDto {
         field("returnType", typeId)
         field("attrs", immutableList(IlAttrDto))
+        field("isStatic", PredefinedType.bool)
         field("name", PredefinedType.string)
         field("parameters", immutableList(IlParameterDto))
         field("resolved", PredefinedType.bool)

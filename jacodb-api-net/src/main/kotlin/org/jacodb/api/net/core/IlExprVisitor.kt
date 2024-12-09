@@ -40,7 +40,7 @@ interface IlConstVisitor<out T> {
     fun visitIlMethodRefConst(const: IlMethodRef): T
     fun visitIlFieldRefConst(const: IlFieldRef): T
     fun visitIlArrayConst(const: IlArrayConstant): T
-    
+
     interface Default<out T> : IlConstVisitor<T> {
         fun visitDefault(value: IlValue): T
 
@@ -71,7 +71,6 @@ interface IlExprVisitor<out T> : IlConstVisitor<T> {
     fun visitIlBinaryOp(expr: IlBinaryOp): T
     fun visitIlArrayLength(expr: IlArrayLengthExpr): T
     fun visitIlCall(expr: IlCall): T
-    fun visitIlInitExpr(expr: IlInitExpr): T
     fun visitIlNewArrayExpr(expr: IlNewArrayExpr): T
     fun visitIlNewExpr(expr: IlNewExpr): T
     fun visitIlSizeOfExpr(expr: IlSizeOfExpr): T
@@ -80,10 +79,9 @@ interface IlExprVisitor<out T> : IlConstVisitor<T> {
     fun visitIlUnmanagedRefExpr(expr: IlUnmanagedRefExpr): T
     fun visitIlManagedDerefExpr(expr: IlManagedDerefExpr): T
     fun visitIlUnmanagedDerefExpr(expr: IlUnmanagedDerefExpr): T
-    fun visitIlConvExpr(expr: IlConvExpr): T
+    fun visitIlConvExpr(expr: IlConvCastExpr): T
     fun visitIlBoxExpr(expr: IlBoxExpr): T
     fun visitIlUnboxExpr(expr: IlUnboxExpr): T
-    fun visitIlCastClassExpr(expr: IlCastClassExpr): T
     fun visitIlIsInstExpr(expr: IlIsInstExpr): T
     fun visitIlFieldAccess(expr: IlFieldAccess): T
     fun visitIlArrayAccess(expr: IlArrayAccess): T
@@ -100,7 +98,6 @@ interface IlExprVisitor<out T> : IlConstVisitor<T> {
         override fun visitIlBinaryOp(expr: IlBinaryOp): T = visitDefault(expr)
         override fun visitIlArrayLength(expr: IlArrayLengthExpr): T = visitDefault(expr)
         override fun visitIlCall(expr: IlCall): T = visitDefault(expr)
-        override fun visitIlInitExpr(expr: IlInitExpr): T = visitDefault(expr)
         override fun visitIlNewArrayExpr(expr: IlNewArrayExpr): T = visitDefault(expr)
         override fun visitIlNewExpr(expr: IlNewExpr): T = visitDefault(expr)
         override fun visitIlSizeOfExpr(expr: IlSizeOfExpr): T = visitDefault(expr)
@@ -109,10 +106,9 @@ interface IlExprVisitor<out T> : IlConstVisitor<T> {
         override fun visitIlUnmanagedRefExpr(expr: IlUnmanagedRefExpr): T = visitDefault(expr)
         override fun visitIlManagedDerefExpr(expr: IlManagedDerefExpr): T = visitDefault(expr)
         override fun visitIlUnmanagedDerefExpr(expr: IlUnmanagedDerefExpr): T = visitDefault(expr)
-        override fun visitIlConvExpr(expr: IlConvExpr): T = visitDefault(expr)
+        override fun visitIlConvExpr(expr: IlConvCastExpr): T = visitDefault(expr)
         override fun visitIlBoxExpr(expr: IlBoxExpr): T = visitDefault(expr)
         override fun visitIlUnboxExpr(expr: IlUnboxExpr): T = visitDefault(expr)
-        override fun visitIlCastClassExpr(expr: IlCastClassExpr): T = visitDefault(expr)
         override fun visitIlIsInstExpr(expr: IlIsInstExpr): T = visitDefault(expr)
         override fun visitIlFieldAccess(expr: IlFieldAccess): T = visitDefault(expr)
         override fun visitIlArrayAccess(expr: IlArrayAccess): T = visitDefault(expr)

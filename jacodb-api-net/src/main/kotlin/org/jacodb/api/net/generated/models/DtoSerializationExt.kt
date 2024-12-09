@@ -19,7 +19,12 @@ package org.jacodb.api.net.generated.models
 import com.jetbrains.rd.framework.SerializationCtx
 import com.jetbrains.rd.framework.Serializers
 import com.jetbrains.rd.framework.createAbstractBuffer
-import java.lang.reflect.Type
+
+open class DtoConversionException(msg: String) : RuntimeException(msg)
+class DtoSerializationException(msg: String) : DtoConversionException(msg)
+class DtoDeserializationException(msg: String) : DtoConversionException(msg)
+
+// region types
 
 enum class IlTypeByteId(val id: Byte) {
     POINTER(0),
@@ -55,7 +60,7 @@ fun ByteArray.getIlTypeDto(): IlTypeDto {
 
 fun ByteArray.unsafeString(): String {
     val buf = createAbstractBuffer(this)
-    return ctx.serializers.readPolymorphic<IlStringConstDto>(ctx, buf).value
+    return IlStringConstDto.read(ctx, buf).value
 }
 
 fun IlTypeDto.getBytes(): ByteArray =
@@ -111,21 +116,14 @@ fun IlClassTypeDto.getBytes(): ByteArray {
     return buf.getArray()
 }
 
+// endregion
+
+
 fun IlConstDto.getBytes(): ByteArray {
     val buf = createAbstractBuffer()
     ctx.serializers.writePolymorphic(ctx, buf, this)
     return buf.getArray()
 }
-
-fun List<IlConstDto>.getBytes(): ByteArray {
-    val buf = createAbstractBuffer()
-    forEach { t -> ctx.serializers.writePolymorphic(ctx, buf, t) }
-    return buf.getArray()
-}
-
-open class DtoConversionException(msg: String) : RuntimeException(msg)
-class DtoSerializationException(msg: String) : DtoConversionException(msg)
-class DtoDeserializationException(msg: String) : DtoConversionException(msg)
 
 fun TypeId.getBytes(): ByteArray {
     val buf = createAbstractBuffer()
@@ -136,4 +134,23 @@ fun TypeId.getBytes(): ByteArray {
 fun ByteArray.getTypeId(): TypeId {
     val buf = createAbstractBuffer(this)
     return TypeId.read(ctx, buf)
+}
+
+
+inline fun <reified T> List<T>.getBytes(): ByteArray {
+    val buf = createAbstractBuffer()
+    forEach { v ->
+        when (v) {
+            is TypeId -> buf.writeByteArray(v.getBytes())
+            is IlConstDto -> buf.writeByteArray(v.getBytes())
+            else -> throw DtoSerializationException("Unexpected List<T> with $v")
+        }
+    }
+    return buf.getArray()
+}
+
+ @Suppress("UNCHECKED_CAST")
+ fun <T: Any> ByteArray.getListOf(): List<T> {
+    val buf = createAbstractBuffer(this)
+    return ctx.serializers.readPolymorphic<T>(ctx, buf) as List<T>
 }

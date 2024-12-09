@@ -39,6 +39,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
         TODO()
     }
 
+    override val isStatic: Boolean = dto.isStatic
     override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType.typeName)!! } }
 
     override val name: String = dto.name
@@ -68,7 +69,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
     val resolved: Boolean = dto.resolved
 
     // TODO args next to parameters seems defn improper
-    val args: List<IlArgument> by lazy(PUBLICATION) { dto.parameters.map { IlArgument(it) }.toList() }
+    val args: List<IlArgument> by lazy(PUBLICATION) { dto.parameters.map { IlArgument(this, it) }.toList() }
     val locals: List<IlLocalVar> by lazy(PUBLICATION) { dto.locals.map { IlLocalVar(it, publication) } }
     val temps: List<IlTempVar> by lazy(PUBLICATION) { dto.temps.map { IlTempVar(it, publication) } }
     val errs: List<IlErrVar> by lazy(PUBLICATION) { dto.errs.map { IlErrVar(it, publication) } }

@@ -19,30 +19,27 @@ package org.jacodb.api.net.features
 import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.core.IlStmtVisitor
 import org.jacodb.api.net.ilinstances.*
+import org.jacodb.api.net.ilinstances.impl.IlArrayType
 
 object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<IlStmt> {
     override fun visitIlUnaryOp(expr: IlUnaryOp): IlExpr {
-        return IlUnaryOp(expr.operand.accept(this))
+        return IlUnaryOp(expr.type, expr.operand.accept(this))
     }
 
     override fun visitIlBinaryOp(expr: IlBinaryOp): IlExpr {
-        return IlBinaryOp(expr.lhs.accept(this), expr.rhs.accept(this))
+        return IlBinaryOp(expr.type, expr.lhs.accept(this), expr.rhs.accept(this), expr.isChecked, expr.isUnsigned)
     }
 
     override fun visitIlArrayLength(expr: IlArrayLengthExpr): IlExpr {
-        return IlArrayLengthExpr(expr.array.accept(this))
+        return IlArrayLengthExpr(expr.type, expr.array.accept(this))
     }
 
     override fun visitIlCall(expr: IlCall): IlExpr {
         TODO("Not yet implemented")
     }
 
-    override fun visitIlInitExpr(expr: IlInitExpr): IlExpr {
-        return IlInitExpr(expr.type.eliminateApproximation())
-    }
-
     override fun visitIlNewArrayExpr(expr: IlNewArrayExpr): IlExpr {
-        return IlNewArrayExpr(expr.elementType.eliminateApproximation(), expr.size.accept(this))
+        return IlNewArrayExpr(expr.type.eliminateApproximation() as IlArrayType, expr.size.accept(this))
     }
 
     override fun visitIlNewExpr(expr: IlNewExpr): IlExpr {
@@ -50,7 +47,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlSizeOfExpr(expr: IlSizeOfExpr): IlExpr {
-        return IlSizeOfExpr(expr.observedType.eliminateApproximation())
+        return IlSizeOfExpr(expr.type, expr.observedType.eliminateApproximation())
     }
 
     override fun visitIlStackAllocExpr(expr: IlStackAllocExpr): IlExpr {
@@ -73,8 +70,8 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
         return IlUnmanagedDerefExpr(expr.type.eliminateApproximation(), expr.value.accept(this))
     }
 
-    override fun visitIlConvExpr(expr: IlConvExpr): IlExpr {
-        return IlConvExpr(expr.expectedType.eliminateApproximation(), expr.operand.accept(this))
+    override fun visitIlConvExpr(expr: IlConvCastExpr): IlExpr {
+        return IlConvCastExpr(expr.expectedType.eliminateApproximation(), expr.operand.accept(this))
     }
 
     override fun visitIlBoxExpr(expr: IlBoxExpr): IlExpr {
@@ -83,10 +80,6 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
 
     override fun visitIlUnboxExpr(expr: IlUnboxExpr): IlExpr {
         return IlUnboxExpr(expr.expectedType.eliminateApproximation(), expr.operand.accept(this))
-    }
-
-    override fun visitIlCastClassExpr(expr: IlCastClassExpr): IlExpr {
-        return IlCastClassExpr(expr.expectedType.eliminateApproximation(), expr.operand.accept(this))
     }
 
     override fun visitIlIsInstExpr(expr: IlIsInstExpr): IlExpr {
@@ -135,10 +128,14 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     override fun visitIlFloatConst(const: IlFloatConstant): IlExpr = const
     override fun visitIlDoubleConst(const: IlDoubleConstant): IlExpr = const
     override fun visitIlEnumConst(const: IlEnumConstant): IlExpr =
-        IlEnumConstant(const.enumType.eliminateApproximation(), const.underlyingConst.accept(this) as IlConstant)
+        IlEnumConstant(
+            const.type.eliminateApproximation(),
+            const.enumType.eliminateApproximation(),
+            const.underlyingConst.accept(this) as IlConstant
+        )
 
     override fun visitIlTypeRefConst(const: IlTypeRef): IlExpr {
-        return IlTypeRef(const.referencedType.eliminateApproximation())
+        return IlTypeRef(const.type, const.referencedType.eliminateApproximation())
     }
 
     override fun visitIlMethodRefConst(const: IlMethodRef): IlExpr = const
@@ -150,7 +147,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
 
     override fun visitIlArrayConst(const: IlArrayConstant): IlExpr {
         val newValues = const.values.map { it.accept(this) as IlConstant }
-        return IlArrayConstant(newValues)
+        return IlArrayConstant(const.type, newValues)
     }
 
     override fun visitIlAssignStmt(stmt: IlAssignStmt): IlStmt {
