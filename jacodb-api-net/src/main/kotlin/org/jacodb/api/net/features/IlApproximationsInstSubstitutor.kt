@@ -35,7 +35,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlCall(expr: IlCall): IlExpr {
-        TODO("Not yet implemented")
+        return IlCall(expr.method, expr.args.map { it -> it.accept(this) })
     }
 
     override fun visitIlNewArrayExpr(expr: IlNewArrayExpr): IlExpr {
@@ -108,8 +108,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlArg(expr: IlArgument): IlExpr {
-        TODO("Not yet implemented")
-
+        return IlArgument(expr.type, expr.name, expr.index)
     }
 
     override fun visitIlNullConst(const: IlNull): IlExpr = const
@@ -159,7 +158,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlReturnStmt(stmt: IlReturnStmt): IlStmt {
-        return IlReturnStmt(stmt.location, stmt.returnValue?.accept(this) as IlValue)
+        return IlReturnStmt(stmt.location, stmt.returnValue?.accept(this) as IlValue?)
     }
 
     override fun visitIlEndFinallyStmt(stmt: IlEndFinallyStmt): IlStmt {
