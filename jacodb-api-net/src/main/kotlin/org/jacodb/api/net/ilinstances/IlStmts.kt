@@ -32,6 +32,7 @@ interface IlStmtLocation : CommonInstLocation {
 interface IlStmt : CommonInst {
     override val location: IlStmtLocation
     val operands: List<IlExpr>
+        get() = emptyList()
 
     override val method: IlMethod
         get() = location.method
@@ -65,9 +66,7 @@ abstract class AbstractIlStmt(override val location: IlStmtLocation) : IlStmt {
 
         other as AbstractIlStmt
 
-        if (location != other.location) return false
-
-        return true
+        return location == other.location
     }
 
     override fun hashCode(): Int {
@@ -103,7 +102,10 @@ class IlCallStmt(
     location: IlStmtLocation,
     val call: IlCall
 ) : AbstractIlStmt(location) {
-    constructor(location: IlStmtLocation, dto: IlCallStmtDto, src: IlMethod) : this(location, dto.call.deserialize(src) as IlCall)
+    constructor(location: IlStmtLocation, dto: IlCallStmtDto, src: IlMethod) : this(
+        location,
+        dto.call.deserialize(src) as IlCall
+    )
 
     override val operands: List<IlExpr>
         get() = listOf(call)
@@ -112,9 +114,7 @@ class IlCallStmt(
         return visitor.visitIlCallStmt(this)
     }
 
-    override fun toString(): String {
-        return call.toString()
-    }
+    override fun toString(): String = call.toString()
 }
 
 class IlCalliStmt(
@@ -153,9 +153,7 @@ class IlReturnStmt(
         return visitor.visitIlReturnStmt(this)
     }
 
-    override fun toString(): String {
-        return "return ${returnValue ?: ""}"
-    }
+    override fun toString(): String = "return ${returnValue ?: ""}"
 }
 
 interface IlEhStmt : IlStmt
@@ -164,7 +162,10 @@ class IlThrowStmt(
     location: IlStmtLocation,
     val value: IlExpr
 ) : AbstractIlStmt(location), IlEhStmt {
-    constructor(location: IlStmtLocation, dto: IlThrowStmtDto, src: IlMethod) : this(location, dto.value.deserialize(src))
+    constructor(location: IlStmtLocation, dto: IlThrowStmtDto, src: IlMethod) : this(
+        location,
+        dto.value.deserialize(src)
+    )
 
     override val operands: List<IlExpr>
         get() = listOf(value)
@@ -173,57 +174,40 @@ class IlThrowStmt(
         return visitor.visitIlThrowStmt(this)
     }
 
-    override fun toString(): String {
-        return "throw $value"
-    }
+    override fun toString(): String = "throw $value"
 }
 
 class IlRethrowStmt(
     location: IlStmtLocation
 ) : AbstractIlStmt(location), IlEhStmt {
 
-    override val operands: List<IlExpr>
-        get() = listOf()
-
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlRethrowStmt(this)
     }
 
-    override fun toString(): String {
-        return "rethrow"
-    }
+    override fun toString(): String = "rethrow"
 }
 
 class IlEndFinallyStmt(
     location: IlStmtLocation
 ) : AbstractIlStmt(location), IlEhStmt {
 
-    override val operands: List<IlExpr>
-        get() = listOf()
-
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlEndFinallyStmt(this)
     }
 
-    override fun toString(): String {
-        return "endfinally"
-    }
+    override fun toString(): String = "endfinally"
 }
 
 class IlEndFaultStmt(
     location: IlStmtLocation
 ) : AbstractIlStmt(location), IlEhStmt {
 
-    override val operands: List<IlExpr>
-        get() = listOf()
-
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlEndFaultStmt(this)
     }
 
-    override fun toString(): String {
-        return "endfault"
-    }
+    override fun toString(): String = "endfault"
 }
 
 class IlEndFilterStmt(
@@ -234,7 +218,10 @@ class IlEndFilterStmt(
     override val operands: List<IlExpr>
         get() = listOf(value)
 
-    constructor(location: IlStmtLocation, dto: IlEndFilterStmtDto, src: IlMethod) : this(location, dto.value.deserialize(src))
+    constructor(location: IlStmtLocation, dto: IlEndFilterStmtDto, src: IlMethod) : this(
+        location,
+        dto.value.deserialize(src)
+    )
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlEndFilterStmt(this)
@@ -257,10 +244,11 @@ class IlGotoStmt(
         location: IlStmtLocation,
         dto: IlBranchStmtDto,
         src: IlMethod
-    ) : this(location, dto.target) //IlStmt.deserialize(src, src.rawInstList[min(dto.target, src.rawInstList.size - 1)]))
+    ) : this(
+        location,
+        dto.target
+    )
 
-    override val operands: List<IlExpr>
-        get() = listOf()
 
 //    override fun updateTarget(dto: IlBranchStmtDto, src: IlMethod) {
 //        // TODO NestedFinally
@@ -275,16 +263,7 @@ class IlGotoStmt(
         return visitor.visitIlGotoStmt(this)
     }
 
-//    private fun hasTargetSet() = ::target.isInitialized
-
-    override fun toString(): String {
-        return "goto $target"
-//        return when {
-//            !hasTargetSet() -> "goto ?"
-//            hasTargetSet() && target != this -> "goto $target"
-//            else -> "goto self"
-//        }
-    }
+    override fun toString(): String = "goto $target"
 
 }
 
@@ -298,7 +277,6 @@ class IlIfStmt(
     constructor(location: IlStmtLocation, dto: IlIfStmtDto, src: IlMethod) : this(
         location,
         dto.target,
-//        IlStmt.deserialize(src, src.rawInstList[min(dto.target, src.rawInstList.size - 1)]),
         dto.cond.deserialize(src)
     )
 
