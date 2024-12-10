@@ -150,7 +150,7 @@ class IlArrayLengthExpr(override val type: IlType, val array: IlExpr) : IlExpr {
     }
 }
 
-class IlFieldAccess(val field: IlField, override val instance: IlValue?) : IlExpr, CommonFieldRef {
+class IlFieldAccess(val field: IlField, override val instance: IlValue?) : IlValue, CommonFieldRef {
     override val type: IlType get() = this.field.fieldType
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlFieldAccess(this)
@@ -159,7 +159,7 @@ class IlFieldAccess(val field: IlField, override val instance: IlValue?) : IlExp
     override fun toString(): String = "${instance?.toString() ?: ""}$field"
 }
 
-class IlArrayAccess(override val array: IlValue, override val index: IlValue) : IlExpr, CommonArrayAccess {
+class IlArrayAccess(override val array: IlValue, override val index: IlValue) : IlValue, CommonArrayAccess {
     override val type: IlType
         get() = (array.type as IlArrayType).elementType
 
@@ -296,9 +296,12 @@ class IlStackAllocExpr(override val type: IlType, val size: IlExpr) : IlExpr {
     }
 }
 
-class IlArgument(private val method: IlMethod, private val dto: IlParameterDto) : IlLocal, CommonArgument {
-    override val type: IlType by lazy { method.declaringType.publication.findIlTypeOrNull(dto.type.typeName)!! }
-    val name: String = dto.name
+class IlArgument(override val type: IlType, val name: String, val index: Int) : IlLocal, CommonArgument {
+    constructor(
+        method: IlMethod,
+        dto: IlParameterDto
+    ) : this(method.declaringType.publication.findIlTypeOrNull(dto.type.typeName)!!, dto.name, dto.index)
+
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlArg(this)
     }

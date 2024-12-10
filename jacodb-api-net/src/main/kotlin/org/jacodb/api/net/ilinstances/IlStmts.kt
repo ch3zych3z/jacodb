@@ -143,7 +143,7 @@ class IlReturnStmt(
         src: IlMethod
     ) : this(
         location,
-        dto.retVal?.deserialize(src) as IlValue
+        dto.retVal?.deserialize(src) as IlValue?
     )
 
     override val operands: List<IlExpr>

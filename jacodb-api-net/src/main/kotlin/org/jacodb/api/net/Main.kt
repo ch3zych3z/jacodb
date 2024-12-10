@@ -24,12 +24,12 @@ import kotlinx.coroutines.completeWith
 import org.jacodb.api.net.database.IlDatabaseImpl
 import org.jacodb.api.net.features.IlApproximations
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
-import org.jacodb.api.net.features.InMemoryIlHierarchy
 import org.jacodb.api.net.generated.models.PublicationRequest
 import org.jacodb.api.net.generated.models.ilModel
 import org.jacodb.api.net.generated.models.ilSigModel
 import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.RdServer
+import java.lang.Exception
 
 suspend fun <T> Protocol.onScheduler(block: () -> T): T {
     val deffered = CompletableDeferred<T>()
@@ -66,11 +66,16 @@ fun main(args: Array<String>) {
         println("types fetched")
         allTypes.forEach { typeDto ->
             val type = publication.findIlTypeOrNull(typeDto.fullname)
-            if (type == null)
+            if (type == null) {
                 println("not found ${typeDto.fullname}")
-            if (type != null && type.fullname == "TACBuilder.Tests.Approximations.Approximated") {
-                val fields = type.fields
-                println(fields.joinToString { it.name })
+                return@forEach
+            }
+            type.methods.forEach { m ->
+                try {
+                    m.instList
+                } catch (e: Exception) {
+                    println("err instList for ${m.name}")
+                }
             }
         }
         server.close()
