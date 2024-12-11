@@ -16,8 +16,9 @@
 
 package org.jacodb.api.net.publication
 
-import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 import org.jacodb.api.net.*
+import org.jacodb.api.net.IlMethodExtFeature.IlInstListResult
+import org.jacodb.api.net.cfg.IlGraphImpl
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.impl.caches.PluggableCacheProvider
 
@@ -27,12 +28,17 @@ class IlPublicationCache(private val settings: IlPublicationCacheSettings) : IlT
     private val cacheProvider: PluggableCacheProvider = PluggableCacheProvider.getProvider(settings.cacheId)
 
     private val types = newSegment<String, ResolvedIlTypeResult>(settings.types)
-    private val instructions = newSegment<IlMethod, ResolvedInstructionsResult>(settings.instructions)
+    private val instructions = newSegment<IlMethod, IlInstListResult>(settings.instructions)
+    private val cfgs = newSegment<IlMethod, IlGraphImpl>(settings.flowGraphs)
     override fun findType(name: String): ResolvedIlTypeResult? = types[name]
 
 
-    override fun instList(method: IlMethod): ResolvedInstructionsResult? {
+    override fun instList(method: IlMethod): IlInstListResult? {
         return instructions[method]
+    }
+
+    override fun flowGraph(method: IlMethod): IlMethodExtFeature.IlFlowGraphResult? {
+        return cfgs[method]?.let { graph -> IlMethodExtFeature.IlFlowGraphResult(method, graph) }
     }
 
 
@@ -40,7 +46,7 @@ class IlPublicationCache(private val settings: IlPublicationCacheSettings) : IlT
         when (val result = event.result) {
             is ResolvedIlTypeResult -> types[result.name] = result
 
-            is ResolvedInstructionsResult -> instructions[result.method] = result
+            is IlInstListResult -> instructions[result.method] = result
             is ResolvedIlTypesResult -> return
             else -> throw IllegalArgumentException("Unknown event $event")
         }

@@ -39,4 +39,5 @@ class IlPublicationCacheSettings(
     val cacheId: String = GUAVA_CACHE_PROVIDER_ID,
     val types: CacheSettings = CacheSettings(),
     val instructions: CacheSettings = CacheSettings(),
+    val flowGraphs: CacheSettings = CacheSettings()
 )

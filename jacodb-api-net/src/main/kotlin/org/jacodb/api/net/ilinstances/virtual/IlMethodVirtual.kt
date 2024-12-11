@@ -19,8 +19,8 @@ package org.jacodb.api.net.ilinstances.virtual
 import org.jacodb.api.common.cfg.CommonInst
 import org.jacodb.api.common.cfg.ControlFlowGraph
 import org.jacodb.api.net.IlMethodExtFeature
+import org.jacodb.api.net.IlMethodExtFeature.IlInstListResult
 import org.jacodb.api.net.IlPublication
-import org.jacodb.api.net.ResolvedInstructionsResult
 import org.jacodb.api.net.generated.models.IlStmtDto
 import org.jacodb.api.net.ilinstances.*
 import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
@@ -91,7 +91,7 @@ class IlMethodVirtual(
     val publication: IlPublication get() = declaringType.publication
 
     override val instList: List<IlStmt>
-        get() = publication.featuresChain.callUntilResolved<IlMethodExtFeature, ResolvedInstructionsResult> {
+        get() = publication.featuresChain.callUntilResolved<IlMethodExtFeature, IlInstListResult> {
             it.instList(
                 this
             )

@@ -144,7 +144,7 @@ class IlMethodBodyModel private constructor(
         }
         
         
-        const val serializationHash = -2346733504392876579L
+        const val serializationHash = 2153136969800853524L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlMethodBodyModel
@@ -176,14 +176,14 @@ val IProtocol.ilMethodBodyModel get() = getOrCreateExtension(IlMethodBodyModel::
  * #### Generated from [IlMethodBodyModel.kt:80]
  */
 class IlAddOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -195,17 +195,17 @@ class IlAddOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlAddOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlAddOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlAddOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlAddOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -224,8 +224,8 @@ class IlAddOpDto (
         
         other as IlAddOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -235,8 +235,8 @@ class IlAddOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -246,8 +246,8 @@ class IlAddOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlAddOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -265,14 +265,14 @@ class IlAddOpDto (
  * #### Generated from [IlMethodBodyModel.kt:85]
  */
 class IlAndOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -284,17 +284,17 @@ class IlAndOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlAndOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlAndOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlAndOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlAndOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -313,8 +313,8 @@ class IlAndOpDto (
         
         other as IlAndOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -324,8 +324,8 @@ class IlAndOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -335,8 +335,8 @@ class IlAndOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlAndOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -695,8 +695,8 @@ class IlArrayLengthExprDto (
  * #### Generated from [IlMethodBodyModel.kt:161]
  */
 class IlAssignStmtDto (
-    val lhs: IlValueDto,
-    val rhs: IlExprDto
+    val lhv: IlValueDto,
+    val rhv: IlExprDto
 ) : IlStmtDto (
 ) {
     //companion
@@ -706,14 +706,14 @@ class IlAssignStmtDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlAssignStmtDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlValueDto>(ctx, buffer, IlValueDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            return IlAssignStmtDto(lhs, rhs)
+            val lhv = ctx.serializers.readPolymorphic<IlValueDto>(ctx, buffer, IlValueDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            return IlAssignStmtDto(lhv, rhv)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlAssignStmtDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
         }
         
         
@@ -729,24 +729,24 @@ class IlAssignStmtDto (
         
         other as IlAssignStmtDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         
         return true
     }
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         return __r
     }
     //pretty print
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlAssignStmtDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
         }
         printer.print(")")
     }
@@ -761,8 +761,8 @@ class IlAssignStmtDto (
  * #### Generated from [IlMethodBodyModel.kt:73]
  */
 abstract class IlBinaryOpDto (
-    val lhs: IlExprDto,
-    val rhs: IlExprDto,
+    val lhv: IlExprDto,
+    val rhv: IlExprDto,
     val isChecked: Boolean,
     val isUnsigned: Boolean,
     type: TypeId
@@ -774,14 +774,14 @@ abstract class IlBinaryOpDto (
     companion object : IAbstractDeclaration<IlBinaryOpDto> {
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlBinaryOpDto  {
             val objectStartPosition = buffer.position
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlBinaryOpDto_Unknown(lhs, rhs, isChecked, isUnsigned, type, unknownId, unknownBytes)
+            return IlBinaryOpDto_Unknown(lhv, rhv, isChecked, isUnsigned, type, unknownId, unknownBytes)
         }
         
         
@@ -799,16 +799,16 @@ abstract class IlBinaryOpDto (
 
 
 class IlBinaryOpDto_Unknown (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -824,8 +824,8 @@ class IlBinaryOpDto_Unknown (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlBinaryOpDto_Unknown)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -845,8 +845,8 @@ class IlBinaryOpDto_Unknown (
         
         other as IlBinaryOpDto_Unknown
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -856,8 +856,8 @@ class IlBinaryOpDto_Unknown (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -867,8 +867,8 @@ class IlBinaryOpDto_Unknown (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlBinaryOpDto_Unknown (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1576,14 +1576,14 @@ class IlCastExprDto_Unknown (
  * #### Generated from [IlMethodBodyModel.kt:90]
  */
 class IlCeqOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -1595,17 +1595,17 @@ class IlCeqOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCeqOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlCeqOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlCeqOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCeqOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -1624,8 +1624,8 @@ class IlCeqOpDto (
         
         other as IlCeqOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -1635,8 +1635,8 @@ class IlCeqOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -1646,8 +1646,8 @@ class IlCeqOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCeqOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1665,14 +1665,14 @@ class IlCeqOpDto (
  * #### Generated from [IlMethodBodyModel.kt:93]
  */
 class IlCgeOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -1684,17 +1684,17 @@ class IlCgeOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCgeOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlCgeOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlCgeOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCgeOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -1713,8 +1713,8 @@ class IlCgeOpDto (
         
         other as IlCgeOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -1724,8 +1724,8 @@ class IlCgeOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -1735,8 +1735,8 @@ class IlCgeOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCgeOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1754,14 +1754,14 @@ class IlCgeOpDto (
  * #### Generated from [IlMethodBodyModel.kt:92]
  */
 class IlCgtOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -1773,17 +1773,17 @@ class IlCgtOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCgtOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlCgtOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlCgtOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCgtOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -1802,8 +1802,8 @@ class IlCgtOpDto (
         
         other as IlCgtOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -1813,8 +1813,8 @@ class IlCgtOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -1824,8 +1824,8 @@ class IlCgtOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCgtOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1910,14 +1910,14 @@ class IlCharConstDto (
  * #### Generated from [IlMethodBodyModel.kt:95]
  */
 class IlCleOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -1929,17 +1929,17 @@ class IlCleOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCleOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlCleOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlCleOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCleOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -1958,8 +1958,8 @@ class IlCleOpDto (
         
         other as IlCleOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -1969,8 +1969,8 @@ class IlCleOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -1980,8 +1980,8 @@ class IlCleOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCleOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -1999,14 +1999,14 @@ class IlCleOpDto (
  * #### Generated from [IlMethodBodyModel.kt:94]
  */
 class IlCltOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -2018,17 +2018,17 @@ class IlCltOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCltOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlCltOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlCltOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCltOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -2047,8 +2047,8 @@ class IlCltOpDto (
         
         other as IlCltOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -2058,8 +2058,8 @@ class IlCltOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -2069,8 +2069,8 @@ class IlCltOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCltOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -2088,14 +2088,14 @@ class IlCltOpDto (
  * #### Generated from [IlMethodBodyModel.kt:91]
  */
 class IlCneOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -2107,17 +2107,17 @@ class IlCneOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlCneOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlCneOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlCneOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlCneOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -2136,8 +2136,8 @@ class IlCneOpDto (
         
         other as IlCneOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -2147,8 +2147,8 @@ class IlCneOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -2158,8 +2158,8 @@ class IlCneOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlCneOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -2446,14 +2446,14 @@ class IlDerefExprDto_Unknown (
  * #### Generated from [IlMethodBodyModel.kt:83]
  */
 class IlDivOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -2465,17 +2465,17 @@ class IlDivOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlDivOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlDivOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlDivOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlDivOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -2494,8 +2494,8 @@ class IlDivOpDto (
         
         other as IlDivOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -2505,8 +2505,8 @@ class IlDivOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -2516,8 +2516,8 @@ class IlDivOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlDivOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -3893,14 +3893,14 @@ class IlMethodRefDto (
  * #### Generated from [IlMethodBodyModel.kt:82]
  */
 class IlMulOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -3912,17 +3912,17 @@ class IlMulOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlMulOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlMulOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlMulOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMulOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -3941,8 +3941,8 @@ class IlMulOpDto (
         
         other as IlMulOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -3952,8 +3952,8 @@ class IlMulOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -3963,8 +3963,8 @@ class IlMulOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlMulOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -4050,6 +4050,7 @@ class IlNegOpDto (
  * #### Generated from [IlMethodBodyModel.kt:114]
  */
 class IlNewArrayExprDto (
+    val elementType: TypeId,
     val size: IlExprDto,
     type: TypeId
 ) : IlExprDto (
@@ -4063,12 +4064,14 @@ class IlNewArrayExprDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlNewArrayExprDto  {
             val type = TypeId.read(ctx, buffer)
+            val elementType = TypeId.read(ctx, buffer)
             val size = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            return IlNewArrayExprDto(size, type)
+            return IlNewArrayExprDto(elementType, size, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlNewArrayExprDto)  {
             TypeId.write(ctx, buffer, value.type)
+            TypeId.write(ctx, buffer, value.elementType)
             ctx.serializers.writePolymorphic(ctx, buffer, value.size)
         }
         
@@ -4085,6 +4088,7 @@ class IlNewArrayExprDto (
         
         other as IlNewArrayExprDto
         
+        if (elementType != other.elementType) return false
         if (size != other.size) return false
         if (type != other.type) return false
         
@@ -4093,6 +4097,7 @@ class IlNewArrayExprDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
+        __r = __r*31 + elementType.hashCode()
         __r = __r*31 + size.hashCode()
         __r = __r*31 + type.hashCode()
         return __r
@@ -4101,6 +4106,7 @@ class IlNewArrayExprDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlNewArrayExprDto (")
         printer.indent {
+            print("elementType = "); elementType.print(printer); println()
             print("size = "); size.print(printer); println()
             print("type = "); type.print(printer); println()
         }
@@ -4400,14 +4406,14 @@ class IlNumConstDto_Unknown (
  * #### Generated from [IlMethodBodyModel.kt:86]
  */
 class IlOrOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -4419,17 +4425,17 @@ class IlOrOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlOrOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlOrOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlOrOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlOrOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -4448,8 +4454,8 @@ class IlOrOpDto (
         
         other as IlOrOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -4459,8 +4465,8 @@ class IlOrOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -4470,8 +4476,8 @@ class IlOrOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlOrOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -4590,14 +4596,14 @@ class IlRefExprDto_Unknown (
  * #### Generated from [IlMethodBodyModel.kt:84]
  */
 class IlRemOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -4609,17 +4615,17 @@ class IlRemOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlRemOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlRemOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlRemOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlRemOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -4638,8 +4644,8 @@ class IlRemOpDto (
         
         other as IlRemOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -4649,8 +4655,8 @@ class IlRemOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -4660,8 +4666,8 @@ class IlRemOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlRemOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -4791,14 +4797,14 @@ class IlReturnStmtDto (
  * #### Generated from [IlMethodBodyModel.kt:88]
  */
 class IlShlOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -4810,17 +4816,17 @@ class IlShlOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlShlOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlShlOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlShlOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlShlOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -4839,8 +4845,8 @@ class IlShlOpDto (
         
         other as IlShlOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -4850,8 +4856,8 @@ class IlShlOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -4861,8 +4867,8 @@ class IlShlOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlShlOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -4880,14 +4886,14 @@ class IlShlOpDto (
  * #### Generated from [IlMethodBodyModel.kt:89]
  */
 class IlShrOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -4899,17 +4905,17 @@ class IlShrOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlShrOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlShrOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlShrOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlShrOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -4928,8 +4934,8 @@ class IlShrOpDto (
         
         other as IlShrOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -4939,8 +4945,8 @@ class IlShrOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -4950,8 +4956,8 @@ class IlShrOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlShrOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -5251,14 +5257,14 @@ class IlStringConstDto (
  * #### Generated from [IlMethodBodyModel.kt:81]
  */
 class IlSubOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -5270,17 +5276,17 @@ class IlSubOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlSubOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlSubOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlSubOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlSubOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -5299,8 +5305,8 @@ class IlSubOpDto (
         
         other as IlSubOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -5310,8 +5316,8 @@ class IlSubOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -5321,8 +5327,8 @@ class IlSubOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlSubOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()
@@ -6228,14 +6234,14 @@ enum class IlVarKind {
  * #### Generated from [IlMethodBodyModel.kt:87]
  */
 class IlXorOpDto (
-    lhs: IlExprDto,
-    rhs: IlExprDto,
+    lhv: IlExprDto,
+    rhv: IlExprDto,
     isChecked: Boolean,
     isUnsigned: Boolean,
     type: TypeId
 ) : IlBinaryOpDto (
-    lhs,
-    rhs,
+    lhv,
+    rhv,
     isChecked,
     isUnsigned,
     type
@@ -6247,17 +6253,17 @@ class IlXorOpDto (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlXorOpDto  {
-            val lhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
-            val rhs = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val lhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
+            val rhv = ctx.serializers.readPolymorphic<IlExprDto>(ctx, buffer, IlExprDto)
             val isChecked = buffer.readBool()
             val isUnsigned = buffer.readBool()
             val type = TypeId.read(ctx, buffer)
-            return IlXorOpDto(lhs, rhs, isChecked, isUnsigned, type)
+            return IlXorOpDto(lhv, rhv, isChecked, isUnsigned, type)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlXorOpDto)  {
-            ctx.serializers.writePolymorphic(ctx, buffer, value.lhs)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.rhs)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.lhv)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.rhv)
             buffer.writeBool(value.isChecked)
             buffer.writeBool(value.isUnsigned)
             TypeId.write(ctx, buffer, value.type)
@@ -6276,8 +6282,8 @@ class IlXorOpDto (
         
         other as IlXorOpDto
         
-        if (lhs != other.lhs) return false
-        if (rhs != other.rhs) return false
+        if (lhv != other.lhv) return false
+        if (rhv != other.rhv) return false
         if (isChecked != other.isChecked) return false
         if (isUnsigned != other.isUnsigned) return false
         if (type != other.type) return false
@@ -6287,8 +6293,8 @@ class IlXorOpDto (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + lhs.hashCode()
-        __r = __r*31 + rhs.hashCode()
+        __r = __r*31 + lhv.hashCode()
+        __r = __r*31 + rhv.hashCode()
         __r = __r*31 + isChecked.hashCode()
         __r = __r*31 + isUnsigned.hashCode()
         __r = __r*31 + type.hashCode()
@@ -6298,8 +6304,8 @@ class IlXorOpDto (
     override fun print(printer: PrettyPrinter)  {
         printer.println("IlXorOpDto (")
         printer.indent {
-            print("lhv = "); lhs.print(printer); println()
-            print("rhv = "); rhs.print(printer); println()
+            print("lhv = "); lhv.print(printer); println()
+            print("rhv = "); rhv.print(printer); println()
             print("isChecked = "); isChecked.print(printer); println()
             print("isUnsigned = "); isUnsigned.print(printer); println()
             print("type = "); type.print(printer); println()

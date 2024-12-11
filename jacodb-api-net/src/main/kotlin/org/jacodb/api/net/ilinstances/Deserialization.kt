@@ -124,12 +124,7 @@ fun IlConstDto.deserializeConst(publication: IlPublication): IlConstant {
 
 fun IlUnaryOpDto.deserialize(ilMethod: IlMethod): IlExpr {
     val exprType =
-        ilMethod.declaringType.publication.featuresChain.callUntilResolved<IlTypeSearchExactFeature, ResolvedIlTypeResult> { t ->
-            t.findExactType(
-                type.typeName,
-                type.asmName
-            )
-        }!!.type!!
+        ilMethod.declaringType.publication.findIlTypeOrNull(type.typeName)!!
     return when (this) {
         is IlNegOpDto -> IlNegOp(exprType, operand.deserialize(ilMethod))
         is IlNotOpDto -> IlNotOp(exprType, operand.deserialize(ilMethod))
@@ -139,8 +134,8 @@ fun IlUnaryOpDto.deserialize(ilMethod: IlMethod): IlExpr {
 
 fun IlBinaryOpDto.deserialize(ilMethod: IlMethod): IlExpr {
     val binOpType = ilMethod.declaringType.publication.findIlTypeOrNull(type.typeName)!!
-    val lhsExpr = lhs.deserialize(ilMethod)
-    val rhsExpr = rhs.deserialize(ilMethod)
+    val lhsExpr = lhv.deserialize(ilMethod)
+    val rhsExpr = rhv.deserialize(ilMethod)
     return when (this) {
         is IlAddOpDto -> IlAddOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)
         is IlSubOpDto -> IlSubOp(binOpType, lhsExpr, rhsExpr, isChecked, isUnsigned)

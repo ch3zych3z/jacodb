@@ -18,10 +18,13 @@ package org.jacodb.api.net.ilinstances.impl
 
 import org.jacodb.api.common.cfg.CommonInst
 import org.jacodb.api.common.cfg.ControlFlowGraph
+import org.jacodb.api.jvm.JcMethodExtFeature
+import org.jacodb.api.jvm.JcMethodExtFeature.JcFlowGraphResult
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.IlMethodExtFeature
+import org.jacodb.api.net.IlMethodExtFeature.IlFlowGraphResult
+import org.jacodb.api.net.IlMethodExtFeature.IlInstListResult
 import org.jacodb.api.net.IlPublication
-import org.jacodb.api.net.ResolvedInstructionsResult
 import org.jacodb.api.net.generated.models.*
 import org.jacodb.api.net.ilinstances.IlArgument
 import org.jacodb.api.net.ilinstances.IlErrVar
@@ -36,7 +39,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
         get() = declaringType.publication
 
     override fun flowGraph(): ControlFlowGraph<CommonInst> {
-        TODO()
+        return publication.featuresChain.callUntilResolved<IlMethodExtFeature, IlFlowGraphResult> { it.flowGraph(this) }!!.flowGraph
     }
 
     override val isStatic: Boolean = dto.isStatic
@@ -59,7 +62,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
 
     override val instList: List<IlStmt>
         get() =
-            publication.featuresChain.callUntilResolved<IlMethodExtFeature, ResolvedInstructionsResult> {
+            publication.featuresChain.callUntilResolved<IlMethodExtFeature, IlInstListResult> {
                 it.instList(
                     this
                 )
