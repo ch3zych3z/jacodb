@@ -18,7 +18,8 @@ package org.jacodb.api.net.features
 
 import org.jacodb.api.net.IlInstExtFeature
 import org.jacodb.api.net.IlMethodExtFeature
-import org.jacodb.api.net.ResolvedInstructionsResult
+import org.jacodb.api.net.IlMethodExtFeature.IlInstListResult
+import org.jacodb.api.net.cfg.IlGraphImpl
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.IlStmt
 import org.jacodb.api.net.ilinstances.impl.IlStmtLocationImpl
@@ -27,7 +28,7 @@ class IlMethodInstructionsFeature : IlMethodExtFeature {
     private val IlMethod.methodFeatures
         get() = declaringType.publication.features.filterIsInstance<IlInstExtFeature>()
 
-    override fun instList(method: IlMethod): ResolvedInstructionsResult {
+    override fun instList(method: IlMethod): IlInstListResult {
         val insts = method.rawInstList.mapIndexed { index, inst ->
             IlStmt.deserialize(
                 IlStmtLocationImpl(method, index),
@@ -35,8 +36,12 @@ class IlMethodInstructionsFeature : IlMethodExtFeature {
                 inst
             )
         }
-        return ResolvedInstructionsResult(method, method.methodFeatures.fold(insts) { value, feature ->
+        return IlInstListResult(method, method.methodFeatures.fold(insts) { value, feature ->
             feature.transformInstList(method, value)
         })
+    }
+
+    override fun flowGraph(method: IlMethod): IlMethodExtFeature.IlFlowGraphResult {
+        return IlMethodExtFeature.IlFlowGraphResult(method, IlGraphImpl(method, method.instList))
     }
 }

@@ -16,9 +16,7 @@
 
 package org.jacodb.api.net
 
-import org.jacodb.api.net.ilinstances.impl.IlFieldImpl
-import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
-import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
+import org.jacodb.api.net.cfg.IlGraphImpl
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.ilinstances.IlField
@@ -60,7 +58,12 @@ interface IlTypeExtFeature : IlPublicationFeature {
 }
 
 interface IlMethodExtFeature : IlPublicationFeature {
-    fun instList(method: IlMethod): ResolvedInstructionsResult?
+
+    class IlInstListResult(val method: IlMethod, val instructions: List<IlStmt>) : FeatureCallResult
+    class IlFlowGraphResult(val method: IlMethod, val flowGraph: IlGraphImpl) : FeatureCallResult
+
+    fun instList(method: IlMethod): IlInstListResult?
+    fun flowGraph(method: IlMethod): IlFlowGraphResult?
 }
 
 interface IlInstExtFeature : IlPublicationFeature {
@@ -75,5 +78,3 @@ class ResolvedIlTypeResult(val name: String, val type: IlType?) : FeatureCallRes
 class ResolvedIlTypesResult(val name: String, val types: List<IlType>) : FeatureCallResult
 class ResolvedMethodsResult(val type: IlType, val methods: List<IlMethod>?) : FeatureCallResult
 class ResolvedFieldsResult(val type: IlType, val fields: List<IlField>?) : FeatureCallResult
-
-class ResolvedInstructionsResult(val method: IlMethod, val instructions: List<IlStmt>) : FeatureCallResult

@@ -29,6 +29,8 @@ interface IlStmtLocation : CommonInstLocation {
     val index: Int
 }
 
+interface IlTerminatingStmt : IlStmt
+
 interface IlStmt : CommonInst {
     override val location: IlStmtLocation
     val operands: List<IlExpr>
@@ -82,8 +84,8 @@ class IlAssignStmt(
 
     constructor(location: IlStmtLocation, dto: IlAssignStmtDto, src: IlMethod) : this(
         location,
-        dto.lhs.deserialize(src) as IlValue,
-        dto.rhs.deserialize(src)
+        dto.lhv.deserialize(src) as IlValue,
+        dto.rhv.deserialize(src)
     )
 
     override val operands: List<IlExpr>
@@ -135,7 +137,7 @@ class IlCalliStmt(
 class IlReturnStmt(
     location: IlStmtLocation,
     override val returnValue: IlValue?
-) : AbstractIlStmt(location), CommonReturnInst {
+) : IlTerminatingStmt, AbstractIlStmt(location), CommonReturnInst {
 
     constructor(
         location: IlStmtLocation,
@@ -161,7 +163,7 @@ interface IlEhStmt : IlStmt
 class IlThrowStmt(
     location: IlStmtLocation,
     val value: IlExpr
-) : AbstractIlStmt(location), IlEhStmt {
+) : IlTerminatingStmt, AbstractIlStmt(location), IlEhStmt {
     constructor(location: IlStmtLocation, dto: IlThrowStmtDto, src: IlMethod) : this(
         location,
         dto.value.deserialize(src)
@@ -179,7 +181,7 @@ class IlThrowStmt(
 
 class IlRethrowStmt(
     location: IlStmtLocation
-) : AbstractIlStmt(location), IlEhStmt {
+) : IlTerminatingStmt, AbstractIlStmt(location), IlEhStmt {
 
     override fun <T> accept(visitor: IlStmtVisitor<T>): T {
         return visitor.visitIlRethrowStmt(this)
@@ -232,7 +234,9 @@ class IlEndFilterStmt(
     }
 }
 
-interface IlBranchStmt : IlStmt
+interface IlBranchStmt : IlStmt {
+    val sucessors: List<Int>
+}
 
 // TODO CRITICAL
 class IlGotoStmt(
@@ -264,6 +268,7 @@ class IlGotoStmt(
     }
 
     override fun toString(): String = "goto $target"
+    override val sucessors: List<Int> = listOf(target)
 
 }
 
@@ -299,4 +304,6 @@ class IlIfStmt(
     override fun toString(): String {
         return "if $condition goto $target"
     }
+
+    override val sucessors: List<Int> = listOf(location.index + 1, target)
 }

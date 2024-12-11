@@ -109,6 +109,7 @@ class IlCleOp(type: IlType, lhs: IlExpr, rhs: IlExpr, isChecked: Boolean, isUnsi
     IlBinaryOp(type, lhs, rhs, isChecked, isUnsigned)
 
 class IlNewArrayExpr(override val type: IlArrayType, val size: IlExpr) : IlExpr {
+    //TODO critical serialize array type into newarr
     val elementType: IlType get() = type.elementType
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlNewArrayExpr(this)

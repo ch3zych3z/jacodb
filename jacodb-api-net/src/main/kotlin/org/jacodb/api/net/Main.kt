@@ -72,9 +72,16 @@ fun main(args: Array<String>) {
             }
             type.methods.forEach { m ->
                 try {
-                    m.instList
+                    m.instList.forEachIndexed { index, stmt ->
+                        assert(stmt.location.index == index && stmt.location.method == m)
+                    }
                 } catch (e: Exception) {
                     println("err instList for ${m.name}")
+                }
+                try {
+                    m.flowGraph()
+                } catch (e: Exception) {
+                    println("err flowGraph for ${m.name}")
                 }
             }
         }

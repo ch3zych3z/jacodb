@@ -112,8 +112,8 @@ object IlMethodBodyModel : Ext(IlRoot) {
     }
 
     private val IlNewArrayExprDto = structdef extends IlExprDto {
+        field("elementType", typeId)
         field("size", IlExprDto)
-        // type == elemType
     }
     private val IlArrayLengthExprDto = structdef extends IlExprDto { field("array", IlExprDto) }
     private val IlCallDto = structdef extends IlExprDto {
