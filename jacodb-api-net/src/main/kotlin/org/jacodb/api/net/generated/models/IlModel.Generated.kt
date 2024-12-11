@@ -86,7 +86,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = 822066295397104068L
+        const val serializationHash = -8688262656614676398L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -115,11 +115,13 @@ val IProtocol.ilModel get() = getOrCreateExtension(IlModel::class) { @Suppress("
 
 
 /**
- * #### Generated from [IlModel.kt:65]
+ * #### Generated from [IlModel.kt:67]
  */
 class IlArrayTypeDto (
     val elementType: TypeId,
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -136,6 +138,8 @@ class IlArrayTypeDto (
     methods: List<IlMethodDto>
 ) : IlReferenceTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -159,6 +163,8 @@ class IlArrayTypeDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlArrayTypeDto  {
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -174,11 +180,13 @@ class IlArrayTypeDto (
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val elementType = TypeId.read(ctx, buffer)
-            return IlArrayTypeDto(elementType, asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
+            return IlArrayTypeDto(elementType, asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArrayTypeDto)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -211,6 +219,8 @@ class IlArrayTypeDto (
         
         if (elementType != other.elementType) return false
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -233,6 +243,8 @@ class IlArrayTypeDto (
         var __r = 0
         __r = __r*31 + elementType.hashCode()
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -255,6 +267,8 @@ class IlArrayTypeDto (
         printer.indent {
             print("elementType = "); elementType.print(printer); println()
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -280,7 +294,7 @@ class IlArrayTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:68]
+ * #### Generated from [IlModel.kt:70]
  */
 class IlAttrDto (
     val attrType: TypeId,
@@ -364,7 +378,7 @@ class IlAttrDto (
 
 
 /**
- * #### Generated from [IlModel.kt:109]
+ * #### Generated from [IlModel.kt:111]
  */
 class IlCatchScopeDto (
     tb: Int,
@@ -446,10 +460,12 @@ class IlCatchScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:64]
+ * #### Generated from [IlModel.kt:66]
  */
 class IlClassTypeDto (
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -466,6 +482,8 @@ class IlClassTypeDto (
     methods: List<IlMethodDto>
 ) : IlReferenceTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -489,6 +507,8 @@ class IlClassTypeDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlClassTypeDto  {
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -503,11 +523,13 @@ class IlClassTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlClassTypeDto(asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
+            return IlClassTypeDto(asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlClassTypeDto)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -538,6 +560,8 @@ class IlClassTypeDto (
         other as IlClassTypeDto
         
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -559,6 +583,8 @@ class IlClassTypeDto (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -580,6 +606,8 @@ class IlClassTypeDto (
         printer.println("IlClassTypeDto (")
         printer.indent {
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -686,7 +714,7 @@ class IlDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:103]
+ * #### Generated from [IlModel.kt:105]
  */
 abstract class IlEhScopeDto (
     val tb: Int,
@@ -802,13 +830,15 @@ class IlEhScopeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:54]
+ * #### Generated from [IlModel.kt:56]
  */
 class IlEnumTypeDto (
     val underlyingType: TypeId,
     val names: List<String>,
     val values: List<IlConstDto>,
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -825,6 +855,8 @@ class IlEnumTypeDto (
     methods: List<IlMethodDto>
 ) : IlValueTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -848,6 +880,8 @@ class IlEnumTypeDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlEnumTypeDto  {
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -865,11 +899,13 @@ class IlEnumTypeDto (
             val underlyingType = TypeId.read(ctx, buffer)
             val names = buffer.readList { buffer.readString() }
             val values = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
-            return IlEnumTypeDto(underlyingType, names, values, asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
+            return IlEnumTypeDto(underlyingType, names, values, asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlEnumTypeDto)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -906,6 +942,8 @@ class IlEnumTypeDto (
         if (names != other.names) return false
         if (values != other.values) return false
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -930,6 +968,8 @@ class IlEnumTypeDto (
         __r = __r*31 + names.hashCode()
         __r = __r*31 + values.hashCode()
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -954,6 +994,8 @@ class IlEnumTypeDto (
             print("names = "); names.print(printer); println()
             print("values = "); values.print(printer); println()
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -979,7 +1021,7 @@ class IlEnumTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:101]
+ * #### Generated from [IlModel.kt:103]
  */
 class IlErrVarDto (
     type: TypeId,
@@ -1047,7 +1089,7 @@ class IlErrVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:114]
+ * #### Generated from [IlModel.kt:116]
  */
 class IlFaultScopeDto (
     tb: Int,
@@ -1129,7 +1171,7 @@ class IlFaultScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:76]
+ * #### Generated from [IlModel.kt:78]
  */
 class IlFieldDto (
     val fieldType: TypeId,
@@ -1207,7 +1249,7 @@ class IlFieldDto (
 
 
 /**
- * #### Generated from [IlModel.kt:111]
+ * #### Generated from [IlModel.kt:113]
  */
 class IlFilterScopeDto (
     val fb: Int,
@@ -1295,7 +1337,7 @@ class IlFilterScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:115]
+ * #### Generated from [IlModel.kt:117]
  */
 class IlFinallyScopeDto (
     tb: Int,
@@ -1377,7 +1419,7 @@ class IlFinallyScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:96]
+ * #### Generated from [IlModel.kt:98]
  */
 class IlLocalVarDto (
     val isPinned: Boolean,
@@ -1451,7 +1493,7 @@ class IlLocalVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:118]
+ * #### Generated from [IlModel.kt:120]
  */
 class IlMethodDto (
     val returnType: TypeId,
@@ -1571,7 +1613,7 @@ class IlMethodDto (
 
 
 /**
- * #### Generated from [IlModel.kt:83]
+ * #### Generated from [IlModel.kt:85]
  */
 data class IlParameterDto (
     val index: Int,
@@ -1652,11 +1694,13 @@ data class IlParameterDto (
 
 
 /**
- * #### Generated from [IlModel.kt:49]
+ * #### Generated from [IlModel.kt:51]
  */
 class IlPointerTypeDto (
     val targetType: TypeId,
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -1673,6 +1717,8 @@ class IlPointerTypeDto (
     methods: List<IlMethodDto>
 ) : IlTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -1696,6 +1742,8 @@ class IlPointerTypeDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlPointerTypeDto  {
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -1711,11 +1759,13 @@ class IlPointerTypeDto (
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val targetType = TypeId.read(ctx, buffer)
-            return IlPointerTypeDto(targetType, asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
+            return IlPointerTypeDto(targetType, asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlPointerTypeDto)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -1748,6 +1798,8 @@ class IlPointerTypeDto (
         
         if (targetType != other.targetType) return false
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -1770,6 +1822,8 @@ class IlPointerTypeDto (
         var __r = 0
         __r = __r*31 + targetType.hashCode()
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -1792,6 +1846,8 @@ class IlPointerTypeDto (
         printer.indent {
             print("targetType = "); targetType.print(printer); println()
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -1817,10 +1873,12 @@ class IlPointerTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:53]
+ * #### Generated from [IlModel.kt:55]
  */
 class IlPrimitiveTypeDto (
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -1837,6 +1895,8 @@ class IlPrimitiveTypeDto (
     methods: List<IlMethodDto>
 ) : IlValueTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -1860,6 +1920,8 @@ class IlPrimitiveTypeDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlPrimitiveTypeDto  {
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -1874,11 +1936,13 @@ class IlPrimitiveTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlPrimitiveTypeDto(asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
+            return IlPrimitiveTypeDto(asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlPrimitiveTypeDto)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -1909,6 +1973,8 @@ class IlPrimitiveTypeDto (
         other as IlPrimitiveTypeDto
         
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -1930,6 +1996,8 @@ class IlPrimitiveTypeDto (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -1951,6 +2019,8 @@ class IlPrimitiveTypeDto (
         printer.println("IlPrimitiveTypeDto (")
         printer.indent {
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -1976,10 +2046,12 @@ class IlPrimitiveTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:62]
+ * #### Generated from [IlModel.kt:64]
  */
 abstract class IlReferenceTypeDto (
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -1996,6 +2068,8 @@ abstract class IlReferenceTypeDto (
     methods: List<IlMethodDto>
 ) : IlTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -2017,6 +2091,8 @@ abstract class IlReferenceTypeDto (
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlReferenceTypeDto  {
             val objectStartPosition = buffer.position
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -2033,7 +2109,7 @@ abstract class IlReferenceTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlReferenceTypeDto_Unknown(asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlReferenceTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -2052,6 +2128,8 @@ abstract class IlReferenceTypeDto (
 
 class IlReferenceTypeDto_Unknown (
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -2070,6 +2148,8 @@ class IlReferenceTypeDto_Unknown (
     val unknownBytes: ByteArray
 ) : IlReferenceTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -2097,6 +2177,8 @@ class IlReferenceTypeDto_Unknown (
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlReferenceTypeDto_Unknown)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -2128,6 +2210,8 @@ class IlReferenceTypeDto_Unknown (
         other as IlReferenceTypeDto_Unknown
         
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -2149,6 +2233,8 @@ class IlReferenceTypeDto_Unknown (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -2170,6 +2256,8 @@ class IlReferenceTypeDto_Unknown (
         printer.println("IlReferenceTypeDto_Unknown (")
         printer.indent {
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -2195,7 +2283,7 @@ class IlReferenceTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:132]
+ * #### Generated from [IlModel.kt:134]
  */
 class IlSignatureDto (
     val returnType: TypeId,
@@ -2273,10 +2361,12 @@ class IlSignatureDto (
 
 
 /**
- * #### Generated from [IlModel.kt:60]
+ * #### Generated from [IlModel.kt:62]
  */
 class IlStructTypeDto (
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -2293,6 +2383,8 @@ class IlStructTypeDto (
     methods: List<IlMethodDto>
 ) : IlValueTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -2316,6 +2408,8 @@ class IlStructTypeDto (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlStructTypeDto  {
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -2330,11 +2424,13 @@ class IlStructTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlStructTypeDto(asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
+            return IlStructTypeDto(asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlStructTypeDto)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -2365,6 +2461,8 @@ class IlStructTypeDto (
         other as IlStructTypeDto
         
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -2386,6 +2484,8 @@ class IlStructTypeDto (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -2407,6 +2507,8 @@ class IlStructTypeDto (
         printer.println("IlStructTypeDto (")
         printer.indent {
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -2432,7 +2534,7 @@ class IlStructTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:100]
+ * #### Generated from [IlModel.kt:102]
  */
 class IlTempVarDto (
     type: TypeId,
@@ -2504,6 +2606,8 @@ class IlTempVarDto (
  */
 abstract class IlTypeDto (
     val asmName: String,
+    val moduleToken: Int,
+    val typeToken: Int,
     val namespaceName: String,
     val name: String,
     val fullname: String,
@@ -2526,6 +2630,8 @@ abstract class IlTypeDto (
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlTypeDto  {
             val objectStartPosition = buffer.position
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -2542,7 +2648,7 @@ abstract class IlTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlTypeDto_Unknown(asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -2561,6 +2667,8 @@ abstract class IlTypeDto (
 
 class IlTypeDto_Unknown (
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -2579,6 +2687,8 @@ class IlTypeDto_Unknown (
     val unknownBytes: ByteArray
 ) : IlTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -2606,6 +2716,8 @@ class IlTypeDto_Unknown (
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlTypeDto_Unknown)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -2637,6 +2749,8 @@ class IlTypeDto_Unknown (
         other as IlTypeDto_Unknown
         
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -2658,6 +2772,8 @@ class IlTypeDto_Unknown (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -2679,6 +2795,8 @@ class IlTypeDto_Unknown (
         printer.println("IlTypeDto_Unknown (")
         printer.indent {
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -2704,10 +2822,12 @@ class IlTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:52]
+ * #### Generated from [IlModel.kt:54]
  */
 abstract class IlValueTypeDto (
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -2724,6 +2844,8 @@ abstract class IlValueTypeDto (
     methods: List<IlMethodDto>
 ) : IlTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -2745,6 +2867,8 @@ abstract class IlValueTypeDto (
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): IlValueTypeDto  {
             val objectStartPosition = buffer.position
             val asmName = buffer.readString()
+            val moduleToken = buffer.readInt()
+            val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
             val name = buffer.readString()
             val fullname = buffer.readString()
@@ -2761,7 +2885,7 @@ abstract class IlValueTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlValueTypeDto_Unknown(asmName, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlValueTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, name, fullname, declType, baseType, interfaces, genericArgs, isGenericParam, isGenericDefinition, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -2780,6 +2904,8 @@ abstract class IlValueTypeDto (
 
 class IlValueTypeDto_Unknown (
     asmName: String,
+    moduleToken: Int,
+    typeToken: Int,
     namespaceName: String,
     name: String,
     fullname: String,
@@ -2798,6 +2924,8 @@ class IlValueTypeDto_Unknown (
     val unknownBytes: ByteArray
 ) : IlValueTypeDto (
     asmName,
+    moduleToken,
+    typeToken,
     namespaceName,
     name,
     fullname,
@@ -2825,6 +2953,8 @@ class IlValueTypeDto_Unknown (
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlValueTypeDto_Unknown)  {
             buffer.writeString(value.asmName)
+            buffer.writeInt(value.moduleToken)
+            buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
@@ -2856,6 +2986,8 @@ class IlValueTypeDto_Unknown (
         other as IlValueTypeDto_Unknown
         
         if (asmName != other.asmName) return false
+        if (moduleToken != other.moduleToken) return false
+        if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
@@ -2877,6 +3009,8 @@ class IlValueTypeDto_Unknown (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + moduleToken.hashCode()
+        __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
@@ -2898,6 +3032,8 @@ class IlValueTypeDto_Unknown (
         printer.println("IlValueTypeDto_Unknown (")
         printer.indent {
             print("asmName = "); asmName.print(printer); println()
+            print("moduleToken = "); moduleToken.print(printer); println()
+            print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
@@ -2923,7 +3059,7 @@ class IlValueTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:91]
+ * #### Generated from [IlModel.kt:93]
  */
 abstract class IlVarDto (
     val type: TypeId,

@@ -27,6 +27,7 @@ import org.jacodb.api.net.features.IlMethodInstructionsFeature
 import org.jacodb.api.net.generated.models.PublicationRequest
 import org.jacodb.api.net.generated.models.ilModel
 import org.jacodb.api.net.generated.models.ilSigModel
+import org.jacodb.api.net.ilinstances.IlBranchStmt
 import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.RdServer
 import java.lang.Exception
@@ -79,7 +80,7 @@ fun main(args: Array<String>) {
                     println("err instList for ${m.name}")
                 }
                 try {
-                    m.flowGraph()
+                    val graph = m.flowGraph()
                 } catch (e: Exception) {
                     println("err flowGraph for ${m.name}")
                 }

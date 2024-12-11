@@ -30,6 +30,8 @@ object IlModel : Ext(IlRoot) {
 
     val IlTypeDto = basestruct extends IlDto {
         field("asmName", PredefinedType.string)
+        field("moduleToken", PredefinedType.int)
+        field("typeToken", PredefinedType.int)
         field("namespaceName", PredefinedType.string)
         field("name", PredefinedType.string)
         field("fullname", PredefinedType.string)

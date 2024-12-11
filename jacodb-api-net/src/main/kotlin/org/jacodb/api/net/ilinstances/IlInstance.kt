@@ -34,6 +34,8 @@ interface IlType : IlInstance, CommonTypeName {
     val isGenericParameter: Boolean
     val isGenericDefinition: Boolean
     override val typeName: String
+    val moduleToken: Int
+    val typeToken: Int
     val fullname: String
     val asmName: String
     val name: String
