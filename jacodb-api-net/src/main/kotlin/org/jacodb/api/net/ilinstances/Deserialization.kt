@@ -175,7 +175,8 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr {
                 throw IllegalArgumentException("unexpected number of methods found for given name")
             IlCall(
                 callMethod.first(),
-                args.map { it.deserialize(ilMethod) })
+                // FIXME
+                args.map { it.deserialize(ilMethod) as IlValue })
         }
 
         is IlNewArrayExprDto -> {

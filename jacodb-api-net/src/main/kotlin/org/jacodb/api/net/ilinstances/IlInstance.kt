@@ -48,6 +48,7 @@ interface IlType : IlInstance, CommonTypeName {
 }
 
 interface IlField : IlInstance {
+    val declaringType: IlType
     val fieldType: IlType
     val name: String
     val isStatic: Boolean

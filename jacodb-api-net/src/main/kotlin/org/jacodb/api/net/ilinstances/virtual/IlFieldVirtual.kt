@@ -24,7 +24,7 @@ import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
 
 class IlFieldVirtual(
-    private val declaringType: IlType,
+    override val declaringType: IlType,
     override val fieldType: IlType,
     override val name: String,
     override val isStatic: Boolean,

@@ -16,11 +16,7 @@
 
 package org.jacodb.api.net.ilinstances
 
-import org.jacodb.api.common.cfg.CommonArgument
-import org.jacodb.api.common.cfg.CommonArrayAccess
-import org.jacodb.api.common.cfg.CommonExpr
-import org.jacodb.api.common.cfg.CommonFieldRef
-import org.jacodb.api.common.cfg.CommonThis
+import org.jacodb.api.common.cfg.*
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.generated.models.IlParameterDto
@@ -49,7 +45,7 @@ class IlNegOp(type: IlType, operand: IlExpr) : IlUnaryOp(type, operand)
 class IlNotOp(type: IlType, operand: IlExpr) : IlUnaryOp(type, operand)
 
 
-sealed class IlBinaryOp(
+open class IlBinaryOp(
     override val type: IlType,
     val lhs: IlExpr,
     val rhs: IlExpr,
@@ -176,7 +172,7 @@ class IlArrayAccess(override val array: IlValue, override val index: IlValue) : 
     }
 }
 
-class IlCall(val method: IlMethod, val args: List<IlExpr>) : IlExpr {
+class IlCall(val method: IlMethod, override val args: List<IlValue>) : IlExpr, CommonCallExpr {
     override val type: IlType get() = method.returnType
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlCall(this)
@@ -323,7 +319,6 @@ class IlArgumentImpl(type: IlType, name: String, index: Int) : IlArgument(type, 
         return visitor.visitIlArg(this)
     }
 }
-
 class IlLocalVar(override val type: IlType, val index: Int) : IlLocal {
     constructor(dto: IlVarDto, publication: IlPublication) :
             this(publication.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
