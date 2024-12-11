@@ -21,12 +21,12 @@ import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlFieldDto
 import org.jacodb.api.net.ilinstances.IlType
 
-class IlFieldImpl(private val declType: IlTypeImpl, private val dto: IlFieldDto, typeLoader: IlPublication) : IlField {
+class IlFieldImpl(override val declaringType: IlTypeImpl, private val dto: IlFieldDto, typeLoader: IlPublication) : IlField {
     override val fieldType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.fieldType.typeName)!! }
     override val attributes: MutableList<IlAttributeImpl> = mutableListOf()
     override val isStatic: Boolean = dto.isStatic
     override val name: String = dto.name
     override fun toString(): String {
-        return if (isStatic) "$declType.$name" else "$.$name"
+        return if (isStatic) "$declaringType.$name" else "$.$name"
     }
 }
