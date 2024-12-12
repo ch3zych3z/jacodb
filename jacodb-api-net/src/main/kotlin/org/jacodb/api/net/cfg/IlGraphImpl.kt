@@ -53,9 +53,14 @@ class IlGraphImpl(override val method: IlMethod, override val instructions: List
                     scope.tb.location.index <= inst.location.index && inst.location.index <= scope.te.location.index
                 }.minByOrNull { scope -> scope.te.location.index - scope.tb.location.index }
                 if (enclosing != null) {
-                    enclosing.bindThrower(inst)
-                    throwSuccessors.getOrPut(inst) { mutableSetOf() }.add(enclosing.hb)
-                    throwPredecessors.getOrPut(enclosing.hb) { mutableSetOf() }.add(inst)
+                    method.scopes.filter {
+                        it.te.location.index == enclosing.te.location.index &&
+                                it.tb.location.index == enclosing.tb.location.index
+                    }.forEach { s ->
+                        s.bindThrower(inst)
+                        throwSuccessors.getOrPut(inst) { mutableSetOf() }.add(s.hb)
+                        throwPredecessors.getOrPut(s.hb) { mutableSetOf() }.add(inst)
+                    }
                 }
             }
         }
