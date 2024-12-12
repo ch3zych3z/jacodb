@@ -20,6 +20,7 @@ import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.core.IlStmtVisitor
 import org.jacodb.api.net.ilinstances.*
 import org.jacodb.api.net.ilinstances.impl.IlArrayType
+import kotlin.math.exp
 
 object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<IlStmt> {
     override fun visitIlUnaryOp(expr: IlUnaryOp): IlExpr {
@@ -27,7 +28,135 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlBinaryOp(expr: IlBinaryOp): IlExpr {
-        return IlBinaryOp(expr.type, expr.lhs.accept(this), expr.rhs.accept(this), expr.isChecked, expr.isUnsigned)
+        return when (expr) {
+            is IlAddOp -> IlAddOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlAndOp -> IlAndOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlCeqOp -> IlCeqOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlCgeOp -> IlCgeOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlCgtOp -> IlCgtOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlCleOp -> IlCleOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlCltOp -> IlCltOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlCneOp -> IlCneOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlDivOp -> IlDivOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlMulOp -> IlMulOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlOrOp -> IlOrOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlRemOp -> IlRemOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlShlOp -> IlShlOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlShrOp -> IlShrOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlSubOp -> IlSubOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+
+            is IlXorOp -> IlXorOp(
+                expr.type,
+                expr.lhs.accept(this),
+                expr.rhs.accept(this),
+                expr.isChecked,
+                expr.isUnsigned
+            )
+        }
     }
 
     override fun visitIlArrayLength(expr: IlArrayLengthExpr): IlExpr {

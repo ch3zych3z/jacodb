@@ -46,7 +46,7 @@ class IlNegOp(type: IlType, operand: IlExpr) : IlUnaryOp(type, operand)
 class IlNotOp(type: IlType, operand: IlExpr) : IlUnaryOp(type, operand)
 
 
-open class IlBinaryOp(
+sealed class IlBinaryOp(
     override val type: IlType,
     val lhs: IlExpr,
     val rhs: IlExpr,
