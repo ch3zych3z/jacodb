@@ -112,9 +112,9 @@ abstract class IlEhScope {
 
                 is IlFaultScopeDto -> IlFaultScope(
                     src.instList[dto.tb],
-                    src.instList[dto.te - 1],
+                    src.instList[dto.te],
                     src.instList[dto.hb],
-                    src.instList[dto.he - 1]
+                    src.instList[dto.he]
                 )
 
                 is IlFinallyScopeDto -> IlFinallyScope(
