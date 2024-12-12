@@ -23,6 +23,7 @@ import org.jacodb.api.net.IlMethodExtFeature.IlInstListResult
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlStmtDto
 import org.jacodb.api.net.ilinstances.*
+import org.jacodb.api.net.ilinstances.impl.IlEhScope
 import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
 
 
@@ -35,6 +36,9 @@ class IlMethodVirtual(
     override val parameters: List<IlParameter>,
     override val rawInstList: List<IlStmtDto>
 ) : IlMethod {
+    // TODO
+    override val scopes: List<IlEhScope>
+        get() = listOf()
 
     private class Builder(publication: IlPublication) {
         lateinit var declaringType: IlType

@@ -76,7 +76,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
     val locals: List<IlLocalVar> by lazy(PUBLICATION) { dto.locals.map { IlLocalVar(it, publication) } }
     val temps: List<IlTempVar> by lazy(PUBLICATION) { dto.temps.map { IlTempVar(it, publication) } }
     val errs: List<IlErrVar> by lazy(PUBLICATION) { dto.errs.map { IlErrVar(it, publication) } }
-//    val scopes: List<IlEhScope> by lazy(PUBLICATION) { dto.ehScopes.map { IlEhScope.deserialize(this, it) } }
+    override val scopes: List<IlEhScope> by lazy(PUBLICATION) { dto.ehScopes.map { IlEhScope.deserialize(this, it) } }
 
     override fun toString(): String {
         return "$returnType $name(${parameters.joinToString(", ")})"
@@ -89,41 +89,43 @@ abstract class IlEhScope {
     abstract val hb: IlStmt
     abstract val he: IlStmt
 
+    val throwers: MutableList<IlStmt> = mutableListOf()
+    fun bindThrower(thrower: IlStmt) = throwers.add(thrower)
+
     companion object {
         fun deserialize(src: IlMethodImpl, dto: IlEhScopeDto): IlEhScope {
-            TODO()
-//            return when (dto) {
-//                is IlFilterScopeDto -> IlFilterScope(
-//                    src.rawInstList[dto.tb],
-//                    src.rawInstList[dto.te - 1],
-//                    src.rawInstList[dto.hb],
-//                    src.rawInstList[dto.he - 1],
-//                    src.rawInstList[dto.fb]
-//                )
-//
-//                is IlCatchScopeDto -> IlCatchScope(
-//                    src.rawInstList[dto.tb],
-//                    src.rawInstList[dto.te - 1],
-//                    src.rawInstList[dto.hb],
-//                    src.rawInstList[dto.he - 1]
-//                )
-//
-//                is IlFaultScopeDto -> IlFaultScope(
-//                    src.rawInstList[dto.tb],
-//                    src.rawInstList[dto.te - 1],
-//                    src.rawInstList[dto.hb],
-//                    src.rawInstList[dto.he - 1]
-//                )
-//
-//                is IlFinallyScopeDto -> IlFinallyScope(
-//                    src.rawInstList[dto.tb],
-//                    src.rawInstList[dto.te - 1],
-//                    src.rawInstList[dto.hb],
-//                    src.rawInstList[dto.he - 1]
-//                )
-//
-//                else -> throw NotImplementedError()
-//            }
+            return when (dto) {
+                is IlFilterScopeDto -> IlFilterScope(
+                    src.instList[dto.tb],
+                    src.instList[dto.te],
+                    src.instList[dto.hb],
+                    src.instList[dto.he],
+                    src.instList[dto.fb]
+                )
+
+                is IlCatchScopeDto -> IlCatchScope(
+                    src.instList[dto.tb],
+                    src.instList[dto.te],
+                    src.instList[dto.hb],
+                    src.instList[dto.he]
+                )
+
+                is IlFaultScopeDto -> IlFaultScope(
+                    src.instList[dto.tb],
+                    src.instList[dto.te - 1],
+                    src.instList[dto.hb],
+                    src.instList[dto.he - 1]
+                )
+
+                is IlFinallyScopeDto -> IlFinallyScope(
+                    src.instList[dto.tb],
+                    src.instList[dto.te],
+                    src.instList[dto.hb],
+                    src.instList[dto.he]
+                )
+
+                else -> throw NotImplementedError()
+            }
         }
     }
 }

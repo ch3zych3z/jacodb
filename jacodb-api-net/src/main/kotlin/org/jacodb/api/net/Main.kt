@@ -27,10 +27,9 @@ import org.jacodb.api.net.features.IlMethodInstructionsFeature
 import org.jacodb.api.net.generated.models.PublicationRequest
 import org.jacodb.api.net.generated.models.ilModel
 import org.jacodb.api.net.generated.models.ilSigModel
-import org.jacodb.api.net.ilinstances.IlBranchStmt
+import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.RdServer
-import java.lang.Exception
 
 suspend fun <T> Protocol.onScheduler(block: () -> T): T {
     val deffered = CompletableDeferred<T>()
@@ -74,15 +73,23 @@ fun main(args: Array<String>) {
             type.methods.forEach { m ->
                 try {
                     m.instList.forEachIndexed { index, stmt ->
-                        assert(stmt.location.index == index && stmt.location.method == m)
+                        check(stmt.location.index == index && stmt.location.method == m)
+
                     }
                 } catch (e: Exception) {
                     println("err instList for ${m.name}")
                 }
                 try {
                     val graph = m.flowGraph()
+                    if (m.name.contains("LeaveFromTry"))
+                        println("found")
                 } catch (e: Exception) {
                     println("err flowGraph for ${m.name}")
+                }
+                try {
+                    val scopes = (m as IlMethodImpl).scopes
+                } catch (e: Exception) {
+                    println("err scopes for ${m.name}")
                 }
             }
         }

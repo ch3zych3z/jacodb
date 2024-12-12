@@ -21,7 +21,11 @@ import org.jacodb.api.net.ilinstances.IlBranchStmt
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.IlStmt
 import org.jacodb.api.net.ilinstances.IlTerminatingStmt
+import org.jacodb.api.net.ilinstances.IlThrowStmt
+import org.jacodb.api.net.ilinstances.impl.IlCatchScope
+import org.jacodb.api.net.ilinstances.impl.IlEhScope
 import java.util.Collections.singleton
+import kotlin.collections.mutableSetOf
 
 interface IlGraph : BytecodeGraph<IlStmt> {
     val method: IlMethod
@@ -32,8 +36,8 @@ class IlGraphImpl(override val method: IlMethod, override val instructions: List
     private val predecessorMap = hashMapOf<IlStmt, Set<IlStmt>>()
     private val successorMap = hashMapOf<IlStmt, Set<IlStmt>>()
 
-//    private val throwPredecessors = hashMapOf<IlCat, Set<IlStmt>>()
-//    private val throwSuccessors = hashMapOf<IlStmt, Set<JcCatchInst>>()
+    private val throwPredecessors = hashMapOf<IlStmt, MutableSet<IlStmt>>()
+    private val throwSuccessors = hashMapOf<IlStmt, MutableSet<IlStmt>>()
 
     init {
         instructions.forEachIndexed { index, inst ->
@@ -44,6 +48,16 @@ class IlGraphImpl(override val method: IlMethod, override val instructions: List
             }
             successorMap[inst] = successors
             successors.forEach { succ -> predecessorMap.add(succ, inst) }
+            if (inst is IlThrowStmt) {
+                val enclosing = method.scopes.filter { scope ->
+                    scope.tb.location.index <= inst.location.index && inst.location.index <= scope.te.location.index
+                }.minByOrNull { scope -> scope.te.location.index - scope.tb.location.index }
+                if (enclosing != null) {
+                    enclosing.bindThrower(inst)
+                    throwSuccessors.getOrPut(inst) { mutableSetOf() }.add(enclosing.hb)
+                    throwPredecessors.getOrPut(enclosing.hb) { mutableSetOf() }.add(inst)
+                }
+            }
         }
     }
 
@@ -53,13 +67,9 @@ class IlGraphImpl(override val method: IlMethod, override val instructions: List
     }
 
 
-    override fun throwers(node: IlStmt): Set<IlStmt> {
-        TODO("Not yet implemented")
-    }
+    override fun throwers(node: IlStmt): Set<IlStmt> = throwPredecessors[node] ?: emptySet()
 
-    override fun catchers(node: IlStmt): Set<IlStmt> {
-        TODO("Not yet implemented")
-    }
+    override fun catchers(node: IlStmt): Set<IlStmt> = throwSuccessors[node] ?: emptySet()
 
     override fun successors(node: IlStmt): Set<IlStmt> = successorMap[node] ?: emptySet()
 

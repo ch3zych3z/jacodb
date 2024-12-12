@@ -22,6 +22,7 @@ import org.jacodb.api.common.CommonType
 import org.jacodb.api.common.CommonTypeName
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlStmtDto
+import org.jacodb.api.net.ilinstances.impl.IlEhScope
 
 interface IlInstance
 
@@ -65,6 +66,7 @@ interface IlMethod : IlInstance, CommonMethod {
     val rawInstList: List<IlStmtDto>
     val instList: List<IlStmt>
     override val parameters: List<IlParameter>
+    val scopes: List<IlEhScope>
 }
 
 interface IlParameter : IlInstance, CommonMethodParameter {
