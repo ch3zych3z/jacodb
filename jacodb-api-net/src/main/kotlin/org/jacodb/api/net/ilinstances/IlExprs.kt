@@ -20,10 +20,13 @@ import org.jacodb.api.common.cfg.CommonArgument
 import org.jacodb.api.common.cfg.CommonArrayAccess
 import org.jacodb.api.common.cfg.CommonExpr
 import org.jacodb.api.common.cfg.CommonFieldRef
+import org.jacodb.api.common.cfg.CommonThis
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.generated.models.IlParameterDto
 import org.jacodb.api.net.generated.models.IlVarDto
+import org.jacodb.api.net.ilinstances.IlArgument
+import org.jacodb.api.net.ilinstances.IlArgumentImpl
 import org.jacodb.api.net.ilinstances.impl.IlArrayType
 
 sealed interface IlExpr : CommonExpr {
@@ -297,7 +300,20 @@ class IlStackAllocExpr(override val type: IlType, val size: IlExpr) : IlExpr {
     }
 }
 
-class IlArgument(override val type: IlType, val name: String, val index: Int) : IlLocal, CommonArgument {
+abstract class IlArgument(override val type: IlType, val name: String, val index: Int) : IlLocal, CommonArgument {
+    override fun toString(): String {
+        return name
+    }
+}
+
+class IlThis(type: IlType) : IlArgument(type, "this", 0), CommonThis {
+    override fun <T> accept(visitor: IlExprVisitor<T>): T {
+        return visitor.visitIlArg(this)
+    }
+
+}
+
+class IlArgumentImpl(type: IlType, name: String, index: Int) : IlArgument(type, name, index) {
     constructor(
         method: IlMethod,
         dto: IlParameterDto
@@ -305,10 +321,6 @@ class IlArgument(override val type: IlType, val name: String, val index: Int) : 
 
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlArg(this)
-    }
-
-    override fun toString(): String {
-        return name
     }
 }
 

@@ -58,7 +58,7 @@ fun main(args: Array<String>) {
             listOf(
                 IlPublicationCache(settings.publicationCacheSettings),
                 IlMethodInstructionsFeature(),
-                IlApproximations
+//                IlApproximations
             )
         )
 
@@ -81,13 +81,17 @@ fun main(args: Array<String>) {
                 }
                 try {
                     val graph = m.flowGraph()
-                    if (m.name.contains("LeaveFromTry"))
+                    if (m.name.contains("ThrowRethrow"))
                         println("found")
                 } catch (e: Exception) {
                     println("err flowGraph for ${m.name}")
                 }
                 try {
                     val scopes = (m as IlMethodImpl).scopes
+                    scopes.forEach { scope ->
+                        check(scope.tb.location.index <= scope.te.location.index)
+                        check(scope.hb.location.index <= scope.he.location.index)
+                    }
                 } catch (e: Exception) {
                     println("err scopes for ${m.name}")
                 }

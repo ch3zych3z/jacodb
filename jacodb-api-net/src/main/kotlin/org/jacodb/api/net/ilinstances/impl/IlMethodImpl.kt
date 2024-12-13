@@ -18,20 +18,12 @@ package org.jacodb.api.net.ilinstances.impl
 
 import org.jacodb.api.common.cfg.CommonInst
 import org.jacodb.api.common.cfg.ControlFlowGraph
-import org.jacodb.api.jvm.JcMethodExtFeature
-import org.jacodb.api.jvm.JcMethodExtFeature.JcFlowGraphResult
-import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.IlMethodExtFeature
 import org.jacodb.api.net.IlMethodExtFeature.IlFlowGraphResult
 import org.jacodb.api.net.IlMethodExtFeature.IlInstListResult
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.*
-import org.jacodb.api.net.ilinstances.IlArgument
-import org.jacodb.api.net.ilinstances.IlErrVar
-import org.jacodb.api.net.ilinstances.IlLocalVar
-import org.jacodb.api.net.ilinstances.IlStmt
-import org.jacodb.api.net.ilinstances.IlTempVar
-import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.*
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMethodDto) : IlMethod {
@@ -72,7 +64,15 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
     val resolved: Boolean = dto.resolved
 
     // TODO args next to parameters seems defn improper
-    val args: List<IlArgument> by lazy(PUBLICATION) { dto.parameters.map { IlArgument(this, it) }.toList() }
+    val args: List<IlArgument> by lazy(PUBLICATION) {
+        dto.parameters.mapIndexed { index, it ->
+            if (index == 0 && dto.isStatic) IlThis(declaringType) else
+                IlArgumentImpl(
+                    this,
+                    it
+                )
+        }.toList()
+    }
     val locals: List<IlLocalVar> by lazy(PUBLICATION) { dto.locals.map { IlLocalVar(it, publication) } }
     val temps: List<IlTempVar> by lazy(PUBLICATION) { dto.temps.map { IlTempVar(it, publication) } }
     val errs: List<IlErrVar> by lazy(PUBLICATION) { dto.errs.map { IlErrVar(it, publication) } }
