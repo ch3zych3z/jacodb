@@ -237,7 +237,11 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlArg(expr: IlArgument): IlExpr {
-        return IlArgument(expr.type, expr.name, expr.index)
+        return when (expr) {
+            is IlThis -> IlThis(expr.type.eliminateApproximation())
+            is IlArgumentImpl -> IlArgumentImpl(expr.type.eliminateApproximation(), expr.name, expr.index)
+            else -> throw IllegalArgumentException()
+        }
     }
 
     override fun visitIlNullConst(const: IlNull): IlExpr = const
