@@ -156,6 +156,8 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
                 expr.isChecked,
                 expr.isUnsigned
             )
+
+            else -> throw IllegalArgumentException("unexpecetd binop $expr")
         }
     }
 
@@ -164,7 +166,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     }
 
     override fun visitIlCall(expr: IlCall): IlExpr {
-        return IlCall(expr.method, expr.args.map { it -> it.accept(this) })
+        return IlCall(expr.method, expr.args.map { it -> it.accept(this) as IlValue })
     }
 
     override fun visitIlNewArrayExpr(expr: IlNewArrayExpr): IlExpr {

@@ -21,8 +21,6 @@ import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.generated.models.IlParameterDto
 import org.jacodb.api.net.generated.models.IlVarDto
-import org.jacodb.api.net.ilinstances.IlArgument
-import org.jacodb.api.net.ilinstances.IlArgumentImpl
 import org.jacodb.api.net.ilinstances.impl.IlArrayType
 
 sealed interface IlExpr : CommonExpr {
@@ -319,6 +317,7 @@ class IlArgumentImpl(type: IlType, name: String, index: Int) : IlArgument(type, 
         return visitor.visitIlArg(this)
     }
 }
+
 class IlLocalVar(override val type: IlType, val index: Int) : IlLocal {
     constructor(dto: IlVarDto, publication: IlPublication) :
             this(publication.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
