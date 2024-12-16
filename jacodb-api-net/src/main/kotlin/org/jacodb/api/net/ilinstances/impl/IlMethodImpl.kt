@@ -66,7 +66,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
     // TODO args next to parameters seems defn improper
     val args: List<IlArgument> by lazy(PUBLICATION) {
         dto.parameters.mapIndexed { index, it ->
-            if (index == 0 && dto.isStatic) IlThis(declaringType) else
+            if (index == 0 && !dto.isStatic) IlThis(declaringType) else
                 IlArgumentImpl(
                     this,
                     it
