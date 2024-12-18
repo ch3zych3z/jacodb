@@ -58,10 +58,9 @@ fun main(args: Array<String>) {
             listOf(
                 IlPublicationCache(settings.publicationCacheSettings),
                 IlMethodInstructionsFeature(),
-//                IlApproximations
+                IlApproximations
             )
         )
-
         val allTypes = publication.allTypes
         println("types fetched")
         allTypes.forEach { typeDto ->

@@ -23,7 +23,6 @@ import org.jacodb.api.net.generated.models.getListOf
 import org.jacodb.api.net.generated.models.getTypeId
 import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.storage.txn
-import org.jacodb.impl.features.InMemoryHierarchy
 import java.util.concurrent.ConcurrentHashMap
 
 typealias InMemoryIlHierarchyCache = ConcurrentHashMap<Long, ConcurrentHashMap<Long, MutableSet<Long>>>

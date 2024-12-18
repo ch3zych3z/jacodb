@@ -18,6 +18,7 @@ package org.jacodb.api.net.storage
 
 import org.jacodb.api.net.ILDBContext
 import org.jacodb.api.net.IlDatabasePersistence
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.impl.storage.ers.BuiltInBindingProvider
 import org.jacodb.impl.storage.ers.decorators.unwrap
 import org.jacodb.impl.storage.ers.kv.KVErsTransaction
@@ -37,12 +38,15 @@ interface IlDbInstanceInterner<Value, Persistence, Context> {
 
 private const val defaultMapName = "org.jacodb.impl.Values"
 
-class IlDbTypeInternerImpl<Value>(private val kvValueMapName: String = defaultMapName) :
-    IlDbInstanceInterner<Value, IlDatabasePersistence, ILDBContext> {
+class IlDbTypeIdInternerImpl(
+    private val kvValueMapName: String = defaultMapName,
+    private val symbolInterner: IlDbSymbolInterner
+) :
+    IlDbInstanceInterner<TypeId, IlDatabasePersistence, ILDBContext> {
     private val idGen = AtomicLong()
-    private val valueCache = ConcurrentHashMap<Value, Long>()
-    private val idCache = ConcurrentHashMap<Long, Value>()
-    private val newElements = ConcurrentSkipListMap<Value, Long>()
+    private val valueCache = ConcurrentHashMap<TypeId, Long>()
+    private val idCache = ConcurrentHashMap<Long, TypeId>()
+    private val newElements = ConcurrentSkipListMap<TypeId, Long>()
     override fun setup(persistence: IlDatabasePersistence) {
         // TODO
     }
@@ -52,12 +56,21 @@ class IlDbTypeInternerImpl<Value>(private val kvValueMapName: String = defaultMa
         newElements.clear()
     }
 
-    override fun findValue(id: Long): Value = idCache[id]!!
+    override fun findValue(id: Long): TypeId = idCache[id]!!
 
-    override fun findValueOrNull(id: Long): Value? = idCache[id]
+    override fun findValueOrNull(id: Long): TypeId? = idCache[id]
 
-    override fun findIdOrNew(value: Value): Long = valueCache.computeIfAbsent(value) { t ->
+    private data class TypeIdCompressed(val asmName: Long, val name: Long, val typeArgs: List<TypeIdCompressed>)
+
+    private fun TypeId.compress(): TypeIdCompressed = TypeIdCompressed(
+        symbolInterner.findSymbolIdOrNew(asmName),
+        symbolInterner.findSymbolIdOrNew(typeName),
+        listOf()
+    )
+
+    override fun findIdOrNew(value: TypeId): Long = valueCache.computeIfAbsent(value) { t ->
         idGen.incrementAndGet().also {
+            // TODO intern strings
             newElements[value] = it
             idCache[it] = value
         }
