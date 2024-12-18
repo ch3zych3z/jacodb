@@ -42,9 +42,10 @@ class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
             this,
             features,
             settings
-        ).also { impl -> IlApproximations.onSignal(IlSignal.BeforeIndexing(this)) }
+        ).also { impl -> featuresRegistry.forEach { it.onSignal(IlSignal.BeforeIndexing(this)) } }
     }
 
+    // TODO 
     val featuresRegistry = listOf(IlApproximations, InMemoryIlHierarchy)
     fun List<IlFeature<*, *>>.broadcast(signal: IlSignal) {
         featuresRegistry.forEach { f -> f.onSignal(signal) }
