@@ -19,11 +19,13 @@ package org.jacodb.api.net.storage
 import org.jacodb.api.net.generated.models.*
 
 
-enum class ConstKind { NULL, BOOL, STRING, CHAR,
+enum class ConstKind {
+    NULL, BOOL, STRING, CHAR,
     INT8, INT16, INT32, INT64, UINT8, UINT16, UINT32, UINT64, FLOAT, DOUBLE,
-    TYPE_REF, METHOD_REF, ENUM }
+    TYPE_REF, METHOD_REF, ENUM
+}
 
-fun IlConstDto.serialize() : List<Pair<String, ConstKind>> {
+fun IlConstDto.serialize(): List<Pair<String, ConstKind>> {
     val flattenValues = mutableListOf<Pair<String, ConstKind>>()
     when (this) {
         is IlArrayConstDto -> this.values
@@ -31,7 +33,7 @@ fun IlConstDto.serialize() : List<Pair<String, ConstKind>> {
     TODO()
 }
 
-fun IlConstDto.serializePrimitive() : Pair<String, ConstKind> =
+fun IlConstDto.serializePrimitive(): Pair<String, ConstKind> =
     when (this) {
         is IlNullDto -> "null" to ConstKind.NULL
         is IlBoolConstDto -> value.toString() to ConstKind.BOOL
