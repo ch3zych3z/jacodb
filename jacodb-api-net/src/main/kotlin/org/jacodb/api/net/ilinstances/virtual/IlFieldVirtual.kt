@@ -30,6 +30,8 @@ class IlFieldVirtual(
     override val isStatic: Boolean,
     override val attributes: List<IlAttribute>
 ) : IlField {
+    override val isConstructed: Boolean = true
+
     private class Builder(publication: IlPublication) {
         var name: String = "_virtual_"
             private set

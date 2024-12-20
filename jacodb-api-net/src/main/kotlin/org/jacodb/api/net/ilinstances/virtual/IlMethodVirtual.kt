@@ -37,6 +37,7 @@ class IlMethodVirtual(
     override val rawInstList: List<IlStmtDto>
 ) : IlMethod {
     // TODO
+    override val isConstructed: Boolean = true
     override val scopes: List<IlEhScope>
         get() = listOf()
 

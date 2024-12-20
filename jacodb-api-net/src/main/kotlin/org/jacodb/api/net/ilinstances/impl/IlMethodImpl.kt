@@ -34,6 +34,8 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
         return publication.featuresChain.callUntilResolved<IlMethodExtFeature, IlFlowGraphResult> { it.flowGraph(this) }!!.flowGraph
     }
 
+    override val isConstructed: Boolean = dto.isConstructed
+
     override val isStatic: Boolean = dto.isStatic
     override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType)!! } }
 

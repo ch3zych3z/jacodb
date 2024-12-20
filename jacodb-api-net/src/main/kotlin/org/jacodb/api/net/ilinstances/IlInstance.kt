@@ -26,16 +26,29 @@ import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.impl.IlEhScope
 import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 
-interface IlInstance
+interface IlInstance {
+    val isConstructed: Boolean
+}
 
 interface IlType : IlInstance, CommonTypeName {
     val publication: IlPublication
     val declaringType: IlType?
     val baseType: IlType?
     val interfaces: List<IlType>
-    val genericArgs: List<IlType>
-    val isGenericParameter: Boolean
+
+    override val isConstructed: Boolean
+
+    val isGenericType: Boolean
     val isGenericDefinition: Boolean
+    val isGenericParameter: Boolean
+    val genericArgs: List<IlType>
+
+    val isCovariant: Boolean
+    val isContravariant: Boolean
+    val hasRefTypeConstraint: Boolean
+    val hasNotNullValueTypeConstraint: Boolean
+    val hasDefaultCtorConstraint: Boolean
+
     override val typeName: String
     val moduleToken: Int
     val typeToken: Int

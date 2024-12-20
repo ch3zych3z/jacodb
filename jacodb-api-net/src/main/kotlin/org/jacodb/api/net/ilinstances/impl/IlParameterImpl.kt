@@ -27,6 +27,7 @@ import kotlin.LazyThreadSafetyMode.PUBLICATION
 class IlParameterImpl(private val dto: IlParameterDto, val enclosingMethod: IlMethodImpl) : IlParameter {
     private val publication: IlPublication
         get() = enclosingMethod.declaringType.publication
+    override val isConstructed: Boolean = true
     override val type: IlType by lazy(PUBLICATION) { publication.findIlTypeOrNull(dto.type)!! }
     override val attributes: List<IlAttributeImpl> by lazy(PUBLICATION) {
         dto.attrs.map {

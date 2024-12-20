@@ -24,6 +24,7 @@ import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.ilinstances.deserializeConst
 
 class IlAttributeImpl(private val dto: IlAttrDto, private val publication: IlPublication): IlAttribute {
+    override val isConstructed: Boolean = true
     override val type: IlType by lazy(LazyThreadSafetyMode.PUBLICATION) { publication.findIlTypeOrNull(dto.attrType)!! }
     val constructorArgs: List<IlConstant> by lazy { dto.ctorArgs.map { it.deserializeConst(publication) }.toList() }
     val namedArgs: Map<String, IlConstant> by lazy(LazyThreadSafetyMode.PUBLICATION)

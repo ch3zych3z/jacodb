@@ -44,12 +44,23 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
         }
     }
 
+    override val isConstructed: Boolean = dto.isConstructed
     override val declaringType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it) } }
-    override val isGenericParameter: Boolean
-        get() = dto.isGenericParam
+
+    override val isGenericType: Boolean = dto.isGenericType
     override val isGenericDefinition: Boolean
         get() = dto.isGenericDefinition
+    override val isGenericParameter: Boolean
+        get() = dto.isGenericParam
+
     override val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it)!! } }
+
+    override val hasDefaultCtorConstraint: Boolean = dto.hasDefaultCtorConstraint
+    override val hasNotNullValueTypeConstraint: Boolean = dto.hasNotNullValueTypeConstraint
+    override val hasRefTypeConstraint: Boolean = dto.hasRefTypeConstraint
+    override val isCovariant: Boolean = dto.isCovariant
+    override val isContravariant: Boolean = dto.isContravariant
+
     override val baseType: IlType? by lazy(PUBLICATION) {
         dto.baseType?.let { publication.findIlTypeOrNull(it) }
     }
@@ -92,7 +103,9 @@ class IlEnumType(private val dto: IlEnumTypeDto, publication: IlPublication) : I
 class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
 class IlStructType(private val dto: IlStructTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
 
-open class IlReferenceType(private val dto: IlReferenceTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
+open class IlReferenceType(private val dto: IlReferenceTypeDto, publication: IlPublication) :
+    IlTypeImpl(dto, publication)
+
 class IlArrayType(private val dto: IlArrayTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication) {
     val elementType: IlType by lazy { publication.findIlTypeOrNull(dto.elementType)!! }
 }
