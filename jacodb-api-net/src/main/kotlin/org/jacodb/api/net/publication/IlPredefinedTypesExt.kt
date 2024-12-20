@@ -17,13 +17,35 @@
 package org.jacodb.api.net.publication
 
 import org.jacodb.api.net.IlPublication
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.publication.IlPredefinedAsmsExt.mscorelib
+
+
+object IlPredefinedAsmsExt {
+    fun IlPublication.mscorelib(): String? {
+        return referencedAsmLocations.keys.single {
+            it.contains("System.Private.CoreLib")
+        }.let {
+            findAsmNameByLocationOrNull(it)
+        }
+    }
+}
 
 object IlPredefinedTypesExt {
-    fun IlPublication.void(): IlType = findIlTypeOrNull("System.Void")!!
-    fun IlPublication.int32(): IlType = findIlTypeOrNull("System.Int32")!!
-    fun IlPublication.uint32(): IlType = findIlTypeOrNull("System.UInt32")!!
-    fun IlPublication.nint(): IlType = findIlTypeOrNull("System.IntPtr")!!
-    fun IlPublication.nuint(): IlType = findIlTypeOrNull("System.UIntPtr")!!
+    fun IlPublication.void(): IlType =
+        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.Void", typeArgs = emptyList()))!!
+
+    fun IlPublication.int32(): IlType =
+        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.Int32", typeArgs = emptyList()))!!
+
+    fun IlPublication.uint32(): IlType =
+        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.UInt32", typeArgs = emptyList()))!!
+
+    fun IlPublication.nint(): IlType =
+        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.IntPtr", typeArgs = emptyList()))!!
+
+    fun IlPublication.nuint(): IlType =
+        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.UIntPtr", typeArgs = emptyList()))!!
 
 }

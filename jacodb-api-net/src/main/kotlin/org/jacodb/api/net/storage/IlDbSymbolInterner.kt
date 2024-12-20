@@ -18,6 +18,7 @@ package org.jacodb.api.net.storage
 
 import org.jacodb.api.net.ILDBContext
 import org.jacodb.api.net.IlDatabasePersistence
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.storage.kv.forEach
 import org.jacodb.impl.storage.ers.BuiltInBindingProvider
 import org.jacodb.impl.storage.ers.decorators.unwrap
@@ -125,6 +126,5 @@ class IlDbSymbolsInternerImpl : IlDbSymbolInterner, Closeable {
 }
 
 
-
-fun String.asSymbolId(interner: IlDbSymbolInterner) : Long = interner.findSymbolIdOrNew(this)
-fun Long.asSymbol(interner: IlDbSymbolInterner) : String = interner.findSymbol(this)
+fun String.asSymbolId(interner: IlDbSymbolInterner): Long = interner.findSymbolIdOrNew(this)
+fun Long.asSymbol(interner: IlDbSymbolInterner): String = interner.findSymbol(this)

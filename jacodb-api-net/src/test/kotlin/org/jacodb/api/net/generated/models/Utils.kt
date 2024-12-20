@@ -25,7 +25,11 @@ fun randomPrimitive(namesLength: Int) = IlPrimitiveTypeDto(
     asmName = getRandomString(namesLength),
     namespaceName = getRandomString(namesLength),
     name = getRandomString(namesLength),
-    declType = TypeId(asmName = getRandomString(namesLength), typeName = getRandomString(namesLength)),
+    declType = TypeId(
+        asmName = getRandomString(namesLength),
+        typeName = getRandomString(namesLength),
+        typeArgs = emptyList()
+    ),
     genericArgs = emptyList(),
     isGenericParam = false,
     isValueType = true,
@@ -33,4 +37,10 @@ fun randomPrimitive(namesLength: Int) = IlPrimitiveTypeDto(
     attrs = emptyList(),
     fields = emptyList(),
     methods = emptyList(),
+    moduleToken = 0,
+    typeToken = 1,
+    fullname = getRandomString(namesLength),
+    baseType = null,
+    interfaces = emptyList(),
+    isGenericDefinition = false
 )

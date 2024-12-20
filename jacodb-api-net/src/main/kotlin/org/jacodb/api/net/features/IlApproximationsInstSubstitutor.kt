@@ -20,7 +20,6 @@ import org.jacodb.api.net.core.IlExprVisitor
 import org.jacodb.api.net.core.IlStmtVisitor
 import org.jacodb.api.net.ilinstances.*
 import org.jacodb.api.net.ilinstances.impl.IlArrayType
-import kotlin.math.exp
 
 object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<IlStmt> {
     override fun visitIlUnaryOp(expr: IlUnaryOp): IlExpr {
@@ -264,7 +263,7 @@ object IlApproximationsInstSubstitutor : IlExprVisitor<IlExpr>, IlStmtVisitor<Il
     override fun visitIlEnumConst(const: IlEnumConstant): IlExpr =
         IlEnumConstant(
             const.type.eliminateApproximation(),
-            const.enumType.eliminateApproximation(),
+            const.underlyingType.eliminateApproximation(),
             const.underlyingConst.accept(this) as IlConstant
         )
 

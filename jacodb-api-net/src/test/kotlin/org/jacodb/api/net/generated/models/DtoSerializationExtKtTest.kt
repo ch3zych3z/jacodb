@@ -29,7 +29,7 @@ class DtoSerializationExtKtTest {
     @Test
     fun validateSerializationOfIlPointerTypeDto() {
         val pointerType = IlPointerTypeDto(
-            targetType = TypeId("targetAsm", "targetType"),
+            targetType = TypeId(asmName = "targetAsm", typeName = "targetType", typeArgs = emptyList()),
             asmName = "asmName",
             namespaceName = "namespaceName",
             name = "pointerTypeName",
@@ -40,7 +40,13 @@ class DtoSerializationExtKtTest {
             isManaged = false,
             attrs = listOf(),
             fields = listOf(),
-            methods = listOf()
+            methods = listOf(),
+            moduleToken = 0,
+            typeToken = 1,
+            fullname = "lolkek",
+            baseType = null,
+            interfaces = emptyList(),
+            isGenericDefinition = false
         )
         val bytes = pointerType.getBytes()
         val deserializedType = bytes.getIlTypeDto()
@@ -53,14 +59,22 @@ class DtoSerializationExtKtTest {
     fun validateSerializationOfIlStructTypeDto() {
         // Create mock fields
         val field1 = IlFieldDto(
-            fieldType = TypeId(asmName = "System. String", typeName = "String"), // Proper TypeId instantiation
+            fieldType = TypeId(
+                asmName = "System. String",
+                typeName = "String",
+                typeArgs = emptyList()
+            ), // Proper TypeId instantiation
             isStatic = false,
             name = "field1",
             attrs = listOf() // Add any attributes if needed
         )
 
         val field2 = IlFieldDto(
-            fieldType = TypeId(asmName = "System. Int32", typeName = "Int"), // Proper TypeId instantiation
+            fieldType = TypeId(
+                asmName = "System. Int32",
+                typeName = "Int",
+                typeArgs = emptyList()
+            ), // Proper TypeId instantiation
             isStatic = true,
             name = "field2",
             attrs = listOf()
@@ -68,13 +82,17 @@ class DtoSerializationExtKtTest {
 
         // Create mock methods
         val method1 = IlMethodDto(
-            returnType = TypeId(asmName = "System. Void", typeName = "Void"), // Proper TypeId instantiation
+            returnType = TypeId(
+                asmName = "System. Void",
+                typeName = "Void",
+                typeArgs = emptyList()
+            ), // Proper TypeId instantiation
             attrs = listOf(),
             name = "method1",
             parameters = listOf(
                 IlParameterDto(
                     name = "param1",
-                    type = TypeId(asmName = "System. String", typeName = "String"),
+                    type = TypeId(asmName = "System. String", typeName = "String", typeArgs = emptyList()),
                     index = 0,
                     defaultValue = null,
                     attrs = listOf()
@@ -85,41 +103,46 @@ class DtoSerializationExtKtTest {
             temps = listOf(),
             errs = listOf(),
             ehScopes = listOf(),
-            body = listOf(
+            rawInstList = listOf(
                 IlAssignStmtDto(
-                    lhs = IlVarAccessDto(
+                    lhv = IlVarAccessDto(
                         kind = IlVarKind.local,
-                        type = TypeId("", ""),
+                        type = TypeId(emptyList(), "", ""),
                         index = 1
                     ),
-                    rhs = IlArrayConstDto(
+                    rhv = IlArrayConstDto(
                         values = listOf('1', '2', '3').map {
                             IlCharConstDto(
                                 it.toChar(),
-                                type = TypeId("char", "char")
+                                type = TypeId(emptyList(), "char", "char")
                             )
                         },
-                        type = TypeId("charArr", "charArr")
+                        type = TypeId(emptyList(), "charArr", "charArr")
                     )
                 )
-            ) // Add statements if needed
+            ),
+            isStatic = false,
         )
 
         val method2 = IlMethodDto(
-            returnType = TypeId(asmName = "System. Int32", typeName = "Int"), // Proper TypeId instantiation
+            returnType = TypeId(
+                asmName = "System. Int32",
+                typeName = "Int",
+                typeArgs = emptyList()
+            ), // Proper TypeId instantiation
             attrs = listOf(),
             name = "method2",
             parameters = listOf(
                 IlParameterDto(
                     name = "param1",
-                    type = TypeId(asmName = "System. Int32", typeName = "Int"),
+                    type = TypeId(asmName = "System. Int32", typeName = "Int", typeArgs = emptyList()),
                     index = 0,
                     defaultValue = null,
                     attrs = listOf()
                 ), // Proper TypeId instantiation
                 IlParameterDto(
                     name = "param2",
-                    type = TypeId(asmName = "System. Int32", typeName = "Int"),
+                    type = TypeId(asmName = "System. Int32", typeName = "Int", typeArgs = emptyList()),
                     index = 1,
                     defaultValue = null,
                     attrs = listOf()
@@ -130,7 +153,8 @@ class DtoSerializationExtKtTest {
             temps = listOf(),
             errs = listOf(),
             ehScopes = listOf(),
-            body = listOf()
+            isStatic = false,
+            rawInstList = listOf()
         )
 
         // Create the struct type with the mock fields and methods
@@ -145,7 +169,13 @@ class DtoSerializationExtKtTest {
             isManaged = false,
             attrs = listOf(),
             fields = listOf(field1, field2), // Added fields
-            methods = listOf(method1, method2) // Added methods
+            methods = listOf(method1, method2), // Added methods
+            moduleToken = 0,
+            typeToken = 1,
+            fullname = "lolkek",
+            baseType = null,
+            interfaces = emptyList(),
+            isGenericDefinition = false
         )
 
         // Serialize and deserialize the struct type
@@ -171,7 +201,7 @@ class DtoSerializationExtKtTest {
     @Test
     fun validateSerializationOfIlArrayTypeDto() {
         val arrayType = IlArrayTypeDto(
-            elementType = TypeId("elementAsm", "elementType"),
+            elementType = TypeId(asmName = "elementAsm", typeName = "elementType", typeArgs = emptyList()),
             asmName = "asmName",
             namespaceName = "namespaceName",
             name = "arrayTypeName",
@@ -182,7 +212,13 @@ class DtoSerializationExtKtTest {
             isManaged = false,
             attrs = listOf(),
             fields = listOf(),
-            methods = listOf()
+            methods = listOf(),
+            moduleToken = 0,
+            typeToken = 1,
+            fullname = "lolkek",
+            baseType = null,
+            interfaces = emptyList(),
+            isGenericDefinition = false
         )
         val bytes = arrayType.getBytes()
         val deserializedType = bytes.getIlTypeDto()

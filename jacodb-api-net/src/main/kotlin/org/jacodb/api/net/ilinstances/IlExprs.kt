@@ -311,7 +311,7 @@ class IlArgumentImpl(type: IlType, name: String, index: Int) : IlArgument(type, 
     constructor(
         method: IlMethod,
         dto: IlParameterDto
-    ) : this(method.declaringType.publication.findIlTypeOrNull(dto.type.typeName)!!, dto.name, dto.index)
+    ) : this(method.declaringType.publication.findIlTypeOrNull(dto.type)!!, dto.name, dto.index)
 
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlArg(this)
@@ -320,7 +320,7 @@ class IlArgumentImpl(type: IlType, name: String, index: Int) : IlArgument(type, 
 
 class IlLocalVar(override val type: IlType, val index: Int) : IlLocal {
     constructor(dto: IlVarDto, publication: IlPublication) :
-            this(publication.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
+            this(publication.findIlTypeOrNull(dto.type)!!, dto.index)
 
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlLocalVar(this)
@@ -333,7 +333,7 @@ class IlLocalVar(override val type: IlType, val index: Int) : IlLocal {
 
 class IlTempVar(override val type: IlType, val index: Int) : IlLocal {
     constructor(dto: IlVarDto, publication: IlPublication) :
-            this(publication.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
+            this(publication.findIlTypeOrNull(dto.type)!!, dto.index)
 
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlTempVar(this)
@@ -346,7 +346,7 @@ class IlTempVar(override val type: IlType, val index: Int) : IlLocal {
 
 class IlErrVar(override val type: IlType, val index: Int) : IlLocal {
     constructor(dto: IlVarDto, publication: IlPublication) :
-            this(publication.findIlTypeOrNull(dto.type.typeName)!!, dto.index)
+            this(publication.findIlTypeOrNull(dto.type)!!, dto.index)
 
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitErrVar(this)

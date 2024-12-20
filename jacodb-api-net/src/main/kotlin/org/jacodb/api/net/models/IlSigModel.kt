@@ -24,9 +24,13 @@ object IlSigModel : Ext(IlModel) {
     private val publicationRequest = structdef {
         field("rootAsms", immutableList(PredefinedType.string))
     }
+    private val ilAsmDto = structdef {
+        field("name", PredefinedType.string)
+        field("location", PredefinedType.string)
+    }
     private val publicationResponse = structdef {
-        field("reachableAsms", immutableList(PredefinedType.string))
-        field("referencedAsms", immutableList(immutableList(PredefinedType.string)))
+        field("reachableAsms", immutableList(ilAsmDto))
+        field("referencedAsms", immutableList(immutableList(ilAsmDto)))
         field("reachableTypes", immutableList(IlModel.IlTypeDto))
     }
 

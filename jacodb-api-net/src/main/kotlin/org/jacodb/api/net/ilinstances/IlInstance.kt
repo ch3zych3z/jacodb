@@ -22,7 +22,9 @@ import org.jacodb.api.common.CommonType
 import org.jacodb.api.common.CommonTypeName
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlStmtDto
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.impl.IlEhScope
+import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 
 interface IlInstance
 
@@ -40,6 +42,8 @@ interface IlType : IlInstance, CommonTypeName {
     val fullname: String
     val asmName: String
     val name: String
+    val id: TypeId
+        get() = TypeId(asmName = asmName, typeName = name, typeArgs = genericArgs.map { (it as IlTypeImpl).id })
 
     val attributes: List<IlAttribute>
 

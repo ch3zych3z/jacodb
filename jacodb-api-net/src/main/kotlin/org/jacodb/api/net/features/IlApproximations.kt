@@ -19,6 +19,7 @@ package org.jacodb.api.net.features
 import org.jacodb.api.net.IlInstExtFeature
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.IlTypeExtFeature
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.generated.models.unsafeString
 import org.jacodb.api.net.ilinstances.IlField
 import org.jacodb.api.net.ilinstances.IlMethod
@@ -26,32 +27,32 @@ import org.jacodb.api.net.ilinstances.IlStmt
 import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.ilinstances.virtual.IlFieldVirtual.Companion.toVirtualOf
 import org.jacodb.api.net.ilinstances.virtual.IlMethodVirtual.Companion.toVirtualOf
-import org.jacodb.api.net.storage.asSymbol
 import org.jacodb.api.net.storage.asSymbolId
+import org.jacodb.api.net.storage.asTypeId
 import org.jacodb.api.net.storage.txn
 import org.jacodb.api.storage.ers.compressed
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
 object IlApproximations : IlFeature<Any?, Any?>, IlTypeExtFeature, IlInstExtFeature {
-    private val originalToApproximation: ConcurrentMap<OriginalTypeName, ApproximatedTypeName> = ConcurrentHashMap()
-    private val approximationToOriginal: ConcurrentMap<ApproximatedTypeName, OriginalTypeName> = ConcurrentHashMap()
+    private val originalToApproximation: ConcurrentMap<OriginalTypeId, ApproximatedTypeId> = ConcurrentHashMap()
+    private val approximationToOriginal: ConcurrentMap<ApproximatedTypeId, OriginalTypeId> = ConcurrentHashMap()
 
-    fun findApproximationByOriginalOrNull(original: String): ApproximatedTypeName? =
-        originalToApproximation[original.toOriginalTypeName()]
+    fun findApproximationByOriginalOrNull(original: TypeId): ApproximatedTypeId? =
+        originalToApproximation[original.toOriginalTypeId()]
 
-    fun findOriginalByApproximationOrNull(approximation: String): OriginalTypeName? =
-        approximationToOriginal[approximation.toApproximatedTypeName()]
+    fun findOriginalByApproximationOrNull(approximation: TypeId): OriginalTypeId? =
+        approximationToOriginal[approximation.toApproximatedTypeId()]
 
     override fun fieldsOf(type: IlType): List<IlField>? {
-        val approximationTypeName = findApproximationByOriginalOrNull(type.fullname)?.name ?: return null
-        val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
+        val approximationTypeId = findApproximationByOriginalOrNull(type.id)?.typeId ?: return null
+        val approximationType = type.publication.findIlTypeOrNull(approximationTypeId)
         return approximationType?.fields?.map { it.toVirtualOf(type) }
     }
 
     override fun methodsOf(type: IlType): List<IlMethod>? {
-        val approximationTypeName = findApproximationByOriginalOrNull(type.name)?.name ?: return null
-        val approximationType = type.publication.findIlTypeOrNull(approximationTypeName)
+        val approximationTypeId = findApproximationByOriginalOrNull(type.id)?.typeId ?: return null
+        val approximationType = type.publication.findIlTypeOrNull(approximationTypeId)
         return approximationType?.methods?.map { it.toVirtualOf(type) }
     }
 
@@ -66,21 +67,16 @@ object IlApproximations : IlFeature<Any?, Any?>, IlTypeExtFeature, IlInstExtFeat
         if (signal !is IlSignal.BeforeIndexing) return
         signal.db.persistence.read<Unit> { ctx ->
             val persistence = signal.db.persistence
-            val approxSymbolId = persistence.findIdBySymbol(APPROXIMATION_ATTRIBUTE)
+            val approxTypeId = persistence.findIdBySymbol(APPROXIMATION_ATTRIBUTE)
             val txn = ctx.txn
-            // find approx with name = ....Approximation
-            // get approximation type name
-            // filter targeting types
-            // get namedArgs
-            // find first named arg target class for approximation value
-            txn.find(type = "Attribute", propertyName = "fullname", value = approxSymbolId.compressed).map { attr ->
-                val approxTypeId = attr.getLink("target").get<Long>("fullname")
+            txn.find(type = "Attribute", propertyName = "typeId", value = approxTypeId.compressed).map { attr ->
+                val approxTypeId = attr.getLink("target").get<Long>("typeId")
                 val originalTypeId =
-                    attr.getRawBlob(ORIGINAL_TYPE_PROPERTY)!!.unsafeString().asSymbolId(persistence.interner)
+                    attr.getRawBlob(ORIGINAL_TYPE_PROPERTY)!!.unsafeString().asSymbolId(persistence.symbolInterner)
                 originalTypeId to approxTypeId
             }.forEach { (originalId, approxId) ->
-                val originalTn = originalId.asSymbol(persistence.interner).toOriginalTypeName()
-                val approxTn = approxId!!.asSymbol(persistence.interner).toApproximatedTypeName()
+                val originalTn = originalId.asTypeId(persistence.typeIdInterner).toOriginalTypeId()
+                val approxTn = approxId!!.asTypeId(persistence.typeIdInterner).toApproximatedTypeId()
                 originalToApproximation[originalTn] = approxTn
                 approximationToOriginal[approxTn] = originalTn
             }
@@ -101,20 +97,20 @@ const val ORIGINAL_TYPE_PROPERTY = "OriginalType"
 
 
 @JvmInline
-value class OriginalTypeName(val name: String) {
-    override fun toString(): String = name
+value class OriginalTypeId(val typeId: TypeId) {
+    override fun toString(): String = typeId.typeName
 }
 
-fun String.toOriginalTypeName() = OriginalTypeName(this)
+fun TypeId.toOriginalTypeId() = OriginalTypeId(this)
 
 @JvmInline
-value class ApproximatedTypeName(val name: String) {
-    override fun toString(): String = name
+value class ApproximatedTypeId(val typeId: TypeId) {
+    override fun toString(): String = typeId.typeName
 }
 
-fun String.toApproximatedTypeName() = ApproximatedTypeName(this)
+fun TypeId.toApproximatedTypeId() = ApproximatedTypeId(this)
 
 fun IlType.eliminateApproximation(): IlType {
-    val originalName = IlApproximations.findOriginalByApproximationOrNull(this.name)?.name ?: return this
-    return publication.findIlTypeOrNull(originalName)!!
+    val original = IlApproximations.findOriginalByApproximationOrNull(this.id)?.typeId ?: return this
+    return publication.findIlTypeOrNull(original)!!
 }

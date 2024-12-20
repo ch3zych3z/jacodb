@@ -32,17 +32,15 @@ import org.jacodb.api.storage.ers.EntityRelationshipStorageSPI
 
 class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
     override var persistence: IlDatabasePersistence
-    override fun publication(): IlPublication {
-        return IlPublicationImpl(this, emptyList(), settings)
-    }
 
-    override fun publication(features: List<IlPublicationFeature>): IlPublication {
+    override fun publication(targetAsms: List<String>, features: List<IlPublicationFeature>): IlPublication {
         featuresRegistry.broadcast(IlSignal.BeforeIndexing(this))
         return IlPublicationImpl(
             this,
             features,
-            settings
-        ).also { impl -> featuresRegistry.forEach { it.onSignal(IlSignal.BeforeIndexing(this)) } }
+            settings,
+            targetAsms
+        )
     }
 
     // TODO 

@@ -44,17 +44,17 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
         }
     }
 
-    override val declaringType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it.typeName) } }
+    override val declaringType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it) } }
     override val isGenericParameter: Boolean
         get() = dto.isGenericParam
     override val isGenericDefinition: Boolean
         get() = dto.isGenericDefinition
-    override val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it.typeName)!! } }
+    override val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it)!! } }
     override val baseType: IlType? by lazy(PUBLICATION) {
-        dto.baseType?.let { publication.findIlTypeOrNull(it.typeName) }
+        dto.baseType?.let { publication.findIlTypeOrNull(it) }
     }
     override val interfaces: List<IlType> by lazy(PUBLICATION) {
-        dto.interfaces.mapNotNull { publication.findIlTypeOrNull(it.typeName) }
+        dto.interfaces.mapNotNull { publication.findIlTypeOrNull(it) }
     }
     override val moduleToken: Int = dto.moduleToken
     override val typeToken: Int = dto.typeToken
@@ -63,9 +63,6 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
     override val name: String = dto.name
     override val fullname = dto.fullname
     override val typeName = fullname
-    val id: TypeId
-        get() = TypeId(asmName, "$namespace.$name")
-
     override val attributes: List<IlAttributeImpl> by lazy(PUBLICATION) {
         dto.attrs.map {
             IlAttributeImpl(
@@ -89,18 +86,18 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
     }
 }
 
-class IlPointerType(private val dto: IlPointerTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
-open class IlValueType(private val dto: IlValueTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
-class IlEnumType(private val dto: IlEnumTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
-class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
-class IlStructType(private val dto: IlStructTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
+class IlPointerType(private val dto: IlPointerTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
+open class IlValueType(private val dto: IlValueTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
+class IlEnumType(private val dto: IlEnumTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
+class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
+class IlStructType(private val dto: IlStructTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
 
-open class IlReferenceType(private val dto: IlReferenceTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
-class IlArrayType(private val dto: IlArrayTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader) {
-    val elementType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.elementType.typeName)!! }
+open class IlReferenceType(private val dto: IlReferenceTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
+class IlArrayType(private val dto: IlArrayTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication) {
+    val elementType: IlType by lazy { publication.findIlTypeOrNull(dto.elementType)!! }
 }
 
-class IlClassType(private val dto: IlClassTypeDto, typeLoader: IlPublication) : IlTypeImpl(dto, typeLoader)
+class IlClassType(private val dto: IlClassTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
 
 
 private fun List<IlFieldImpl>.joinFeatureFields(type: IlTypeImpl, featuresChain: IlFeaturesChain): List<IlField> {
