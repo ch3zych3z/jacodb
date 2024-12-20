@@ -20,5 +20,6 @@ import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlSignatureDto
 
 class IlSignature(private val dto: IlSignatureDto, pub: IlPublication) : IlInstance {
+    override val isConstructed = true
     val returnType: IlType = pub.findIlTypeOrNull(dto.returnType)!!
 }

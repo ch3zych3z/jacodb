@@ -37,12 +37,20 @@ object IlModel : Ext(IlRoot) {
         field("namespaceName", PredefinedType.string)
         field("name", PredefinedType.string)
         field("fullname", PredefinedType.string)
+        field("isConstructed", PredefinedType.bool)
         field("declType", typeId.nullable)
         field("baseType", typeId.nullable)
         field("interfaces", immutableList(typeId))
         field("genericArgs", immutableList(typeId))
+        field("isGenericType", PredefinedType.bool)
         field("isGenericParam", PredefinedType.bool)
         field("isGenericDefinition", PredefinedType.bool)
+        field("genericDefinition", typeId.nullable)
+        field("isCovariant", PredefinedType.bool)
+        field("isContravariant", PredefinedType.bool)
+        field("hasRefTypeConstraint", PredefinedType.bool)
+        field("hasNotNullValueTypeConstraint", PredefinedType.bool)
+        field("hasDefaultCtorConstraint", PredefinedType.bool)
         field("isValueType", PredefinedType.bool)
         field("isManaged", PredefinedType.bool)
         field("attrs", immutableList(IlAttrDto))
@@ -82,6 +90,7 @@ object IlModel : Ext(IlRoot) {
         field("isStatic", PredefinedType.bool)
         field("name", PredefinedType.string)
         field("attrs", immutableList(IlAttrDto))
+        field("isConstructed", PredefinedType.bool)
     }
 
     private val IlParameterDto = structdef {
@@ -131,6 +140,7 @@ object IlModel : Ext(IlRoot) {
         field("errs", immutableList(IlErrVarDto))
         field("ehScopes", immutableList(IlEhScopeDto))
         field("rawInstList", immutableList(IlMethodBodyModel.IlStmtDto))
+        field("isConstructed", PredefinedType.bool)
     }
 
     val IlSignatureDto = structdef extends IlDto {

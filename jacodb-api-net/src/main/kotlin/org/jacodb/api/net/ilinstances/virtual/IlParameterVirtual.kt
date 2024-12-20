@@ -24,4 +24,6 @@ class IlParameterVirtual(
     override val type: IlType,
     override val attributes: List<IlAttribute>,
     override val name: String
-) : IlParameter
+) : IlParameter {
+    override val isConstructed: Boolean = true
+}
