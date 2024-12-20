@@ -27,14 +27,20 @@ class DtoByteConversionIdentity {
             asmName = "lol",
             namespaceName = "kek",
             name = "",
-            declType = TypeId("type", "id"),
+            declType = TypeId(asmName = "type", typeName = "id", typeArgs = emptyList()),
             genericArgs = listOf(),
             isGenericParam = false,
             isValueType = true,
             isManaged = false,
             attrs = listOf(),
             fields = listOf(),
-            methods = listOf()
+            methods = listOf(),
+            moduleToken = 0,
+            typeToken = 1,
+            fullname = "lolkek",
+            baseType = null,
+            interfaces = emptyList(),
+            isGenericDefinition = false
         )
         val bytes = primitiveType.getBytes()
         val sameType = bytes.getIlTypeDto()
@@ -46,9 +52,14 @@ class DtoByteConversionIdentity {
     @Test
     fun checkEnumType() {
         val initialEnum = IlEnumTypeDto(
-            underlyingType = TypeId("lol", "kek"),
+            underlyingType = TypeId(asmName = "lol", typeName = "kek", typeArgs = emptyList()),
             names = listOf("A", "B", "C"),
-            values = listOf(1,2,3).map{ IlInt32ConstDto(it, type = TypeId("int", "int")) }.toList(),
+            values = listOf(1, 2, 3).map {
+                IlInt32ConstDto(
+                    it,
+                    type = TypeId(asmName = "int", typeName = "int", typeArgs = emptyList())
+                )
+            }.toList(),
             asmName = "asm",
             namespaceName = "namespace",
             name = "name",
@@ -59,7 +70,13 @@ class DtoByteConversionIdentity {
             isManaged = false,
             attrs = listOf(),
             fields = listOf(),
-            methods = listOf()
+            methods = listOf(),
+            moduleToken = 0,
+            typeToken = 1,
+            fullname = "lolkek",
+            baseType = null,
+            interfaces = emptyList(),
+            isGenericDefinition = false
         )
 
         val bytes = initialEnum.getBytes()

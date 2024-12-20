@@ -19,18 +19,24 @@ package org.jacodb.api.net
 import org.jacodb.api.net.cfg.IlGraphImpl
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.IlField
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.IlStmt
 import org.jacodb.api.net.ilinstances.IlType
+import javax.sql.rowset.Predicate
 
 interface IlPublication {
     val db: IlDatabase
+
+    // TODO use something instead of String
+    val targetAsmLocations: List<String>
+    val referencedAsmLocations: Map<String, List<String>>
     val features: List<IlPublicationFeature>
     val featuresChain: IlFeaturesChain
     val allTypes: List<IlTypeDto>
-    fun findIlTypeOrNull(name: String): IlType?
-    fun findIlTypes(name: String): List<IlType>
+    fun findIlTypeOrNull(typeId: TypeId): IlType?
+    fun findAsmNameByLocationOrNull(location: String): String?
 }
 
 interface IlPublicationFeature {
@@ -40,11 +46,7 @@ interface IlPublicationFeature {
 }
 
 interface IlTypeSearchFeature : IlPublicationFeature {
-    fun findType(name: String): ResolvedIlTypeResult?
-}
-
-interface IlTypeSearchAllFeature : IlPublicationFeature {
-    fun findTypes(name: String): ResolvedIlTypesResult
+    fun findType(typeId: TypeId): ResolvedIlTypeResult?
 }
 
 interface IlTypeSearchExactFeature : IlPublicationFeature {
@@ -74,7 +76,7 @@ class IlPublicationEvent(val feature: IlTypeSearchFeature, val result: Any)
 
 interface FeatureCallResult
 
-class ResolvedIlTypeResult(val name: String, val type: IlType?) : FeatureCallResult
+class ResolvedIlTypeResult(val typeId: TypeId, val type: IlType?) : FeatureCallResult
 class ResolvedIlTypesResult(val name: String, val types: List<IlType>) : FeatureCallResult
 class ResolvedMethodsResult(val type: IlType, val methods: List<IlMethod>?) : FeatureCallResult
 class ResolvedFieldsResult(val type: IlType, val fields: List<IlField>?) : FeatureCallResult

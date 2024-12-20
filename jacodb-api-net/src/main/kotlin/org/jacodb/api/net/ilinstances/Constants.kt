@@ -83,7 +83,7 @@ data class IlArrayConstant(override val type: IlArrayType, val values: List<IlCo
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlArrayConst(this)
 }
 
-data class IlEnumConstant(override val type: IlType, val enumType: IlType, val underlyingConst: IlConstant) :
+data class IlEnumConstant(override val type: IlType, val underlyingType: IlType, val underlyingConst: IlConstant) :
     IlConstant {
     override fun <T> accept(visitor: IlExprVisitor<T>): T = visitor.visitIlEnumConst(this)
 }

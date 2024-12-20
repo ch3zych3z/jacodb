@@ -35,7 +35,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
     }
 
     override val isStatic: Boolean = dto.isStatic
-    override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType.typeName)!! } }
+    override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType)!! } }
 
     override val name: String = dto.name
     override val parameters: List<IlParameterImpl> by lazy(PUBLICATION) {

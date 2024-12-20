@@ -17,8 +17,6 @@
 package org.jacodb.api.net.ilinstances
 
 import org.jacodb.api.net.IlPublication
-import org.jacodb.api.net.IlTypeSearchExactFeature
-import org.jacodb.api.net.ResolvedIlTypeResult
 import org.jacodb.api.net.generated.models.IlAddOpDto
 import org.jacodb.api.net.generated.models.IlAndOpDto
 import org.jacodb.api.net.generated.models.IlArgAccessDto
@@ -86,7 +84,7 @@ import org.jacodb.api.net.publication.IlPredefinedTypesExt.uint32
 
 
 fun IlConstDto.deserializeConst(publication: IlPublication): IlConstant {
-    val constType = publication.findIlTypeOrNull(type.typeName)!!
+    val constType = publication.findIlTypeOrNull(type)!!
     return when (this) {
         is IlNullDto -> IlNull(constType)
         is IlBoolConstDto -> IlBoolConstant(constType, value)
@@ -102,19 +100,19 @@ fun IlConstDto.deserializeConst(publication: IlPublication): IlConstant {
         is IlUint64ConstDto -> IlUInt64Constant(constType, value)
         is IlFloatConstDto -> IlFloatConstant(constType, value)
         is IlDoubleConstDto -> IlDoubleConstant(constType, value)
-        is IlTypeRefDto -> IlTypeRef(constType, publication.findIlTypeOrNull(referencedType.typeName)!!)
+        is IlTypeRefDto -> IlTypeRef(constType, publication.findIlTypeOrNull(referencedType)!!)
         is IlMethodRefDto -> IlMethodRef(
             constType,
-            publication.findIlTypeOrNull(this.method.type.typeName)!!.methods.first { method -> method.signature == this.method.name })
+            publication.findIlTypeOrNull(method.type)!!.methods.first { method -> method.signature == this.method.name })
 
         is IlFieldRefDto -> IlFieldRef(
             constType,
-            publication.findIlTypeOrNull(this.field.type.typeName)!!.fields.first { field -> field.name == this.field.name })
+            publication.findIlTypeOrNull(type)!!.fields.first { field -> field.name == this.field.name })
 
         is IlArrayConstDto -> IlArrayConstant(constType as IlArrayType, values.map { it.deserializeConst(publication) })
         is IlEnumConstDto -> IlEnumConstant(
             constType,
-            publication.findIlTypeOrNull(this.underlyingType.typeName)!!,
+            publication.findIlTypeOrNull(underlyingType)!!,
             underlyingValue.deserializeConst(publication)
         )
 
@@ -124,7 +122,7 @@ fun IlConstDto.deserializeConst(publication: IlPublication): IlConstant {
 
 fun IlUnaryOpDto.deserialize(ilMethod: IlMethod): IlExpr {
     val exprType =
-        ilMethod.declaringType.publication.findIlTypeOrNull(type.typeName)!!
+        ilMethod.declaringType.publication.findIlTypeOrNull(type)!!
     return when (this) {
         is IlNegOpDto -> IlNegOp(exprType, operand.deserialize(ilMethod))
         is IlNotOpDto -> IlNotOp(exprType, operand.deserialize(ilMethod))
@@ -133,7 +131,7 @@ fun IlUnaryOpDto.deserialize(ilMethod: IlMethod): IlExpr {
 }
 
 fun IlBinaryOpDto.deserialize(ilMethod: IlMethod): IlExpr {
-    val binOpType = ilMethod.declaringType.publication.findIlTypeOrNull(type.typeName)!!
+    val binOpType = ilMethod.declaringType.publication.findIlTypeOrNull(type)!!
     val lhsExpr = lhv.deserialize(ilMethod)
     val rhsExpr = rhv.deserialize(ilMethod)
     return when (this) {
@@ -164,7 +162,7 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr {
         is IlBinaryOpDto -> this.deserialize(ilMethod)
         is IlArrayLengthExprDto -> IlArrayLengthExpr(publication.nuint(), array.deserialize(ilMethod))
         is IlCallDto -> {
-            val declType = publication.findIlTypeOrNull(this.method.type.typeName)
+            val declType = publication.findIlTypeOrNull(method.type)
             if (declType == null)
                 throw IllegalArgumentException("method decltype not resolved")
             val methods = declType.methods
@@ -180,52 +178,53 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr {
         }
 
         is IlNewArrayExprDto -> {
-            var arrType = publication.findIlTypeOrNull(type.typeName)!! as IlArrayType
+            var arrType = publication.findIlTypeOrNull(type)!! as IlArrayType
             IlNewArrayExpr(arrType, size.deserialize(ilMethod))
         }
 
         is IlNewExprDto -> IlNewExpr(
-            publication.findIlTypeOrNull(type.typeName)!!
+            publication.findIlTypeOrNull(type)!!
         )
 
-        is IlSizeOfExprDto -> IlSizeOfExpr(publication.uint32(), publication.findIlTypeOrNull(targetType.typeName)!!)
+        is IlSizeOfExprDto -> IlSizeOfExpr(publication.uint32(), publication.findIlTypeOrNull(targetType)!!)
         is IlStackAllocExprDto -> IlStackAllocExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
+            publication.findIlTypeOrNull(type)!!,
             size.deserialize(ilMethod)
         )
 
         is IlManagedRefExprDto -> IlManagedRefExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
+            publication.findIlTypeOrNull(type)!!,
             value.deserialize(ilMethod)
         )
 
         is IlUnmanagedRefExprDto -> IlUnmanagedRefExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
+            publication.findIlTypeOrNull(type)!!,
             value.deserialize(ilMethod)
         )
 
         is IlManagedDerefExprDto -> IlManagedDerefExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
+            publication.findIlTypeOrNull(type)!!,
             value.deserialize(ilMethod)
         )
 
         is IlUnmanagedDerefExprDto -> IlUnmanagedDerefExpr(
-            publication.findIlTypeOrNull(type.typeName)!!,
+            publication.findIlTypeOrNull(type)!!,
             value.deserialize(ilMethod)
         )
 
-        is IlConvExprDto -> IlConvCastExpr(publication.findIlTypeOrNull(type.typeName)!!, operand.deserialize(ilMethod))
-        is IlBoxExprDto -> IlBoxExpr(publication.findIlTypeOrNull(type.typeName)!!, operand.deserialize(ilMethod))
-        is IlUnboxExprDto -> IlUnboxExpr(publication.findIlTypeOrNull(type.typeName)!!, operand.deserialize(ilMethod))
+        is IlConvExprDto -> IlConvCastExpr(publication.findIlTypeOrNull(targetType)!!, operand.deserialize(ilMethod))
+        is IlBoxExprDto -> IlBoxExpr(publication.findIlTypeOrNull(targetType)!!, operand.deserialize(ilMethod))
+        is IlUnboxExprDto -> IlUnboxExpr(publication.findIlTypeOrNull(targetType)!!, operand.deserialize(ilMethod))
 
-        is IlIsInstExprDto -> IlIsInstExpr(publication.findIlTypeOrNull(type.typeName)!!, operand.deserialize(ilMethod))
+        is IlIsInstExprDto -> IlIsInstExpr(publication.findIlTypeOrNull(targetType)!!, operand.deserialize(ilMethod))
         is IlConstDto -> this.deserializeConst(publication)
         is IlFieldAccessDto -> {
-            val fieldType = publication.findIlTypeOrNull(this.field.type.typeName)
-            if (fieldType == null) throw IllegalArgumentException("field decltype not found")
-            val fields = fieldType.fields
-            val fld = fields.firstOrNull { it.name == this.field.name }
-            if (fld == null) throw IllegalArgumentException("not such field in given class")
+            val declType = publication.findIlTypeOrNull(field.type)
+            if (declType == null)
+                throw IllegalArgumentException("field decltype not found")
+            val fld = declType.fields.firstOrNull { it.name == this.field.name }
+            if (fld == null)
+                throw IllegalArgumentException("not such field in given class")
             IlFieldAccess(fld, instance?.deserialize(ilMethod) as IlValue?)
         }
 

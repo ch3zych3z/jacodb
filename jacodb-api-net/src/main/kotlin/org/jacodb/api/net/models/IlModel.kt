@@ -21,11 +21,13 @@ package org.jacodb.api.net.models
 import com.jetbrains.rd.generator.nova.*
 
 object IlModel : Ext(IlRoot) {
-    val typeId = structdef {
+    val typeIdBase = basestruct {
         field("asmName", PredefinedType.string)
         field("typeName", PredefinedType.string)
     }
-
+    val typeId = structdef extends typeIdBase {
+        field("typeArgs", immutableList(typeIdBase))
+    }
     val IlDto = basestruct {}
 
     val IlTypeDto = basestruct extends IlDto {

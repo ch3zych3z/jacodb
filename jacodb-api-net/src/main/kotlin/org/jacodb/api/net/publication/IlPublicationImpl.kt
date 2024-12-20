@@ -20,38 +20,73 @@ import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import org.jacodb.api.net.*
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.storage.asSymbolId
 import org.jacodb.api.net.storage.txn
+import org.jacodb.api.storage.ers.compressed
+import java.util.LinkedList
+import java.util.Queue
+import kotlin.LazyThreadSafetyMode.PUBLICATION
+
 
 class IlPublicationImpl(
-    override val db: IlDatabase, override val features: List<IlPublicationFeature>, val settings: IlSettings
+    override val db: IlDatabase,
+    override val features: List<IlPublicationFeature>,
+    val settings: IlSettings,
+    override val targetAsmLocations: List<String>
 ) : IlPublication {
     override val featuresChain = features.let { it + IlPublicationFeatureImpl() }.let { IlFeaturesChain(it) }
     override val allTypes: List<IlTypeDto> get() = db.persistence.allTypes
-    override fun findIlTypeOrNull(name: String): IlType? =
+
+    override val referencedAsmLocations: Map<String, List<String>> by lazy(PUBLICATION) {
+        val worklist: Queue<String> = LinkedList<String>(targetAsmLocations);
+        val res: MutableMap<String, List<String>> = mutableMapOf()
+        db.persistence.read { ctx ->
+            val txn = ctx.txn
+            while (worklist.isNotEmpty()) {
+                val curLoc = worklist.poll()
+                if (res.containsKey(curLoc)) continue
+                val refs = txn.find(
+                    type = "Assembly",
+                    propertyName = "location",
+                    value = db.persistence.findIdBySymbol(curLoc).compressed
+                ).single()
+                    .getLinks("references")
+                    .map { db.persistence.findSymbolById(it.getCompressed<Long>("location")!!) }.toList()
+                res.put(
+                    curLoc, refs
+                )
+                refs.forEach { r -> if (!res.containsKey(r)) worklist.offer(r) }
+            }
+        }
+        res
+    }
+
+    override fun findIlTypeOrNull(typeId: TypeId): IlType? =
         featuresChain.callUntilResolved<IlTypeSearchFeature, ResolvedIlTypeResult> { feature ->
-            feature.findType(name)
+            feature.findType(typeId)
         }?.type
 
-    override fun findIlTypes(name: String): List<IlType> =
-        featuresChain.callUntilResolved<IlTypeSearchAllFeature, ResolvedIlTypesResult> { feature ->
-            feature.findTypes(name)
-        }?.types ?: emptyList()
+    override fun findAsmNameByLocationOrNull(
+        location: String,
+    ): String? = db.persistence.read { ctx ->
+        ctx.txn.find(
+            type = "Assembly",
+            propertyName = "location",
+            value = db.persistence.findIdBySymbol(location).compressed
+        ).single().getCompressed<Long>("name")?.let { nameId -> db.persistence.findSymbolById(nameId) }
+    }
 
-    private inner class IlPublicationFeatureImpl() : IlTypeSearchFeature, IlTypeSearchAllFeature,
+
+    private inner class IlPublicationFeatureImpl() : IlTypeSearchFeature,
         IlTypeSearchExactFeature {
-        override fun findType(name: String): ResolvedIlTypeResult {
+        override fun findType(typeId: TypeId): ResolvedIlTypeResult {
             val persistence = db.persistence
-            val type = persistence.findTypeSourceByNameOrNull(name)
+            val type = persistence.findTypeSourceOrNull(typeId)
                 ?.let { dto -> IlTypeImpl.from(dto, this@IlPublicationImpl) }
-            return ResolvedIlTypeResult(name, type)
+            return ResolvedIlTypeResult(typeId, type)
             // maybe return null for unknown classes to continue search in chain?
-        }
-
-        override fun findTypes(name: String): ResolvedIlTypesResult {
-            val persistence = db.persistence
-            val types = persistence.findTypeSourcesByName(name)
-            return ResolvedIlTypesResult(name, types.map { IlTypeImpl.from(it, this@IlPublicationImpl) })
         }
 
         override fun event(result: Any): IlPublicationEvent {
@@ -59,18 +94,19 @@ class IlPublicationImpl(
         }
 
         override fun findExactType(fullName: String, asmName: String?): ResolvedIlTypeResult {
-            val persistence = db.persistence
-            val lookup = persistence.findTypeSourcesByName(fullName)
-            if (lookup.size == 1)
-                return ResolvedIlTypeResult(fullName, IlTypeImpl.from(lookup.first(), this@IlPublicationImpl))
-            if (asmName == null || lookup.size == 0) return ResolvedIlTypeResult(fullName, null)
-            val exactLookup = lookup.filter {
-                it.asmName == asmName
-            }
-            // TODO use asm hierarchy here
-            if (exactLookup.size != 1) return ResolvedIlTypeResult(fullName, null)
-            return ResolvedIlTypeResult(fullName, IlTypeImpl.from(exactLookup.first(), this@IlPublicationImpl))
-
+//            val persistence = db.persistence
+//            val lookup = persistence.findTypeSourcesByName(fullName)
+//            if (lookup.size == 1)
+//                return ResolvedIlTypeResult(fullName, IlTypeImpl.from(lookup.first(), this@IlPublicationImpl))
+//            if (asmName == null || lookup.size == 0) return ResolvedIlTypeResult(fullName, null)
+//            val exactLookup = lookup.filter {
+//                it.asmName == asmName
+//            }
+//            // TODO use asm hierarchy here
+//            if (exactLookup.size != 1) return ResolvedIlTypeResult(fullName, null)
+//            return ResolvedIlTypeResult(fullName, IlTypeImpl.from(exactLookup.first(), this@IlPublicationImpl))
+            // TODO remove
+            return ResolvedIlTypeResult(TypeId(emptyList(), "", ""), null)
         }
     }
 }

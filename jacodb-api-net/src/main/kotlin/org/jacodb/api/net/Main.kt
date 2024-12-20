@@ -30,6 +30,7 @@ import org.jacodb.api.net.generated.models.ilSigModel
 import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.RdServer
+import org.jacodb.api.net.storage.id
 
 suspend fun <T> Protocol.onScheduler(block: () -> T): T {
     val deffered = CompletableDeferred<T>()
@@ -55,16 +56,17 @@ fun main(args: Array<String>) {
 
         println("got result")
         val publication = database.publication(
+            asmPaths,
             listOf(
-                IlPublicationCache(settings.publicationCacheSettings),
+//                IlPublicationCache(settings.publicationCacheSettings),
                 IlMethodInstructionsFeature(),
-                IlApproximations
+//                IlApproximations
             )
         )
         val allTypes = publication.allTypes
         println("types fetched")
         allTypes.forEach { typeDto ->
-            val type = publication.findIlTypeOrNull(typeDto.fullname)
+            val type = publication.findIlTypeOrNull(typeDto.id())
             if (type == null) {
                 println("not found ${typeDto.fullname}")
                 return@forEach
@@ -76,14 +78,14 @@ fun main(args: Array<String>) {
 
                     }
                 } catch (e: Exception) {
-                    println("err instList for ${m.name}")
+                    println("err instList for ${m.name} with ${e.message} at ${e.stackTrace}")
                 }
                 try {
                     val graph = m.flowGraph()
                     if (m.name.contains("ThrowRethrow"))
                         println("found")
                 } catch (e: Exception) {
-                    println("err flowGraph for ${m.name}")
+                    println("err flowGraph for ${m.name} with ${e.message}")
                 }
                 try {
                     val scopes = (m as IlMethodImpl).scopes
@@ -92,7 +94,7 @@ fun main(args: Array<String>) {
                         check(scope.hb.location.index <= scope.he.location.index)
                     }
                 } catch (e: Exception) {
-                    println("err scopes for ${m.name}")
+                    println("err scopes for ${m.name} with ${e.message}")
                 }
             }
         }

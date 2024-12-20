@@ -60,6 +60,7 @@ class IlModel private constructor(
             serializers.register(IlFinallyScopeDto)
             serializers.register(IlMethodDto)
             serializers.register(IlSignatureDto)
+            serializers.register(TypeIdBase_Unknown)
             serializers.register(IlDto_Unknown)
             serializers.register(IlTypeDto_Unknown)
             serializers.register(IlValueTypeDto_Unknown)
@@ -86,7 +87,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = -8688262656614676398L
+        const val serializationHash = 8637739640480870871L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -115,7 +116,7 @@ val IProtocol.ilModel get() = getOrCreateExtension(IlModel::class) { @Suppress("
 
 
 /**
- * #### Generated from [IlModel.kt:67]
+ * #### Generated from [IlModel.kt:69]
  */
 class IlArrayTypeDto (
     val elementType: TypeId,
@@ -294,7 +295,7 @@ class IlArrayTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:70]
+ * #### Generated from [IlModel.kt:72]
  */
 class IlAttrDto (
     val attrType: TypeId,
@@ -378,7 +379,7 @@ class IlAttrDto (
 
 
 /**
- * #### Generated from [IlModel.kt:111]
+ * #### Generated from [IlModel.kt:113]
  */
 class IlCatchScopeDto (
     tb: Int,
@@ -460,7 +461,7 @@ class IlCatchScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:66]
+ * #### Generated from [IlModel.kt:68]
  */
 class IlClassTypeDto (
     asmName: String,
@@ -633,7 +634,7 @@ class IlClassTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:29]
+ * #### Generated from [IlModel.kt:31]
  */
 abstract class IlDto (
 ) : IPrintable {
@@ -714,7 +715,7 @@ class IlDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:105]
+ * #### Generated from [IlModel.kt:107]
  */
 abstract class IlEhScopeDto (
     val tb: Int,
@@ -830,7 +831,7 @@ class IlEhScopeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:56]
+ * #### Generated from [IlModel.kt:58]
  */
 class IlEnumTypeDto (
     val underlyingType: TypeId,
@@ -1021,7 +1022,7 @@ class IlEnumTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:103]
+ * #### Generated from [IlModel.kt:105]
  */
 class IlErrVarDto (
     type: TypeId,
@@ -1089,7 +1090,7 @@ class IlErrVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:116]
+ * #### Generated from [IlModel.kt:118]
  */
 class IlFaultScopeDto (
     tb: Int,
@@ -1171,7 +1172,7 @@ class IlFaultScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:78]
+ * #### Generated from [IlModel.kt:80]
  */
 class IlFieldDto (
     val fieldType: TypeId,
@@ -1249,7 +1250,7 @@ class IlFieldDto (
 
 
 /**
- * #### Generated from [IlModel.kt:113]
+ * #### Generated from [IlModel.kt:115]
  */
 class IlFilterScopeDto (
     val fb: Int,
@@ -1337,7 +1338,7 @@ class IlFilterScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:117]
+ * #### Generated from [IlModel.kt:119]
  */
 class IlFinallyScopeDto (
     tb: Int,
@@ -1419,7 +1420,7 @@ class IlFinallyScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:98]
+ * #### Generated from [IlModel.kt:100]
  */
 class IlLocalVarDto (
     val isPinned: Boolean,
@@ -1493,7 +1494,7 @@ class IlLocalVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:120]
+ * #### Generated from [IlModel.kt:122]
  */
 class IlMethodDto (
     val returnType: TypeId,
@@ -1613,7 +1614,7 @@ class IlMethodDto (
 
 
 /**
- * #### Generated from [IlModel.kt:85]
+ * #### Generated from [IlModel.kt:87]
  */
 data class IlParameterDto (
     val index: Int,
@@ -1694,7 +1695,7 @@ data class IlParameterDto (
 
 
 /**
- * #### Generated from [IlModel.kt:51]
+ * #### Generated from [IlModel.kt:53]
  */
 class IlPointerTypeDto (
     val targetType: TypeId,
@@ -1873,7 +1874,7 @@ class IlPointerTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:55]
+ * #### Generated from [IlModel.kt:57]
  */
 class IlPrimitiveTypeDto (
     asmName: String,
@@ -2046,7 +2047,7 @@ class IlPrimitiveTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:64]
+ * #### Generated from [IlModel.kt:66]
  */
 abstract class IlReferenceTypeDto (
     asmName: String,
@@ -2283,7 +2284,7 @@ class IlReferenceTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:134]
+ * #### Generated from [IlModel.kt:136]
  */
 class IlSignatureDto (
     val returnType: TypeId,
@@ -2361,7 +2362,7 @@ class IlSignatureDto (
 
 
 /**
- * #### Generated from [IlModel.kt:62]
+ * #### Generated from [IlModel.kt:64]
  */
 class IlStructTypeDto (
     asmName: String,
@@ -2534,7 +2535,7 @@ class IlStructTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:102]
+ * #### Generated from [IlModel.kt:104]
  */
 class IlTempVarDto (
     type: TypeId,
@@ -2602,7 +2603,7 @@ class IlTempVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:31]
+ * #### Generated from [IlModel.kt:33]
  */
 abstract class IlTypeDto (
     val asmName: String,
@@ -2822,7 +2823,7 @@ class IlTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:54]
+ * #### Generated from [IlModel.kt:56]
  */
 abstract class IlValueTypeDto (
     asmName: String,
@@ -3059,7 +3060,7 @@ class IlValueTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:93]
+ * #### Generated from [IlModel.kt:95]
  */
 abstract class IlVarDto (
     val type: TypeId,
@@ -3159,12 +3160,16 @@ class IlVarDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:24]
+ * #### Generated from [IlModel.kt:28]
  */
-data class TypeId (
-    val asmName: String,
-    val typeName: String
-) : IPrintable {
+class TypeId (
+    val typeArgs: List<TypeIdBase>,
+    asmName: String,
+    typeName: String
+) : TypeIdBase (
+    asmName,
+    typeName
+) {
     //companion
     
     companion object : IMarshaller<TypeId> {
@@ -3174,12 +3179,14 @@ data class TypeId (
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): TypeId  {
             val asmName = buffer.readString()
             val typeName = buffer.readString()
-            return TypeId(asmName, typeName)
+            val typeArgs = buffer.readList { ctx.serializers.readPolymorphic<TypeIdBase>(ctx, buffer, TypeIdBase) }
+            return TypeId(typeArgs, asmName, typeName)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: TypeId)  {
             buffer.writeString(value.asmName)
             buffer.writeString(value.typeName)
+            buffer.writeList(value.typeArgs) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
         }
         
         
@@ -3195,6 +3202,108 @@ data class TypeId (
         
         other as TypeId
         
+        if (typeArgs != other.typeArgs) return false
+        if (asmName != other.asmName) return false
+        if (typeName != other.typeName) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + typeArgs.hashCode()
+        __r = __r*31 + asmName.hashCode()
+        __r = __r*31 + typeName.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("TypeId (")
+        printer.indent {
+            print("typeArgs = "); typeArgs.print(printer); println()
+            print("asmName = "); asmName.print(printer); println()
+            print("typeName = "); typeName.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [IlModel.kt:24]
+ */
+abstract class TypeIdBase (
+    val asmName: String,
+    val typeName: String
+) : IPrintable {
+    //companion
+    
+    companion object : IAbstractDeclaration<TypeIdBase> {
+        override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): TypeIdBase  {
+            val objectStartPosition = buffer.position
+            val asmName = buffer.readString()
+            val typeName = buffer.readString()
+            val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
+            buffer.readByteArrayRaw(unknownBytes)
+            return TypeIdBase_Unknown(asmName, typeName, unknownId, unknownBytes)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    //hash code trait
+    //pretty print
+    //deepClone
+    //contexts
+}
+
+
+class TypeIdBase_Unknown (
+    asmName: String,
+    typeName: String,
+    override val unknownId: RdId,
+    val unknownBytes: ByteArray
+) : TypeIdBase (
+    asmName,
+    typeName
+), IUnknownInstance {
+    //companion
+    
+    companion object : IMarshaller<TypeIdBase_Unknown> {
+        override val _type: KClass<TypeIdBase_Unknown> = TypeIdBase_Unknown::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): TypeIdBase_Unknown  {
+            throw NotImplementedError("Unknown instances should not be read via serializer")
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: TypeIdBase_Unknown)  {
+            buffer.writeString(value.asmName)
+            buffer.writeString(value.typeName)
+            buffer.writeByteArrayRaw(value.unknownBytes)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as TypeIdBase_Unknown
+        
         if (asmName != other.asmName) return false
         if (typeName != other.typeName) return false
         
@@ -3209,13 +3318,15 @@ data class TypeId (
     }
     //pretty print
     override fun print(printer: PrettyPrinter)  {
-        printer.println("TypeId (")
+        printer.println("TypeIdBase_Unknown (")
         printer.indent {
             print("asmName = "); asmName.print(printer); println()
             print("typeName = "); typeName.print(printer); println()
         }
         printer.print(")")
     }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
 }

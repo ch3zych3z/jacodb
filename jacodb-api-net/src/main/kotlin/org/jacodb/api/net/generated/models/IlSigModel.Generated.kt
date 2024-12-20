@@ -46,6 +46,7 @@ class IlSigModel private constructor(
         
         override fun registerSerializersCore(serializers: ISerializers)  {
             serializers.register(PublicationRequest)
+            serializers.register(IlAsmDto)
             serializers.register(PublicationResponse)
         }
         
@@ -55,7 +56,7 @@ class IlSigModel private constructor(
         private val __IlTypeDtoListSerializer = AbstractPolymorphic(IlTypeDto).list()
         private val __IlDtoListSerializer = AbstractPolymorphic(IlDto).list()
         
-        const val serializationHash = -1254477867872549445L
+        const val serializationHash = 7950792047261741369L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlSigModel
@@ -118,6 +119,69 @@ val IlModel.ilSigModel get() = getOrCreateExtension("ilSigModel", ::IlSigModel)
 
 
 /**
+ * #### Generated from [IlSigModel.kt:27]
+ */
+data class IlAsmDto (
+    val name: String,
+    val location: String
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<IlAsmDto> {
+        override val _type: KClass<IlAsmDto> = IlAsmDto::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): IlAsmDto  {
+            val name = buffer.readString()
+            val location = buffer.readString()
+            return IlAsmDto(name, location)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlAsmDto)  {
+            buffer.writeString(value.name)
+            buffer.writeString(value.location)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as IlAsmDto
+        
+        if (name != other.name) return false
+        if (location != other.location) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + name.hashCode()
+        __r = __r*31 + location.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("IlAsmDto (")
+        printer.indent {
+            print("name = "); name.print(printer); println()
+            print("location = "); location.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
  * #### Generated from [IlSigModel.kt:24]
  */
 data class PublicationRequest (
@@ -175,11 +239,11 @@ data class PublicationRequest (
 
 
 /**
- * #### Generated from [IlSigModel.kt:27]
+ * #### Generated from [IlSigModel.kt:31]
  */
 data class PublicationResponse (
-    val reachableAsms: List<String>,
-    val referencedAsms: List<List<String>>,
+    val reachableAsms: List<IlAsmDto>,
+    val referencedAsms: List<List<IlAsmDto>>,
     val reachableTypes: List<IlTypeDto>
 ) : IPrintable {
     //companion
@@ -189,15 +253,15 @@ data class PublicationResponse (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): PublicationResponse  {
-            val reachableAsms = buffer.readList { buffer.readString() }
-            val referencedAsms = buffer.readList { buffer.readList { buffer.readString() } }
+            val reachableAsms = buffer.readList { IlAsmDto.read(ctx, buffer) }
+            val referencedAsms = buffer.readList { buffer.readList { IlAsmDto.read(ctx, buffer) } }
             val reachableTypes = buffer.readList { ctx.serializers.readPolymorphic<IlTypeDto>(ctx, buffer, IlTypeDto) }
             return PublicationResponse(reachableAsms, referencedAsms, reachableTypes)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: PublicationResponse)  {
-            buffer.writeList(value.reachableAsms) { v -> buffer.writeString(v) }
-            buffer.writeList(value.referencedAsms) { v -> buffer.writeList(v) { v -> buffer.writeString(v) } }
+            buffer.writeList(value.reachableAsms) { v -> IlAsmDto.write(ctx, buffer, v) }
+            buffer.writeList(value.referencedAsms) { v -> buffer.writeList(v) { v -> IlAsmDto.write(ctx, buffer, v) } }
             buffer.writeList(value.reachableTypes) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
         }
         

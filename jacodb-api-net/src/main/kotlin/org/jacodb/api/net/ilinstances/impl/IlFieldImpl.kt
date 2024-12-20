@@ -21,8 +21,9 @@ import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlFieldDto
 import org.jacodb.api.net.ilinstances.IlType
 
-class IlFieldImpl(override val declaringType: IlTypeImpl, private val dto: IlFieldDto, typeLoader: IlPublication) : IlField {
-    override val fieldType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.fieldType.typeName)!! }
+class IlFieldImpl(override val declaringType: IlType, private val dto: IlFieldDto, typeLoader: IlPublication) :
+    IlField {
+    override val fieldType: IlType by lazy { typeLoader.findIlTypeOrNull(dto.fieldType)!! }
     override val attributes: MutableList<IlAttributeImpl> = mutableListOf()
     override val isStatic: Boolean = dto.isStatic
     override val name: String = dto.name

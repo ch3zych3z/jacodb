@@ -41,12 +41,17 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
             types
         }
 
-    override val interner: IlDbSymbolInterner =
+    override val symbolInterner: IlDbSymbolInterner =
         IlDbSymbolsInternerImpl().apply { setup(this@IlDatabasePersistenceImpl) }
 
-    override fun findSymbolById(id: Long): String = id.asSymbol(interner)
+    override val typeIdInterner: IlDbTypeIdInternerImpl =
+        IlDbTypeIdInternerImpl(symbolInterner = symbolInterner).apply { setup(this@IlDatabasePersistenceImpl) }
 
-    override fun findIdBySymbol(symbol: String): Long = symbol.asSymbolId(interner)
+    override fun findSymbolById(id: Long): String = id.asSymbol(symbolInterner)
+
+    override fun findIdBySymbol(symbol: String): Long = symbol.asSymbolId(symbolInterner)
+    override fun findTypeIdById(id: Long): TypeId = id.asTypeId(typeIdInterner)
+    override fun findIdByTypeId(typeId: TypeId): Long = typeId.interned(typeIdInterner)
 
     override fun <T> read(action: (ILDBContext) -> T): T {
         return if (ers.isInRam) // RAM storage doesn't support explicit readonly transactions
@@ -65,13 +70,24 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
 
     private fun findTypeSources(ctx: ILDBContext, fullName: String): Sequence<IlTypeDto> {
         val txn = ctx.txn
-        val id = interner.findSymbolIdOrNew(fullName)
+        val id = symbolInterner.findSymbolIdOrNew(fullName)
         return txn.find(type = "Type", propertyName = "fullname", value = id.compressed).map { it.toDto() }
     }
 
-    override fun findTypeSourceByNameOrNull(fullName: String): IlTypeDto? = read { ctx ->
-        val seq = findTypeSources(ctx, fullName).toList()
+//    override fun findTypeSourceByNameOrNull(fullName: String): IlTypeDto? = read { ctx ->
+//        val seq = findTypeSources(ctx, fullName).toList()
+//        seq.firstOrNull()
+//    }
+
+    override fun findTypeSourceOrNull(typeId: TypeId): IlTypeDto? = read { ctx ->
+        val seq = findTypeSources(ctx, typeId).toList()
         seq.firstOrNull()
+    }
+
+    private fun findTypeSources(ctx: ILDBContext, typeId: TypeId): Sequence<IlTypeDto> {
+        val txn = ctx.txn
+        val id = typeId.interned(typeIdInterner)
+        return txn.find(type = "Type", propertyName = "typeId", value = id.compressed).map { it.toDto() }
     }
 
     override fun findTypeSourcesByName(fullName: String): List<IlTypeDto> = read { ctx ->
@@ -80,13 +96,14 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
 
     override fun persistTypes(types: List<IlTypeDto>) {
         if (types.isEmpty()) return
-        val typeEntities = hashMapOf<String, Entity>()
+//        val typeEntities = hashMapOf<String, Entity>()
         write { ctx ->
             val txn = ctx.txn
             types.forEach { type ->
                 val entity = txn.newEntity("Type")
-                entity["fullname"] = type.fullname.asSymbolId(interner).compressed
-                entity["assembly"] = type.asmName.asSymbolId(interner).compressed
+                entity["typeId"] = type.id().interned(typeIdInterner).compressed
+                entity["fullname"] = type.fullname.asSymbolId(symbolInterner).compressed
+                entity["assembly"] = type.asmName.asSymbolId(symbolInterner).compressed
                 entity["baseType"] = type.baseType?.getBytes()?.compressed
                 entity["interfaces"] = type.interfaces.getBytes().compressed
                 entity.setRawBlob("bytes", type.getBytes())
@@ -95,22 +112,22 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
         }
     }
 
-    override fun persistAsmHierarchy(asms: List<String>, referenced: List<List<String>>) {
-        fun Long.toByteArray(): ByteArray {
-            val buffer = ByteBuffer.allocate(Long.SIZE_BYTES)
-            buffer.putLong(this)
-            return buffer.array()
-        }
-        asms.zip(referenced).forEach { pair ->
-            write { ctx ->
+    override fun persistAsmHierarchy(asms: List<IlAsmDto>, referenced: List<List<IlAsmDto>>) {
+        val asmToEntity: MutableMap<IlAsmDto, Entity> = mutableMapOf()
+
+        write { ctx ->
+            asms.forEach { dto ->
                 val txn = ctx.txn
                 val entity = txn.newEntity("Assembly")
-                entity["name"] = pair.first.asSymbolId(interner)
-                val buf = ByteArray(asms.size * Long.SIZE_BYTES)
-                pair.second.map { it.asSymbolId(interner) }.forEachIndexed { index, long ->
-                    buf.putLong(long, index * Long.SIZE_BYTES)
+                entity["name"] = dto.name.asSymbolId(symbolInterner).compressed
+                entity["location"] = dto.location.asSymbolId(symbolInterner).compressed
+                asmToEntity[dto] = entity
+            }
+            asms.zip(referenced).forEach { (cur, refs) ->
+                val refLinks = links(asmToEntity[cur]!!, "references")
+                refs.forEach { ref ->
+                    refLinks += asmToEntity[ref]!!
                 }
-                entity["refs"] = buf.compressed.nonSearchable
             }
         }
     }
@@ -121,8 +138,9 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
     private fun IlAttrDto.save(txn: Transaction, target: Entity): Entity {
         return txn.newEntity("Attribute").also { attr ->
             links(attr, "target") += target
-            attr["fullname"] = attrType.typeName.asSymbolId(interner).compressed
-            attr["assembly"] = attrType.asmName.asSymbolId(interner)
+            attr["typeId"] = attrType.interned(typeIdInterner).compressed
+            attr["fullname"] = attrType.typeName.asSymbolId(symbolInterner).compressed
+            attr["assembly"] = attrType.asmName.asSymbolId(symbolInterner)
             attr.setRawBlob("values", ctorArgs.getBytes())
 
             namedArgsNames.zip(namedArgsValues).forEach { (name, value) ->

@@ -19,6 +19,7 @@ package org.jacodb.api.net.publication
 import org.jacodb.api.net.*
 import org.jacodb.api.net.IlMethodExtFeature.IlInstListResult
 import org.jacodb.api.net.cfg.IlGraphImpl
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.impl.caches.PluggableCacheProvider
 
@@ -27,10 +28,10 @@ class IlPublicationCache(private val settings: IlPublicationCacheSettings) : IlT
 
     private val cacheProvider: PluggableCacheProvider = PluggableCacheProvider.getProvider(settings.cacheId)
 
-    private val types = newSegment<String, ResolvedIlTypeResult>(settings.types)
+    private val types = newSegment<TypeId, ResolvedIlTypeResult>(settings.types)
     private val instructions = newSegment<IlMethod, IlInstListResult>(settings.instructions)
     private val cfgs = newSegment<IlMethod, IlGraphImpl>(settings.flowGraphs)
-    override fun findType(name: String): ResolvedIlTypeResult? = types[name]
+    override fun findType(typeId: TypeId): ResolvedIlTypeResult? = types[typeId]
 
 
     override fun instList(method: IlMethod): IlInstListResult? {
@@ -44,7 +45,7 @@ class IlPublicationCache(private val settings: IlPublicationCacheSettings) : IlT
 
     override fun on(event: IlPublicationEvent) {
         when (val result = event.result) {
-            is ResolvedIlTypeResult -> types[result.name] = result
+            is ResolvedIlTypeResult -> types[result.typeId] = result
 
             is IlInstListResult -> instructions[result.method] = result
             is ResolvedIlTypesResult -> return
