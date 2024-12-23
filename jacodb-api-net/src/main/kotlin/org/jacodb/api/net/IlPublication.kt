@@ -49,11 +49,6 @@ interface IlTypeSearchFeature : IlPublicationFeature {
     fun findType(typeId: TypeId): ResolvedIlTypeResult?
 }
 
-interface IlTypeSearchExactFeature : IlPublicationFeature {
-    // TODO add cache
-    fun findExactType(fullname: String, asmName: String? = null): ResolvedIlTypeResult
-}
-
 interface IlTypeExtFeature : IlPublicationFeature {
     fun fieldsOf(type: IlType): List<IlField>?
     fun methodsOf(type: IlType): List<IlMethod>?
@@ -78,5 +73,3 @@ interface FeatureCallResult
 
 class ResolvedIlTypeResult(val typeId: TypeId, val type: IlType?) : FeatureCallResult
 class ResolvedIlTypesResult(val name: String, val types: List<IlType>) : FeatureCallResult
-class ResolvedMethodsResult(val type: IlType, val methods: List<IlMethod>?) : FeatureCallResult
-class ResolvedFieldsResult(val type: IlType, val fields: List<IlField>?) : FeatureCallResult

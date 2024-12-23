@@ -46,7 +46,15 @@ class DtoSerializationExtKtTest {
             fullname = "lolkek",
             baseType = null,
             interfaces = emptyList(),
-            isGenericDefinition = false
+            isGenericDefinition = false,
+            isConstructed = true,
+            isGenericType = false,
+            genericDefinition = null,
+            isCovariant = false,
+            isContravariant = false,
+            hasRefTypeConstraint = false,
+            hasNotNullValueTypeConstraint = false,
+            hasDefaultCtorConstraint = false
         )
         val bytes = pointerType.getBytes()
         val deserializedType = bytes.getIlTypeDto()
@@ -66,7 +74,8 @@ class DtoSerializationExtKtTest {
             ), // Proper TypeId instantiation
             isStatic = false,
             name = "field1",
-            attrs = listOf() // Add any attributes if needed
+            attrs = listOf(),
+            isConstructed = true
         )
 
         val field2 = IlFieldDto(
@@ -77,7 +86,8 @@ class DtoSerializationExtKtTest {
             ), // Proper TypeId instantiation
             isStatic = true,
             name = "field2",
-            attrs = listOf()
+            attrs = listOf(),
+            isConstructed = true
         )
 
         // Create mock methods
@@ -122,6 +132,7 @@ class DtoSerializationExtKtTest {
                 )
             ),
             isStatic = false,
+            isConstructed = true,
         )
 
         val method2 = IlMethodDto(
@@ -154,7 +165,8 @@ class DtoSerializationExtKtTest {
             errs = listOf(),
             ehScopes = listOf(),
             isStatic = false,
-            rawInstList = listOf()
+            rawInstList = listOf(),
+            isConstructed = true
         )
 
         // Create the struct type with the mock fields and methods
@@ -175,7 +187,15 @@ class DtoSerializationExtKtTest {
             fullname = "lolkek",
             baseType = null,
             interfaces = emptyList(),
-            isGenericDefinition = false
+            isGenericDefinition = false,
+            isConstructed = true,
+            isGenericType = false,
+            genericDefinition = null,
+            isCovariant = false,
+            isContravariant = false,
+            hasRefTypeConstraint = false,
+            hasNotNullValueTypeConstraint = false,
+            hasDefaultCtorConstraint = false
         )
 
         // Serialize and deserialize the struct type
@@ -218,7 +238,15 @@ class DtoSerializationExtKtTest {
             fullname = "lolkek",
             baseType = null,
             interfaces = emptyList(),
-            isGenericDefinition = false
+            isGenericDefinition = false,
+            isConstructed = true,
+            isGenericType = false,
+            genericDefinition = null,
+            isCovariant = false,
+            isContravariant = false,
+            hasRefTypeConstraint = false,
+            hasNotNullValueTypeConstraint = false,
+            hasDefaultCtorConstraint = false
         )
         val bytes = arrayType.getBytes()
         val deserializedType = bytes.getIlTypeDto()

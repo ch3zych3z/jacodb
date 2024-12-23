@@ -42,5 +42,13 @@ fun randomPrimitive(namesLength: Int) = IlPrimitiveTypeDto(
     fullname = getRandomString(namesLength),
     baseType = null,
     interfaces = emptyList(),
-    isGenericDefinition = false
+    isGenericDefinition = false,
+    isConstructed = true,
+    isGenericType = false,
+    genericDefinition = null,
+    isCovariant = false,
+    isContravariant = false,
+    hasRefTypeConstraint = false,
+    hasNotNullValueTypeConstraint = false,
+    hasDefaultCtorConstraint = false
 )
