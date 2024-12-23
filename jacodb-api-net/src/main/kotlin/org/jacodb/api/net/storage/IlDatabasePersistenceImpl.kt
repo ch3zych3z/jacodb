@@ -96,18 +96,30 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
 
     override fun persistTypes(types: List<IlTypeDto>) {
         if (types.isEmpty()) return
-//        val typeEntities = hashMapOf<String, Entity>()
+        val typeEntities = hashMapOf<Long, Entity>()
         write { ctx ->
             val txn = ctx.txn
             types.forEach { type ->
                 val entity = txn.newEntity("Type")
-                entity["typeId"] = type.id().interned(typeIdInterner).compressed
+                val tIdx = type.id().interned(typeIdInterner)
+                entity["typeId"] = tIdx.compressed
                 entity["fullname"] = type.fullname.asSymbolId(symbolInterner).compressed
                 entity["assembly"] = type.asmName.asSymbolId(symbolInterner).compressed
-                entity["baseType"] = type.baseType?.getBytes()?.compressed
-                entity["interfaces"] = type.interfaces.getBytes().compressed
                 entity.setRawBlob("bytes", type.getBytes())
                 type.attrs.forEach { it.save(txn, entity) }
+                typeEntities[tIdx] = entity
+            }
+            types.forEach { type ->
+                type.baseType?.let { baseId ->
+                    links(
+                        typeEntities[type.id().interned(typeIdInterner)]!!,
+                        "baseType"
+                    ) += typeEntities[baseId.interned(typeIdInterner)]!!
+                }
+                val typeInterfaces = links(typeEntities[type.id().interned(typeIdInterner)]!!, "implements")
+                type.interfaces.forEach { interfaceId ->
+                    typeInterfaces += typeEntities[interfaceId.interned(typeIdInterner)]!!
+                }
             }
         }
     }
