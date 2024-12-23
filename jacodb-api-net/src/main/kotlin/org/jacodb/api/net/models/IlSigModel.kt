@@ -36,8 +36,6 @@ object IlSigModel : Ext(IlModel) {
 
     init {
         call("publication", publicationRequest, publicationResponse)
-        call("callForAsm", publicationRequest, immutableList(IlModel.IlTypeDto))
-        signal("asmRequest", publicationRequest).apply { async }
-        signal("asmResponse", immutableList(IlModel.IlDto)).apply { async }
+        call("genericSubstitutions", immutableList(IlModel.typeId), immutableList(IlModel.IlTypeDto))
     }
 }

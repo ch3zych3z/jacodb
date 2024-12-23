@@ -48,6 +48,9 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
     override val declaringType: IlType? by lazy(PUBLICATION) { dto.declType?.let { publication.findIlTypeOrNull(it) } }
 
     override val isGenericType: Boolean = dto.isGenericType
+    override val genericDefinition: IlType? by lazy(PUBLICATION) {
+        dto.genericDefinition?.let { publication.findIlTypeOrNull(it) }
+    }
     override val isGenericDefinition: Boolean
         get() = dto.isGenericDefinition
     override val isGenericParameter: Boolean

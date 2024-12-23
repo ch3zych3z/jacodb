@@ -25,9 +25,12 @@ import org.jacodb.api.net.database.IlDatabaseImpl
 import org.jacodb.api.net.features.IlApproximations
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
 import org.jacodb.api.net.generated.models.PublicationRequest
+import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.generated.models.ilModel
 import org.jacodb.api.net.generated.models.ilSigModel
 import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
+import org.jacodb.api.net.publication.IlPredefinedAsmsExt.mscorelib
+import org.jacodb.api.net.publication.IlPredefinedTypesExt.int32
 import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.RdServer
 import org.jacodb.api.net.storage.id
@@ -66,6 +69,19 @@ fun main(args: Array<String>) {
         val allTypes = publication.allTypes
         println("types fetched")
         allTypes.forEach { typeDto ->
+            if (typeDto.asmName == publication.mscorelib() && typeDto.fullname.contains("System.Collections.Generic.List`1[T]")) {
+                val defn = publication.findIlTypeOrNull(typeDto.id())?.genericDefinition ?: return@forEach
+                val subst = server.protocol.ilModel.ilSigModel.genericSubstitutions.sync(
+                    listOf(
+                        TypeId(
+                            listOf(publication.int32().id),
+                            defn.asmName,
+                            defn.fullname
+                        )
+                    )
+                )
+                println(subst)
+            }
             val type = publication.findIlTypeOrNull(typeDto.id())
             if (type == null) {
                 println("not found ${typeDto.fullname}")

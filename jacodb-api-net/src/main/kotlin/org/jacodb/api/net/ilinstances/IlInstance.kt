@@ -39,6 +39,7 @@ interface IlType : IlInstance, CommonTypeName {
     override val isConstructed: Boolean
 
     val isGenericType: Boolean
+    val genericDefinition: IlType?
     val isGenericDefinition: Boolean
     val isGenericParameter: Boolean
     val genericArgs: List<IlType>
@@ -56,7 +57,7 @@ interface IlType : IlInstance, CommonTypeName {
     val asmName: String
     val name: String
     val id: TypeId
-        get() = TypeId(asmName = asmName, typeName = name, typeArgs = genericArgs.map { (it as IlTypeImpl).id })
+        get() = TypeId(asmName = asmName, typeName = fullname , typeArgs = genericArgs.map { (it as IlTypeImpl).id })
 
     val attributes: List<IlAttribute>
 
