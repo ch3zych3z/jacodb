@@ -44,7 +44,7 @@ class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
     }
 
     // TODO 
-    val featuresRegistry = listOf(IlApproximations, InMemoryIlHierarchy)
+    val featuresRegistry = listOf(/*IlApproximations,*/ InMemoryIlHierarchy)
     fun List<IlFeature<*, *>>.broadcast(signal: IlSignal) {
         featuresRegistry.forEach { f -> f.onSignal(signal) }
     }

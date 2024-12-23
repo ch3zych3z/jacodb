@@ -23,11 +23,16 @@ import org.jacodb.api.net.generated.models.getListOf
 import org.jacodb.api.net.generated.models.getTypeId
 import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.storage.txn
+import org.jacodb.api.storage.ers.links
 import java.util.concurrent.ConcurrentHashMap
 
-typealias InMemoryIlHierarchyCache = ConcurrentHashMap<Long, ConcurrentHashMap<Long, MutableSet<Long>>>
+typealias InMemoryIlHierarchyCache = ConcurrentHashMap<Long, MutableSet<Long>>
 
-data class InMemoryIlHierarchyReq(val name: String)
+data class InMemoryIlHierarchyReq(
+    val name: String,
+    val transitive: Boolean = true,
+    val includeBytecode: Boolean = false
+)
 
 object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlType> {
 
@@ -47,17 +52,22 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlType> {
                     val cache = InMemoryIlHierarchyCache().also {
                         hierarchies[signal.db] = it
                     }
-                    val result = mutableListOf<Triple<Long?, Long?, Long?>>()
+                    val result = mutableListOf<Pair<Long, Long>>()
                     context.txn.all("Type").map { type ->
-                        val asmName: Long? = type.getCompressed("assembly")
-                        val fullName: Long? = type.getCompressed("fullname")
-                        val parents = mutableListOf<TypeId>()
-                        type.getCompressed<ByteArray>("baseType")?.let {
-                            parents.add(it.getTypeId())
+                        val tId: Long = type.getCompressed<Long>("typeId")!!
+                        val parents = mutableListOf<Long>()
+                        links(type, "baseType").asIterable.singleOrNull()?.let {
+                            parents += it.getCompressed<Long>("typeId")!!
                         }
-                        type.getCompressed<ByteArray>("interfaces")?.let {
-                            it.getListOf<TypeId>().forEach { t -> parents.add(t) }
+                        links(type, "implements").asIterable.forEach {
+                            parents += it.getCompressed<Long>("typeId")!!
                         }
+                        parents.forEach {
+                            result += Pair(tId, it)
+                        }
+                    }
+                    result.forEach { (typeId, parentId) ->
+                        cache.getOrPut(parentId) { ConcurrentHashMap.newKeySet<Long>() }.add(typeId)
                     }
                 }
             }
@@ -65,6 +75,10 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlType> {
     }
 
     private fun syncQuery(publication: IlPublication, request: InMemoryIlHierarchyReq): Sequence<IlType> {
+        val persistence = publication.db.persistence
+        val hierarchy = hierarchies[publication.db] ?: return emptySequence()
+
+//        fun getSubclasses(typeId: Long)
         TODO()
     }
 }

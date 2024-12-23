@@ -61,7 +61,7 @@ fun main(args: Array<String>) {
         val publication = database.publication(
             asmPaths,
             listOf(
-//                IlPublicationCache(settings.publicationCacheSettings),
+                IlPublicationCache(settings.publicationCacheSettings),
                 IlMethodInstructionsFeature(),
 //                IlApproximations
             )
