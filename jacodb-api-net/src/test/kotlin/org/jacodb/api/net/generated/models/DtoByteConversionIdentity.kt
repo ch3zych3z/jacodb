@@ -40,7 +40,15 @@ class DtoByteConversionIdentity {
             fullname = "lolkek",
             baseType = null,
             interfaces = emptyList(),
-            isGenericDefinition = false
+            isGenericDefinition = false,
+            isConstructed = true,
+            isGenericType = false,
+            genericDefinition = null,
+            isCovariant = false,
+            isContravariant = false,
+            hasRefTypeConstraint = false,
+            hasNotNullValueTypeConstraint = false,
+            hasDefaultCtorConstraint = false
         )
         val bytes = primitiveType.getBytes()
         val sameType = bytes.getIlTypeDto()
@@ -76,7 +84,15 @@ class DtoByteConversionIdentity {
             fullname = "lolkek",
             baseType = null,
             interfaces = emptyList(),
-            isGenericDefinition = false
+            isGenericDefinition = false,
+            isConstructed = true,
+            isGenericType = false,
+            genericDefinition = null,
+            isCovariant = false,
+            isContravariant = false,
+            hasRefTypeConstraint = false,
+            hasNotNullValueTypeConstraint = false,
+            hasDefaultCtorConstraint = false
         )
 
         val bytes = initialEnum.getBytes()

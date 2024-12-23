@@ -79,8 +79,7 @@ class IlPublicationImpl(
     }
 
 
-    private inner class IlPublicationFeatureImpl() : IlTypeSearchFeature,
-        IlTypeSearchExactFeature {
+    private inner class IlPublicationFeatureImpl() : IlTypeSearchFeature{
         override fun findType(typeId: TypeId): ResolvedIlTypeResult {
             val persistence = db.persistence
             val type = persistence.findTypeSourceOrNull(typeId)
@@ -91,22 +90,6 @@ class IlPublicationImpl(
 
         override fun event(result: Any): IlPublicationEvent {
             return IlPublicationEvent(this, result)
-        }
-
-        override fun findExactType(fullName: String, asmName: String?): ResolvedIlTypeResult {
-//            val persistence = db.persistence
-//            val lookup = persistence.findTypeSourcesByName(fullName)
-//            if (lookup.size == 1)
-//                return ResolvedIlTypeResult(fullName, IlTypeImpl.from(lookup.first(), this@IlPublicationImpl))
-//            if (asmName == null || lookup.size == 0) return ResolvedIlTypeResult(fullName, null)
-//            val exactLookup = lookup.filter {
-//                it.asmName == asmName
-//            }
-//            // TODO use asm hierarchy here
-//            if (exactLookup.size != 1) return ResolvedIlTypeResult(fullName, null)
-//            return ResolvedIlTypeResult(fullName, IlTypeImpl.from(exactLookup.first(), this@IlPublicationImpl))
-            // TODO remove
-            return ResolvedIlTypeResult(TypeId(emptyList(), "", ""), null)
         }
     }
 }
