@@ -52,7 +52,6 @@ interface IlDatabasePersistence {
     fun <T> write(action: (ILDBContext) -> T): T
 
     fun findTypeSourceOrNull(typeId: TypeId): IlTypeDto?
-    fun findTypeSourcesByName(fullName: String): List<IlTypeDto>
     fun persistTypes(types: List<IlTypeDto>)
     fun persistAsmHierarchy(asms: List<IlAsmDto>, referenced: List<List<IlAsmDto>>)
 }

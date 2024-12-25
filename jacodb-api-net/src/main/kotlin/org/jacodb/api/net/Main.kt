@@ -21,9 +21,13 @@ import com.jetbrains.rd.framework.impl.RpcTimeouts
 import com.jetbrains.rd.framework.util.NetUtils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.completeWith
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jacodb.api.net.database.IlDatabaseImpl
 import org.jacodb.api.net.features.IlApproximations
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
+import org.jacodb.api.net.features.InMemoryIlHierarchy
+import org.jacodb.api.net.features.InMemoryIlHierarchyReq
 import org.jacodb.api.net.generated.models.PublicationRequest
 import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.generated.models.ilModel
@@ -31,6 +35,7 @@ import org.jacodb.api.net.generated.models.ilSigModel
 import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 import org.jacodb.api.net.publication.IlPredefinedAsmsExt.mscorelib
 import org.jacodb.api.net.publication.IlPredefinedTypesExt.int32
+import org.jacodb.api.net.publication.IlPredefinedTypesExt.string
 import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.RdServer
 import org.jacodb.api.net.storage.id
@@ -68,20 +73,49 @@ fun main(args: Array<String>) {
         )
         val allTypes = publication.allTypes
         println("types fetched")
+//        runBlocking {
+//            InMemoryIlHierarchy.query(
+//                publication,
+//                InMemoryIlHierarchyReq(allTypes.single { it.fullname == "Usvm.IL.Test.Instructions.Instance" }
+//                    .id(), true)).asIterable().forEach { t -> println(t.fullname) }
+//            InMemoryIlHierarchy.query(
+//                publication,
+//                InMemoryIlHierarchyReq(
+//                    TypeId(
+//                        listOf(
+//                            publication.string().id
+//                        ),
+//                        publication.mscorelib()!!,
+//                        "System.Collections.Generic.List`1"
+//                    ), true
+//                )
+//            ).asIterable().forEach { t -> println(t.fullname) }
+//        }
         allTypes.forEach { typeDto ->
-            if (typeDto.asmName == publication.mscorelib() && typeDto.fullname.contains("System.Collections.Generic.List`1[T]")) {
-                val defn = publication.findIlTypeOrNull(typeDto.id())?.genericDefinition ?: return@forEach
-                val subst = server.protocol.ilModel.ilSigModel.genericSubstitutions.sync(
-                    listOf(
-                        TypeId(
-                            listOf(publication.int32().id),
-                            defn.asmName,
-                            defn.fullname
-                        )
-                    )
-                )
-                println(subst)
-            }
+            // TODO #3 introduce separate tests
+//            if (typeDto.asmName == publication.mscorelib() && typeDto.fullname.contains("System.Collections.Generic.List`1[T]")) {
+//                if (!publication.findIlTypeOrNull(typeDto.id())!!.isGenericDefinition) return@forEach
+//                val defn = publication.findIlTypeOrNull(typeDto.id())?.genericDefinition ?: return@forEach
+//                runBlocking {
+//                    println("running for List<T>")
+//                    InMemoryIlHierarchy.query(
+//                        publication,
+//                        InMemoryIlHierarchyReq(TypeId(listOf(publication.string().id), defn.id.asmName, defn.fullname))
+//                    ).forEach {
+//                        println("got ${it.name}")
+//                    }
+//                }
+//                val subst = server.protocol.ilModel.ilSigModel.genericSubstitutions.sync(
+//                    listOf(
+//                        TypeId(
+//                            listOf(publication.int32().id),
+//                            defn.asmName,
+//                            defn.fullname
+//                        )
+//                    )
+//                )
+//                println(subst)
+//            }
             val type = publication.findIlTypeOrNull(typeDto.id())
             if (type == null) {
                 println("not found ${typeDto.fullname}")
@@ -98,8 +132,6 @@ fun main(args: Array<String>) {
                 }
                 try {
                     val graph = m.flowGraph()
-                    if (m.name.contains("ThrowRethrow"))
-                        println("found")
                 } catch (e: Exception) {
                     println("err flowGraph for ${m.name} with ${e.message}")
                 }

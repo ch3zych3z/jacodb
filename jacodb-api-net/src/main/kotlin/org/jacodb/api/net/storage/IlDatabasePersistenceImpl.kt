@@ -68,17 +68,6 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
         }
     }
 
-    private fun findTypeSources(ctx: ILDBContext, fullName: String): Sequence<IlTypeDto> {
-        val txn = ctx.txn
-        val id = symbolInterner.findSymbolIdOrNew(fullName)
-        return txn.find(type = "Type", propertyName = "fullname", value = id.compressed).map { it.toDto() }
-    }
-
-//    override fun findTypeSourceByNameOrNull(fullName: String): IlTypeDto? = read { ctx ->
-//        val seq = findTypeSources(ctx, fullName).toList()
-//        seq.firstOrNull()
-//    }
-
     override fun findTypeSourceOrNull(typeId: TypeId): IlTypeDto? = read { ctx ->
         val seq = findTypeSources(ctx, typeId).toList()
         seq.firstOrNull()
@@ -90,10 +79,6 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
         return txn.find(type = "Type", propertyName = "typeId", value = id.compressed).map { it.toDto() }
     }
 
-    override fun findTypeSourcesByName(fullName: String): List<IlTypeDto> = read { ctx ->
-        findTypeSources(ctx, fullName).toList()
-    }
-
     override fun persistTypes(types: List<IlTypeDto>) {
         if (types.isEmpty()) return
         val typeEntities = hashMapOf<Long, Entity>()
@@ -101,10 +86,17 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
             val txn = ctx.txn
             types.forEach { type ->
                 val entity = txn.newEntity("Type")
-                val tIdx = type.id().interned(typeIdInterner)
+// TODO #2 links to generic args?
+                val tIdx =
+                    if (type.isGenericDefinition) typeIdInterner.createIdWithPseudonym(type.id(), type.id().apply {
+                        this.typeArgs.map { null }
+                    }) else type.id()
+                        .interned(typeIdInterner)
                 entity["typeId"] = tIdx.compressed
                 entity["fullname"] = type.fullname.asSymbolId(symbolInterner).compressed
                 entity["assembly"] = type.asmName.asSymbolId(symbolInterner).compressed
+                entity["isGenericType"] = type.isGenericType.compressed
+                entity["isGenericDefinition"] = type.isGenericDefinition.compressed
                 entity.setRawBlob("bytes", type.getBytes())
                 type.attrs.forEach { it.save(txn, entity) }
                 typeEntities[tIdx] = entity
@@ -119,6 +111,16 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
                 val typeInterfaces = links(typeEntities[type.id().interned(typeIdInterner)]!!, "implements")
                 type.interfaces.forEach { interfaceId ->
                     typeInterfaces += typeEntities[interfaceId.interned(typeIdInterner)]!!
+                }
+                val genericArgs = links(typeEntities[type.id().interned(typeIdInterner)]!!, "genericArguments")
+                type.genericArgs.forEach { arg ->
+                    genericArgs += typeEntities[arg.interned(typeIdInterner)]!!
+                }
+                type.genericDefinition?.let {
+                    links(
+                        typeEntities[type.id().interned(typeIdInterner)]!!,
+                        "genericDefinition"
+                    ) += typeEntities[it.interned(typeIdInterner)]!!
                 }
             }
         }
