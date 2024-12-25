@@ -48,4 +48,6 @@ object IlPredefinedTypesExt {
     fun IlPublication.nuint(): IlType =
         findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.UIntPtr", typeArgs = emptyList()))!!
 
+    fun IlPublication.string(): IlType =
+        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.String", typeArgs = emptyList()))!!
 }

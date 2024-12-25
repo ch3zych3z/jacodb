@@ -20,7 +20,6 @@ import org.jacodb.api.net.ILDBContext
 import org.jacodb.api.net.IlDatabasePersistence
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.generated.models.TypeId
-import org.jacodb.api.storage.ers.compressed
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListMap
 import java.util.concurrent.atomic.AtomicLong
@@ -37,6 +36,7 @@ interface IlDbInstanceInterner<Value, Persistence, Context> {
 
 private const val defaultMapName = "org.jacodb.impl.Values"
 
+// TODO #3 maybe introduce separate defn for this type (not impl)
 class IlDbTypeIdInternerImpl(
     private val kvValueMapName: String = defaultMapName,
     private val symbolInterner: IlDbSymbolInterner
@@ -59,14 +59,22 @@ class IlDbTypeIdInternerImpl(
 
     override fun findValueOrNull(id: Long): TypeId? = idCache[id]?.decompressed()
 
-    private data class TypeIdCompressed(val asmName: Long, val typeName: Long, val typeArgs: List<Long>) :
+    private data class TypeIdCompressed(val asmName: Long, val typeName: Long, val typeArgs: List<Long?>) :
         Comparable<TypeIdCompressed> {
+        private fun compLongs(pair: Pair<Long?, Long?>): Int =
+            when {
+                pair.second == null -> -1
+                pair.first == null -> 1
+                else -> (pair.second!! - pair.first!!).toInt()
+            }
+
+
         override fun compareTo(other: TypeIdCompressed): Int {
             if (asmName != other.asmName) return (asmName - other.asmName).toInt()
             if (typeName != other.typeName) return (typeName - other.typeName).toInt()
             if (typeArgs.size != other.typeArgs.size) return typeArgs.size - other.typeArgs.size
-            return typeArgs.zip(other.typeArgs).firstOrNull { pair -> pair.first.compareTo(pair.second) != 0 }
-                ?.let { pair -> pair.first.compareTo(pair.second) } ?: 0
+            return typeArgs.zip(other.typeArgs).firstOrNull { pair -> compLongs(pair) != 0 }
+                ?.let { pair -> compLongs(pair) } ?: 0
         }
 
         override fun equals(other: Any?): Boolean {
@@ -93,7 +101,7 @@ class IlDbTypeIdInternerImpl(
     private fun TypeIdCompressed.decompressed(): TypeId = TypeId(
         asmName = symbolInterner.findSymbol(asmName),
         typeName = symbolInterner.findSymbol(typeName),
-        typeArgs = typeArgs.map { findValue(it) }
+        typeArgs = typeArgs.map { findValue(it!!) }
     )
 
     override fun findIdOrNew(value: TypeId): Long =
@@ -103,6 +111,15 @@ class IlDbTypeIdInternerImpl(
                 idCache[it] = typeCompressed
             }
         }
+
+    fun createIdWithPseudonym(value: TypeId, pseudonym: TypeId): Long {
+        val id = findIdOrNew(value)
+        return valueCache.computeIfAbsent(pseudonym.compressed()) { t ->
+            id.also {
+                newElements[t] = it
+            }
+        }
+    }
 
     override fun flush(ctx: ILDBContext) {
 //        val entries = newElements.entries.toList()
