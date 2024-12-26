@@ -16,19 +16,12 @@
 
 package org.jacodb.api.net.storage
 
-import com.jetbrains.rd.util.putLong
 import org.jacodb.api.net.ILDBContext
 import org.jacodb.api.net.IlDatabasePersistence
 import org.jacodb.api.net.features.APPROXIMATION_ATTRIBUTE
 import org.jacodb.api.net.features.ORIGINAL_TYPE_PROPERTY
 import org.jacodb.api.net.generated.models.*
-import org.jacodb.api.storage.ers.Entity
-import org.jacodb.api.storage.ers.EntityRelationshipStorage
-import org.jacodb.api.storage.ers.Transaction
-import org.jacodb.api.storage.ers.compressed
-import org.jacodb.api.storage.ers.links
-import org.jacodb.api.storage.ers.nonSearchable
-import java.nio.ByteBuffer
+import org.jacodb.api.storage.ers.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -88,10 +81,9 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
                 val entity = txn.newEntity("Type")
 // TODO #2 links to generic args?
                 val tIdx =
-                    if (type.isGenericDefinition) typeIdInterner.createIdWithPseudonym(type.id(), type.id().apply {
-                        this.typeArgs.map { null }
-                    }) else type.id()
-                        .interned(typeIdInterner)
+                    if (type.isGenericDefinition)
+                        typeIdInterner.createIdWithPseudonym(type.id(), type.id().withEmptyTypeArgs())
+                    else typeIdInterner.findIdOrNew(type.id())
                 entity["typeId"] = tIdx.compressed
                 entity["fullname"] = type.fullname.asSymbolId(symbolInterner).compressed
                 entity["assembly"] = type.asmName.asSymbolId(symbolInterner).compressed

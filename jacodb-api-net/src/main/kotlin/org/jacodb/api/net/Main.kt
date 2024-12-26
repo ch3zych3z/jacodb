@@ -73,24 +73,24 @@ fun main(args: Array<String>) {
         )
         val allTypes = publication.allTypes
         println("types fetched")
-//        runBlocking {
+        runBlocking {
 //            InMemoryIlHierarchy.query(
 //                publication,
 //                InMemoryIlHierarchyReq(allTypes.single { it.fullname == "Usvm.IL.Test.Instructions.Instance" }
 //                    .id(), true)).asIterable().forEach { t -> println(t.fullname) }
-//            InMemoryIlHierarchy.query(
-//                publication,
-//                InMemoryIlHierarchyReq(
-//                    TypeId(
-//                        listOf(
-//                            publication.string().id
-//                        ),
-//                        publication.mscorelib()!!,
-//                        "System.Collections.Generic.List`1"
-//                    ), true
-//                )
-//            ).asIterable().forEach { t -> println(t.fullname) }
-//        }
+            InMemoryIlHierarchy.query(
+                publication,
+                InMemoryIlHierarchyReq(
+                    TypeId(
+                        listOf(
+                            publication.int32().id
+                        ),
+                        publication.mscorelib()!!,
+                        "System.Collections.Generic.List`1"
+                    ), true
+                )
+            ).asIterable().forEach { t -> println(t.fullname) }
+        }
         allTypes.forEach { typeDto ->
             // TODO #3 introduce separate tests
 //            if (typeDto.asmName == publication.mscorelib() && typeDto.fullname.contains("System.Collections.Generic.List`1[T]")) {
