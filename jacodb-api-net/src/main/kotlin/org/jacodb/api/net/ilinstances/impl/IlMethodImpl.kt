@@ -24,6 +24,7 @@ import org.jacodb.api.net.IlMethodExtFeature.IlInstListResult
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.*
 import org.jacodb.api.net.ilinstances.*
+import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMethodDto) : IlMethod {
@@ -38,7 +39,12 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
 
     override val isStatic: Boolean = dto.isStatic
     override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType)!! } }
-
+    override val isGeneric: Boolean
+        get() = dto.isGeneric
+    override val isGenericDefinition: Boolean
+        get() = dto.isGenericDefinition
+    override val signature: String
+        get() = dto.signature
     override val name: String = dto.name
     override val parameters: List<IlParameterImpl> by lazy(PUBLICATION) {
         dto.parameters.map { IlParameterImpl(it, this) }.toMutableList()
@@ -51,6 +57,11 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
             )
         }
     }
+
+    override val genericArguments: List<IlType> by lazy(PUBLICATION) {
+        dto.genericArgs.map { publication.findIlTypeOrNull(it)!! }.toList()
+    }
+
     override val rawInstList: List<IlStmtDto>
         get() = dto.rawInstList
 

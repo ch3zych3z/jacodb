@@ -87,7 +87,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = -7123777903255028540L
+        const val serializationHash = -5233379986265628042L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -1674,8 +1674,12 @@ class IlMethodDto (
     val returnType: TypeId,
     val attrs: List<IlAttrDto>,
     val isStatic: Boolean,
+    val isGeneric: Boolean,
+    val isGenericDefinition: Boolean,
+    val signature: String,
     val name: String,
     val parameters: List<IlParameterDto>,
+    val genericArgs: List<TypeId>,
     val resolved: Boolean,
     val locals: List<IlLocalVarDto>,
     val temps: List<IlTempVarDto>,
@@ -1695,8 +1699,12 @@ class IlMethodDto (
             val returnType = TypeId.read(ctx, buffer)
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val isStatic = buffer.readBool()
+            val isGeneric = buffer.readBool()
+            val isGenericDefinition = buffer.readBool()
+            val signature = buffer.readString()
             val name = buffer.readString()
             val parameters = buffer.readList { IlParameterDto.read(ctx, buffer) }
+            val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
             val resolved = buffer.readBool()
             val locals = buffer.readList { IlLocalVarDto.read(ctx, buffer) }
             val temps = buffer.readList { IlTempVarDto.read(ctx, buffer) }
@@ -1704,15 +1712,19 @@ class IlMethodDto (
             val ehScopes = buffer.readList { ctx.serializers.readPolymorphic<IlEhScopeDto>(ctx, buffer, IlEhScopeDto) }
             val rawInstList = buffer.readList { ctx.serializers.readPolymorphic<IlStmtDto>(ctx, buffer, IlStmtDto) }
             val isConstructed = buffer.readBool()
-            return IlMethodDto(returnType, attrs, isStatic, name, parameters, resolved, locals, temps, errs, ehScopes, rawInstList, isConstructed)
+            return IlMethodDto(returnType, attrs, isStatic, isGeneric, isGenericDefinition, signature, name, parameters, genericArgs, resolved, locals, temps, errs, ehScopes, rawInstList, isConstructed)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMethodDto)  {
             TypeId.write(ctx, buffer, value.returnType)
             buffer.writeList(value.attrs) { v -> IlAttrDto.write(ctx, buffer, v) }
             buffer.writeBool(value.isStatic)
+            buffer.writeBool(value.isGeneric)
+            buffer.writeBool(value.isGenericDefinition)
+            buffer.writeString(value.signature)
             buffer.writeString(value.name)
             buffer.writeList(value.parameters) { v -> IlParameterDto.write(ctx, buffer, v) }
+            buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.resolved)
             buffer.writeList(value.locals) { v -> IlLocalVarDto.write(ctx, buffer, v) }
             buffer.writeList(value.temps) { v -> IlTempVarDto.write(ctx, buffer, v) }
@@ -1738,8 +1750,12 @@ class IlMethodDto (
         if (returnType != other.returnType) return false
         if (attrs != other.attrs) return false
         if (isStatic != other.isStatic) return false
+        if (isGeneric != other.isGeneric) return false
+        if (isGenericDefinition != other.isGenericDefinition) return false
+        if (signature != other.signature) return false
         if (name != other.name) return false
         if (parameters != other.parameters) return false
+        if (genericArgs != other.genericArgs) return false
         if (resolved != other.resolved) return false
         if (locals != other.locals) return false
         if (temps != other.temps) return false
@@ -1756,8 +1772,12 @@ class IlMethodDto (
         __r = __r*31 + returnType.hashCode()
         __r = __r*31 + attrs.hashCode()
         __r = __r*31 + isStatic.hashCode()
+        __r = __r*31 + isGeneric.hashCode()
+        __r = __r*31 + isGenericDefinition.hashCode()
+        __r = __r*31 + signature.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + parameters.hashCode()
+        __r = __r*31 + genericArgs.hashCode()
         __r = __r*31 + resolved.hashCode()
         __r = __r*31 + locals.hashCode()
         __r = __r*31 + temps.hashCode()
@@ -1774,8 +1794,12 @@ class IlMethodDto (
             print("returnType = "); returnType.print(printer); println()
             print("attrs = "); attrs.print(printer); println()
             print("isStatic = "); isStatic.print(printer); println()
+            print("isGeneric = "); isGeneric.print(printer); println()
+            print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
+            print("signature = "); signature.print(printer); println()
             print("name = "); name.print(printer); println()
             print("parameters = "); parameters.print(printer); println()
+            print("genericArgs = "); genericArgs.print(printer); println()
             print("resolved = "); resolved.print(printer); println()
             print("locals = "); locals.print(printer); println()
             print("temps = "); temps.print(printer); println()
@@ -2648,7 +2672,7 @@ class IlReferenceTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:146]
+ * #### Generated from [IlModel.kt:150]
  */
 class IlSignatureDto (
     val returnType: TypeId,

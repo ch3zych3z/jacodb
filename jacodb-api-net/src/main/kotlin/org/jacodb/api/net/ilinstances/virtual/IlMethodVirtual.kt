@@ -31,9 +31,12 @@ class IlMethodVirtual(
     override val declaringType: IlType,
     override val isStatic: Boolean,
     override val returnType: IlType,
+    override val isGeneric: Boolean,
+    override val isGenericDefinition: Boolean,
     override val name: String,
     override val attributes: List<IlAttribute>,
     override val parameters: List<IlParameter>,
+    override val genericArguments: List<IlType>,
     override val rawInstList: List<IlStmtDto>
 ) : IlMethod {
     // TODO
@@ -81,6 +84,13 @@ class IlMethodVirtual(
             parameters = value.map { IlParameterVirtual(it.type, it.attributes, it.name) }
         }
 
+        var genericArguments: List<IlType> = emptyList()
+            private set
+
+        fun genericArguments(value: List<IlType>) = apply {
+            genericArguments = value
+        }
+
         var rawInstList: List<IlStmtDto> = emptyList()
             private set
 
@@ -89,8 +99,19 @@ class IlMethodVirtual(
         }
 
 
+        // TODO #1 remove mock
         fun build(): IlMethodVirtual =
-            IlMethodVirtual(declaringType, isStatic, returnType, name, attributes, parameters, rawInstList)
+            IlMethodVirtual(
+                declaringType,
+                isStatic,
+                returnType,
+                false, false,
+                name,
+                attributes,
+                parameters,
+                genericArguments,
+                rawInstList
+            )
     }
 
     val publication: IlPublication get() = declaringType.publication
@@ -106,7 +127,7 @@ class IlMethodVirtual(
         fun IlMethod.toVirtualOf(type: IlType) =
             Builder(type.publication).declaringType(type).isStatic(isStatic).returnType(returnType).name(name)
                 .attributes(attributes)
-                .parameters(parameters).rawInstList(rawInstList).build()
+                .parameters(parameters).genericArguments(genericArguments).rawInstList(rawInstList).build()
     }
 
     override fun flowGraph(): ControlFlowGraph<CommonInst> {

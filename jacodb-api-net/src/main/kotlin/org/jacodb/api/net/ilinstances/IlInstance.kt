@@ -57,7 +57,7 @@ interface IlType : IlInstance, CommonTypeName {
     val asmName: String
     val name: String
     val id: TypeId
-        get() = TypeId(asmName = asmName, typeName = fullname , typeArgs = genericArgs.map { (it as IlTypeImpl).id })
+        get() = TypeId(asmName = asmName, typeName = fullname, typeArgs = genericArgs.map { (it as IlTypeImpl).id })
 
     val attributes: List<IlAttribute>
 
@@ -78,9 +78,12 @@ interface IlMethod : IlInstance, CommonMethod {
     val attributes: List<IlAttribute>
     val declaringType: IlType
     val isStatic: Boolean
+    val isGeneric: Boolean
+    val isGenericDefinition: Boolean
     override val returnType: IlType
     override val name: String
-    val signature: String get() = "${returnType.typeName} $name(${parameters.joinToString(",") { it.type.typeName }})"
+    val genericArguments: List<IlType>
+    val signature: String get() = "${returnType.typeName} ${declaringType.fullname}.$name(${parameters.joinToString(",") { it.type.typeName }})"
 
     val rawInstList: List<IlStmtDto>
     val instList: List<IlStmt>
