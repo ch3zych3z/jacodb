@@ -20,6 +20,7 @@ import org.jacodb.api.net.ILDBContext
 import org.jacodb.api.net.IlDatabasePersistence
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.generated.models.TypeId
+import org.jacodb.api.net.storage.TypeIdExt.emptyTypeId
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListMap
 import java.util.concurrent.atomic.AtomicLong
@@ -113,6 +114,7 @@ class IlDbTypeIdInternerImpl(
         }
 
     fun createIdWithPseudonym(value: TypeId, pseudonym: TypeId): Long {
+        check(value != pseudonym)
         val id = findIdOrNew(value)
         return valueCache.computeIfAbsent(pseudonym.compressed()) { t ->
             id.also {
@@ -156,3 +158,8 @@ fun Long.asTypeId(interner: IlDbInstanceInterner<TypeId, IlDatabasePersistence, 
     interner.findValue(this)
 
 fun IlTypeDto.id() = TypeId(asmName = asmName, typeName = fullname, typeArgs = genericArgs)
+
+fun TypeId.withEmptyTypeArgs() = TypeId(typeArgs.map { emptyTypeId() }, asmName, typeName)
+object TypeIdExt {
+    fun emptyTypeId() = TypeId(listOf(), "", "")
+}

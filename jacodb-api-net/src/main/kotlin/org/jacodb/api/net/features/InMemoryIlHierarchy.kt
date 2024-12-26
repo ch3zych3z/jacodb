@@ -16,7 +16,6 @@
 
 package org.jacodb.api.net.features
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.jacodb.api.net.IlDatabase
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlTypeDto
@@ -26,10 +25,10 @@ import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.storage.asTypeId
 import org.jacodb.api.net.storage.interned
 import org.jacodb.api.net.storage.txn
+import org.jacodb.api.net.storage.withEmptyTypeArgs
 import org.jacodb.api.storage.ers.compressed
 import org.jacodb.api.storage.ers.links
 import java.util.concurrent.ConcurrentHashMap
-import org.jacodb.impl.util.Sequence
 
 typealias InMemoryIlHierarchyCache = ConcurrentHashMap<Long, MutableSet<Long>>
 
@@ -64,27 +63,21 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
                         }
                         val tId: Long = type.getCompressed<Long>("typeId")!!
                         val parents = mutableListOf<Long>()
-                        // TODO use genericDefn here instead of real type
-                        links(type, "baseType").asIterable.singleOrNull()?.let {
-//                            val isGenericType = it.getCompressed<Boolean>("isGenericType")!!
-//                            val isGenericDefn = it.getCompressed<Boolean>("isGenericDefinition")!!
-                            parents += it.getCompressed<Long>("typeId")!!
-//                                if (isGenericType && !isGenericDefn)
-//                                    (links(it, "genericDefinition")).asIterable.single()
-//                                        .getCompressed<Long>("typeId")!!
-//                                else
-
+                        links(type, "baseType").asIterable.singleOrNull()?.let { baseType ->
+                            if (baseType.getCompressed<Boolean>("isGenericType")!!) {
+                                links(baseType, "genericDefinition").asIterable.singleOrNull()?.let {
+                                    baseGenDef -> parents += baseGenDef.getCompressed<Long>("typeId")!!
+                                }
+                            } else
+                            parents += baseType.getCompressed<Long>("typeId")!!
                         }
-                        links(type, "implements").asIterable.forEach {
-//                            val isGenericType = it.getCompressed<Boolean>("isGenericType")!!
-//                            val isGenericDefn = it.getCompressed<Boolean>("isGenericDefinition")!!
-
-                            parents += it.getCompressed<Long>("typeId")!!
-//                                if (isGenericType && !isGenericDefn)
-//                                (links(it, "genericDefinition")).asIterable.single()
-//                                    .getCompressed<Long>("typeId")!!
-//                            else
-
+                        links(type, "implements").asIterable.forEach { interf ->
+                            if (interf.getCompressed<Boolean>("isGenericType")!!) {
+                                links(interf, "genericDefinition").asIterable.singleOrNull()?.let {
+                                        baseGenDef -> parents += baseGenDef.getCompressed<Long>("typeId")!!
+                                }
+                            } else
+                                parents += interf.getCompressed<Long>("typeId")!!
                         }
                         parents.forEach {
                             result += Pair(tId, it)
@@ -103,7 +96,7 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
         val hierarchy = hierarchies[publication.db] ?: return emptySequence()
 
         fun getSubclasses(typeId: Long, transitive: Boolean, result: HashSet<Long>) {
-            // TODO #1 filter by asm name or location from publication
+            // TODO #2 filter by asm name or location from publication
             val directSubclasses = hierarchy[typeId].orEmpty().toSet()
             result.addAll(directSubclasses)
             if (transitive) {
@@ -116,14 +109,14 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
         val subclasses = hashSetOf<Long>()
         if (request.typeId.typeArgs.isNotEmpty()) {
             val nonFilteredSubclasses = hashSetOf<Long>()
-            val rootId = persistence.typeIdInterner.findIdOrNew(request.typeId.apply { this.typeArgs.map { null } })
+            val rootId =
+                persistence.typeIdInterner.findIdOrNew(request.typeId.withEmptyTypeArgs())
             getSubclasses(rootId, request.transitive, nonFilteredSubclasses)
             val reqType = publication.findIlTypeOrNull(request.typeId)!!
             nonFilteredSubclasses.filterTo(subclasses) {
                 val substTarget = publication.findIlTypeOrNull(it.asTypeId(persistence.typeIdInterner))!!
                 reqType.substInto(substTarget)
             }
-            println("")
         } else {
             getSubclasses(request.typeId.interned(persistence.typeIdInterner), request.transitive, subclasses)
         }
@@ -142,3 +135,4 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
         return true
     }
 }
+
