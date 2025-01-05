@@ -30,7 +30,7 @@ interface IlInstance {
     val isConstructed: Boolean
 }
 
-interface IlType : IlInstance, CommonTypeName {
+interface IlType : IlInstance, CommonTypeName, CommonType {
     val publication: IlPublication
     val declaringType: IlType?
     val baseType: IlType?
@@ -51,6 +51,8 @@ interface IlType : IlInstance, CommonTypeName {
     val hasDefaultCtorConstraint: Boolean
 
     override val typeName: String
+    override val nullable: Boolean?
+        get() = TODO()
     val moduleToken: Int
     val typeToken: Int
     val fullname: String
