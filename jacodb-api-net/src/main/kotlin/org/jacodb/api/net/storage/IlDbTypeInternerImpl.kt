@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListMap
 import java.util.concurrent.atomic.AtomicLong
 
+// TODO #3 common instance interner
 interface IlDbInstanceInterner<Value, Persistence, Context> {
     fun setup(persistence: Persistence)
     fun close()
@@ -81,7 +82,9 @@ class IlDbTypeIdInternerImpl(
         override fun equals(other: Any?): Boolean {
             if (other == null || other !is TypeIdCompressed) return false;
             return other.asmName == asmName && other.typeName == typeName && other.typeArgs.zip(typeArgs)
-                .firstOrNull { it.first != it.second } != (null ?: true);
+                .firstOrNull {
+                    it.first == it.second
+                } == null;
         }
 
         override fun hashCode(): Int {
@@ -113,6 +116,8 @@ class IlDbTypeIdInternerImpl(
             }
         }
 
+    // value -> id
+    // value1 -> id
     fun createIdWithPseudonym(value: TypeId, pseudonym: TypeId): Long {
         check(value != pseudonym)
         val id = findIdOrNew(value)
@@ -160,6 +165,7 @@ fun Long.asTypeId(interner: IlDbInstanceInterner<TypeId, IlDatabasePersistence, 
 fun IlTypeDto.id() = TypeId(asmName = asmName, typeName = fullname, typeArgs = genericArgs)
 
 fun TypeId.withEmptyTypeArgs() = TypeId(typeArgs.map { emptyTypeId() }, asmName, typeName)
+
 object TypeIdExt {
     fun emptyTypeId() = TypeId(listOf(), "", "")
 }

@@ -40,6 +40,7 @@ data class InMemoryIlHierarchyReq(
 
 object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
 
+    // TODO #2 check in memory hierarchy is built for the whole db, not publication
     private val hierarchies = ConcurrentHashMap<IlDatabase, InMemoryIlHierarchyCache>()
 
     override suspend fun query(
@@ -65,16 +66,16 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
                         val parents = mutableListOf<Long>()
                         links(type, "baseType").asIterable.singleOrNull()?.let { baseType ->
                             if (baseType.getCompressed<Boolean>("isGenericType")!!) {
-                                links(baseType, "genericDefinition").asIterable.singleOrNull()?.let {
-                                    baseGenDef -> parents += baseGenDef.getCompressed<Long>("typeId")!!
+                                links(baseType, "genericDefinition").asIterable.singleOrNull()?.let { baseGenDef ->
+                                    parents += baseGenDef.getCompressed<Long>("typeId")!!
                                 }
                             } else
-                            parents += baseType.getCompressed<Long>("typeId")!!
+                                parents += baseType.getCompressed<Long>("typeId")!!
                         }
                         links(type, "implements").asIterable.forEach { interf ->
                             if (interf.getCompressed<Boolean>("isGenericType")!!) {
-                                links(interf, "genericDefinition").asIterable.singleOrNull()?.let {
-                                        baseGenDef -> parents += baseGenDef.getCompressed<Long>("typeId")!!
+                                links(interf, "genericDefinition").asIterable.singleOrNull()?.let { baseGenDef ->
+                                    parents += baseGenDef.getCompressed<Long>("typeId")!!
                                 }
                             } else
                                 parents += interf.getCompressed<Long>("typeId")!!
@@ -93,33 +94,27 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
 
     private fun syncQuery(publication: IlPublication, request: InMemoryIlHierarchyReq): Sequence<IlTypeDto> {
         val persistence = publication.db.persistence
+        val typeIdInterner = persistence.typeIdInterner
         val hierarchy = hierarchies[publication.db] ?: return emptySequence()
 
-        fun getSubclasses(typeId: Long, transitive: Boolean, result: HashSet<Long>) {
-            // TODO #2 filter by asm name or location from publication
-            val directSubclasses = hierarchy[typeId].orEmpty().toSet()
-            result.addAll(directSubclasses)
-            if (transitive) {
-                directSubclasses.forEach {
-                    getSubclasses(it, true, result)
-                }
-            }
+        fun Long.optGenericDefn() = asTypeId(typeIdInterner).withEmptyTypeArgs().interned(typeIdInterner)
+
+        fun Long.isSupertypeOfOrNull(other: Long): Long? {
+            TODO()
+        }
+
+        fun subClassesOf(requestedType: Long, transitive: Boolean, result: HashSet<Long>) {
+            val direct =
+                hierarchy[requestedType.optGenericDefn()].orEmpty().mapNotNull { requestedType.isSupertypeOfOrNull(it) }
+                    .toSet()
+            result.addAll(direct)
+            if (!transitive) return
+            direct.forEach { subclass -> subClassesOf(subclass, true, result) }
         }
 
         val subclasses = hashSetOf<Long>()
-        if (request.typeId.typeArgs.isNotEmpty()) {
-            val nonFilteredSubclasses = hashSetOf<Long>()
-            val rootId =
-                persistence.typeIdInterner.findIdOrNew(request.typeId.withEmptyTypeArgs())
-            getSubclasses(rootId, request.transitive, nonFilteredSubclasses)
-            val reqType = publication.findIlTypeOrNull(request.typeId)!!
-            nonFilteredSubclasses.filterTo(subclasses) {
-                val substTarget = publication.findIlTypeOrNull(it.asTypeId(persistence.typeIdInterner))!!
-                reqType.substInto(substTarget)
-            }
-        } else {
-            getSubclasses(request.typeId.interned(persistence.typeIdInterner), request.transitive, subclasses)
-        }
+        subClassesOf(request.typeId.interned(typeIdInterner), request.transitive, subclasses)
+
         if (subclasses.isEmpty()) return emptySequence()
         return persistence.read { context ->
             subclasses.flatMap { typeId ->
@@ -128,11 +123,6 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
                 }.filterNotNull()
             }.asSequence()
         }
-    }
-
-    private fun IlType.substInto(target: IlType): Boolean {
-        // TODO #1
-        return true
     }
 }
 

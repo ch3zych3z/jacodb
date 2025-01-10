@@ -63,6 +63,7 @@ class IlPublicationImpl(
         res
     }
 
+    // TODO #1 .net call for type must be hidden here! as features
     override fun findIlTypeOrNull(typeId: TypeId): IlType? =
         featuresChain.callUntilResolved<IlTypeSearchFeature, ResolvedIlTypeResult> { feature ->
             feature.findType(typeId)

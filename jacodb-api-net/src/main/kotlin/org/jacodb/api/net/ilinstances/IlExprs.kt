@@ -172,6 +172,7 @@ class IlArrayAccess(override val array: IlValue, override val index: IlValue) : 
 
 class IlCall(val method: IlMethod, override val args: List<IlValue>) : IlExpr, CommonCallExpr {
     override val type: IlType get() = method.returnType
+    val instance: IlValue? get() = if (method.isStatic) null else args.first()
     override fun <T> accept(visitor: IlExprVisitor<T>): T {
         return visitor.visitIlCall(this)
     }
