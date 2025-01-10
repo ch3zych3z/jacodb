@@ -34,6 +34,7 @@ interface IlDatabase : Closeable {
 }
 
 
+// TODO #3 check inheritance from ErsPersistence
 interface IlDatabasePersistence {
     val ers: EntityRelationshipStorage
     val allTypes: List<IlTypeDto>

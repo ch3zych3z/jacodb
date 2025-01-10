@@ -79,7 +79,8 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
             val txn = ctx.txn
             types.forEach { type ->
                 val entity = txn.newEntity("Type")
-// TODO #2 links to generic args?
+                // TODO #2 links to generic args?
+                // TODO #3 may be changed
                 val tIdx =
                     if (type.isGenericDefinition)
                         typeIdInterner.createIdWithPseudonym(type.id(), type.id().withEmptyTypeArgs())
