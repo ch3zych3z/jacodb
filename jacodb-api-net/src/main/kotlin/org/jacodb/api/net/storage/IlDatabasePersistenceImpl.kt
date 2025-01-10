@@ -81,10 +81,16 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
                 val entity = txn.newEntity("Type")
                 // TODO #2 links to generic args?
                 // TODO #3 may be changed
-                val tIdx =
-                    if (type.isGenericDefinition)
-                        typeIdInterner.createIdWithPseudonym(type.id(), type.id().withEmptyTypeArgs())
-                    else typeIdInterner.findIdOrNew(type.id())
+                val tIdx = if (type.isGenericDefinition)
+                    typeIdInterner.createIdWithPseudonym(
+                        type.id(),
+                        type.id().withEmptyTypeArgs()
+                    ) else typeIdInterner.findIdOrNew(type.id())
+                check(
+                    !type.isGenericDefinition || type.isGenericDefinition && type.id()
+                        .interned(typeIdInterner) == type.id().withEmptyTypeArgs().interned(typeIdInterner)
+                )
+                typeEntities[tIdx] = entity
                 entity["typeId"] = tIdx.compressed
                 entity["fullname"] = type.fullname.asSymbolId(symbolInterner).compressed
                 entity["assembly"] = type.asmName.asSymbolId(symbolInterner).compressed
@@ -92,7 +98,6 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
                 entity["isGenericDefinition"] = type.isGenericDefinition.compressed
                 entity.setRawBlob("bytes", type.getBytes())
                 type.attrs.forEach { it.save(txn, entity) }
-                typeEntities[tIdx] = entity
             }
             types.forEach { type ->
                 type.baseType?.let { baseId ->
@@ -103,6 +108,7 @@ class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : I
                 }
                 val typeInterfaces = links(typeEntities[type.id().interned(typeIdInterner)]!!, "implements")
                 type.interfaces.forEach { interfaceId ->
+
                     typeInterfaces += typeEntities[interfaceId.interned(typeIdInterner)]!!
                 }
                 val genericArgs = links(typeEntities[type.id().interned(typeIdInterner)]!!, "genericArguments")

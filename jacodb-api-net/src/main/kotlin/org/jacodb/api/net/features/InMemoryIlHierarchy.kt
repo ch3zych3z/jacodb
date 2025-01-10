@@ -100,7 +100,8 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
         fun Long.optGenericDefn() = asTypeId(typeIdInterner).withEmptyTypeArgs().interned(typeIdInterner)
 
         fun Long.isSupertypeOfOrNull(other: Long): Long? {
-            TODO()
+            // TODO
+            return other
         }
 
         fun subClassesOf(requestedType: Long, transitive: Boolean, result: HashSet<Long>) {
