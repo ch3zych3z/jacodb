@@ -133,6 +133,10 @@ class DtoSerializationExtKtTest {
             ),
             isStatic = false,
             isConstructed = true,
+            isGeneric = false,
+            isGenericDefinition = false,
+            signature = "",
+            genericArgs = listOf(),
         )
 
         val method2 = IlMethodDto(
@@ -166,7 +170,11 @@ class DtoSerializationExtKtTest {
             ehScopes = listOf(),
             isStatic = false,
             rawInstList = listOf(),
-            isConstructed = true
+            isConstructed = true,
+            isGeneric = false,
+            isGenericDefinition = false,
+            signature = "TODO()",
+            genericArgs = listOf()
         )
 
         // Create the struct type with the mock fields and methods

@@ -95,6 +95,16 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
         methods.joinFeatureMethods(this, publication.featuresChain)
     }
 
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is IlTypeImpl) return false
+        return moduleToken == other.moduleToken && typeToken == other.typeToken
+    }
+
+    override fun hashCode(): Int {
+        return typeToken
+    }
+
     override fun toString(): String {
         return name
     }

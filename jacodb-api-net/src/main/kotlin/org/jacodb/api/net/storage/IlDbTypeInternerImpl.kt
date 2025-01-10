@@ -79,20 +79,20 @@ class IlDbTypeIdInternerImpl(
                 ?.let { pair -> compLongs(pair) } ?: 0
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (other == null || other !is TypeIdCompressed) return false;
-            return other.asmName == asmName && other.typeName == typeName && other.typeArgs.zip(typeArgs)
-                .firstOrNull {
-                    it.first == it.second
-                } == null;
-        }
+//        override fun equals(other: Any?): Boolean {
+//            if (other == null || other !is TypeIdCompressed) return false;
+//            return other.asmName == asmName && other.typeName == typeName && other.typeArgs == typeArgs
+//                .all {
+//                    it.first == it.second
+//                };
+//        }
 
-        override fun hashCode(): Int {
-            var result = asmName.hashCode()
-            result = 31 * result + typeName.hashCode()
-            result = 31 * result + typeArgs.hashCode()
-            return result
-        }
+//        override fun hashCode(): Int {
+//            var result = asmName.hashCode()
+//            result = 31 * result + typeName.hashCode()
+//            result = 31 * result + typeArgs.hashCode()
+//            return result
+//        }
 
     }
 
@@ -108,24 +108,19 @@ class IlDbTypeIdInternerImpl(
         typeArgs = typeArgs.map { findValue(it!!) }
     )
 
-    override fun findIdOrNew(value: TypeId): Long =
-        valueCache.computeIfAbsent(value.compressed()) { typeCompressed ->
+    override fun findIdOrNew(instance: TypeId): Long =
+        valueCache.computeIfAbsent(instance.compressed()) { typeCompressed ->
             idGen.incrementAndGet().also {
                 newElements[typeCompressed] = it
                 idCache[it] = typeCompressed
             }
         }
 
-    // value -> id
-    // value1 -> id
     fun createIdWithPseudonym(value: TypeId, pseudonym: TypeId): Long {
         check(value != pseudonym)
         val id = findIdOrNew(value)
-        return valueCache.computeIfAbsent(pseudonym.compressed()) { t ->
-            id.also {
-                newElements[t] = it
-            }
-        }
+        valueCache[pseudonym.compressed()] = id
+        return id
     }
 
     override fun flush(ctx: ILDBContext) {
