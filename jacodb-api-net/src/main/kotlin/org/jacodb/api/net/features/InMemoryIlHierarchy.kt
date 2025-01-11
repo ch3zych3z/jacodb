@@ -38,7 +38,7 @@ data class InMemoryIlHierarchyReq(
     val includeBytecode: Boolean = false
 )
 
-object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
+object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlType> {
 
     // TODO #2 check in memory hierarchy is built for the whole db, not publication
     private val hierarchies = ConcurrentHashMap<IlDatabase, InMemoryIlHierarchyCache>()
@@ -46,7 +46,7 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
     override suspend fun query(
         publication: IlPublication,
         request: InMemoryIlHierarchyReq
-    ): Sequence<IlTypeDto> {
+    ): Sequence<IlType> {
         return syncQuery(publication, request)
     }
 
@@ -92,16 +92,55 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
         }
     }
 
-    private fun syncQuery(publication: IlPublication, request: InMemoryIlHierarchyReq): Sequence<IlTypeDto> {
+    private fun syncQuery(publication: IlPublication, request: InMemoryIlHierarchyReq): Sequence<IlType> {
         val persistence = publication.db.persistence
         val typeIdInterner = persistence.typeIdInterner
         val hierarchy = hierarchies[publication.db] ?: return emptySequence()
 
         fun Long.optGenericDefn() = asTypeId(typeIdInterner).withEmptyTypeArgs().interned(typeIdInterner)
 
-        fun Long.isSupertypeOfOrNull(other: Long): Long? {
-            // TODO
-            return other
+        fun Long.isSupertypeOfOrNull(mbChild: Long): Long? {
+            val sup = publication.findIlTypeOrNull(typeIdInterner.findValue(this))!!
+            if (!sup.isGenericType) return mbChild
+            // got a feeling that there is a mistake here
+            val sub = publication.findIlTypeOrNull(typeIdInterner.findValue(mbChild))!!
+            if (!sub.isGenericType) return mbChild
+            val supDef = sup.genericDefinition!!
+            val matching =
+                (sub.interfaces + sub.baseType).filter { it != null && it.genericDefinition?.let { gd -> gd == supDef } ?: false }
+            check(sub.isGenericDefinition)
+            val paramToArg = sub.genericArgs.associateWith { param ->
+                matching.mapNotNull { supArg ->
+                    supArg?.genericArgs?.mapIndexedNotNull { index, arg ->
+                        if (arg == param) sup.genericArgs[index] else null
+                    }
+                }.flatten().singleOrNull()
+            }
+
+            // TODO replace with proper checks here
+            val subTypeId = sub.id
+            val requestTypeId = TypeId(
+                sub.genericDefinition!!.genericArgs.map { paramToArg[it]?.id ?: it.id },
+                subTypeId.asmName,
+                subTypeId.typeName
+            )
+            // check interning works properly on such request
+            val response = publication.findIlTypeOrNull(requestTypeId)
+            return response?.let { typeIdInterner.findIdOrNew(it.id) }
+
+            /* we want to check this :> other
+             * here may be the following situations:
+             * 1. both ~ non-generic
+             *   + the only possible check is exact inheritance (or transitive)
+             * 2. this ~ generic & other ~ non-generic
+             *   -
+             * 3. this ~ non-generic & other ~ generic
+             *   + the only possible check here is generic defn inherit from this (since we cannot define specific constraints for generic substitution)
+             * 4. both ~ generic
+             *   - T1<P1, P2> :> T2<P3, P4, P5>
+             *
+             * seems like for situations except when both are generics, exact inheritance is the only think we can check
+             */
         }
 
         fun subClassesOf(requestedType: Long, transitive: Boolean, result: HashSet<Long>) {
@@ -117,13 +156,14 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlTypeDto> {
         subClassesOf(request.typeId.interned(typeIdInterner), request.transitive, subclasses)
 
         if (subclasses.isEmpty()) return emptySequence()
-        return persistence.read { context ->
-            subclasses.flatMap { typeId ->
-                context.txn.find(type = "Type", propertyName = "typeId", typeId.compressed).map {
-                    it.getRawBlob("bytes")?.getIlTypeDto()
-                }.filterNotNull()
-            }.asSequence()
-        }
+        return subclasses.mapNotNull { publication.findIlTypeOrNull(it.asTypeId(typeIdInterner)) }.asSequence()
+//        persistence.read { context ->
+//            subclasses.flatMap { typeId ->
+//                context.txn.find(type = "Type", propertyName = "typeId", typeId.compressed).map {
+//                    it.getRawBlob("bytes")?.getIlTypeDto()
+//                }.filterNotNull()
+//            }.asSequence()
+//        }
     }
 }
 

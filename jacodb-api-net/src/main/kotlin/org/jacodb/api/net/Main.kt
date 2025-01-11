@@ -16,35 +16,16 @@
 
 package org.jacodb.api.net
 
-import com.jetbrains.rd.framework.Protocol
 import com.jetbrains.rd.framework.impl.RpcTimeouts
 import com.jetbrains.rd.framework.util.NetUtils
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.completeWith
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.jetbrains.rd.util.threading.SynchronousScheduler
 import org.jacodb.api.net.database.IlDatabaseImpl
-import org.jacodb.api.net.features.IlApproximations
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
-import org.jacodb.api.net.features.InMemoryIlHierarchy
-import org.jacodb.api.net.features.InMemoryIlHierarchyReq
 import org.jacodb.api.net.generated.models.PublicationRequest
-import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.generated.models.ilModel
 import org.jacodb.api.net.generated.models.ilSigModel
-import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
-import org.jacodb.api.net.publication.IlPredefinedAsmsExt.mscorelib
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.int32
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.string
 import org.jacodb.api.net.publication.IlPublicationCache
 import org.jacodb.api.net.rdinfra.RdServer
-import org.jacodb.api.net.storage.id
-
-suspend fun <T> Protocol.onScheduler(block: () -> T): T {
-    val deffered = CompletableDeferred<T>()
-    scheduler.invokeOrQueue { deffered.completeWith(runCatching { block() }) }
-    return deffered.await()
-}
 
 fun main(args: Array<String>) {
     assert(args[0] == "--exe")
@@ -55,97 +36,22 @@ fun main(args: Array<String>) {
     val database = IlDatabaseImpl(settings)
     val freePort = NetUtils.findFreePort(0)
     val server = RdServer(freePort, exePath, database)
-    server.protocol.scheduler.queue {
+    server.protocol.scheduler.invokeOrQueue {
         val res =
             server.protocol.ilModel.ilSigModel.publication.sync(PublicationRequest(asmPaths), RpcTimeouts.longRunning)
         database.persistence.persistAsmHierarchy(res.reachableAsms, res.referencedAsms)
         database.persistence.persistTypes(res.reachableTypes)
-
-
-        println("got result")
-        val publication = database.publication(
-            asmPaths,
-            listOf(
-                IlPublicationCache(settings.publicationCacheSettings),
-                IlMethodInstructionsFeature(),
-//                IlApproximations
-            )
-        )
-        val allTypes = publication.allTypes
-        println("types fetched")
-        runBlocking {
-//            InMemoryIlHierarchy.query(
-//                publication,
-//                InMemoryIlHierarchyReq(allTypes.single { it.fullname == "Usvm.IL.Test.Instructions.Instance" }
-//                    .id(), true)).asIterable().forEach { t -> println(t.fullname) }
-            InMemoryIlHierarchy.query(
-                publication,
-                InMemoryIlHierarchyReq(
-                    TypeId(
-                        listOf(
-                            publication.int32().id
-                        ),
-                        publication.mscorelib()!!,
-                        "System.Collections.Generic.List`1"
-                    ), true
-                )
-            ).asIterable().forEach { t -> println(t.fullname) }
-        }
-        allTypes.forEach { typeDto ->
-            // TODO #3 introduce separate tests
-//            if (typeDto.asmName == publication.mscorelib() && typeDto.fullname.contains("System.Collections.Generic.List`1[T]")) {
-//                if (!publication.findIlTypeOrNull(typeDto.id())!!.isGenericDefinition) return@forEach
-//                val defn = publication.findIlTypeOrNull(typeDto.id())?.genericDefinition ?: return@forEach
-//                runBlocking {
-//                    println("running for List<T>")
-//                    InMemoryIlHierarchy.query(
-//                        publication,
-//                        InMemoryIlHierarchyReq(TypeId(listOf(publication.string().id), defn.id.asmName, defn.fullname))
-//                    ).forEach {
-//                        println("got ${it.name}")
-//                    }
-//                }
-//                val subst = server.protocol.ilModel.ilSigModel.genericSubstitutions.sync(
-//                    listOf(
-//                        TypeId(
-//                            listOf(publication.int32().id),
-//                            defn.asmName,
-//                            defn.fullname
-//                        )
-//                    )
-//                )
-//                println(subst)
-//            }
-            val type = publication.findIlTypeOrNull(typeDto.id())
-            if (type == null) {
-                println("not found ${typeDto.fullname}")
-                return@forEach
-            }
-            type.methods.forEach { m ->
-                try {
-                    m.instList.forEachIndexed { index, stmt ->
-                        check(stmt.location.index == index && stmt.location.method == m)
-
-                    }
-                } catch (e: Exception) {
-                    println("err instList for ${m.name} with ${e.message} at ${e.stackTrace}")
-                }
-                try {
-                    val graph = m.flowGraph()
-                } catch (e: Exception) {
-                    println("err flowGraph for ${m.name} with ${e.message}")
-                }
-                try {
-                    val scopes = (m as IlMethodImpl).scopes
-                    scopes.forEach { scope ->
-                        check(scope.tb.location.index <= scope.te.location.index)
-                        check(scope.hb.location.index <= scope.he.location.index)
-                    }
-                } catch (e: Exception) {
-                    println("err scopes for ${m.name} with ${e.message}")
-                }
-            }
-        }
-        server.close()
     }
+    println("got result")
+    val publication = database.publication(
+        asmPaths,
+        listOf(
+            IlPublicationCache(settings.publicationCacheSettings),
+            IlMethodInstructionsFeature(),
+        )
+    )
+    val allTypes = publication.allTypes
+    println("types fetched")
+    server.close()
+
 }

@@ -27,11 +27,16 @@ import org.jacodb.api.net.features.IlSignal
 import org.jacodb.api.net.features.InMemoryIlHierarchy
 import org.jacodb.api.net.storage.IlDatabasePersistenceImpl
 import org.jacodb.api.net.publication.IlPublicationImpl
+import org.jacodb.api.net.rdinfra.RdServer
 import org.jacodb.api.storage.ers.EmptyErsSettings
 import org.jacodb.api.storage.ers.EntityRelationshipStorageSPI
 
 class IlDatabaseImpl(val settings: IlSettings) : IlDatabase {
     override var persistence: IlDatabasePersistence
+    override lateinit var server: RdServer
+    override fun bindTo(server: RdServer) {
+        this.server = server
+    }
 
     override fun publication(targetAsms: List<String>, features: List<IlPublicationFeature>): IlPublication {
         featuresRegistry.broadcast(IlSignal.BeforeIndexing(this))
