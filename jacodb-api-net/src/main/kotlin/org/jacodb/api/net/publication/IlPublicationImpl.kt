@@ -16,13 +16,17 @@
 
 package org.jacodb.api.net.publication
 
+import com.jetbrains.rd.framework.impl.RpcTimeouts
 import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import org.jacodb.api.net.*
 import org.jacodb.api.net.features.IlFeaturesChain
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.generated.models.TypeId
+import org.jacodb.api.net.generated.models.ilModel
+import org.jacodb.api.net.generated.models.ilSigModel
 import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.storage.asSymbolId
+import org.jacodb.api.net.storage.id
 import org.jacodb.api.net.storage.txn
 import org.jacodb.api.storage.ers.compressed
 import java.util.LinkedList
@@ -36,7 +40,8 @@ class IlPublicationImpl(
     val settings: IlSettings,
     override val targetAsmLocations: List<String>
 ) : IlPublication {
-    override val featuresChain = features.let { it + IlPublicationFeatureImpl() }.let { IlFeaturesChain(it) }
+    override val featuresChain =
+        features.let { it + IlPublicationFeatureImpl() + IlPublicationTypeRequestFeature() }.let { IlFeaturesChain(it) }
     override val allTypes: List<IlTypeDto> get() = db.persistence.allTypes
 
     override val referencedAsmLocations: Map<String, List<String>> by lazy(PUBLICATION) {
@@ -63,7 +68,6 @@ class IlPublicationImpl(
         res
     }
 
-    // TODO #1 .net call for type must be hidden here! as features
     override fun findIlTypeOrNull(typeId: TypeId): IlType? =
         featuresChain.callUntilResolved<IlTypeSearchFeature, ResolvedIlTypeResult> { feature ->
             feature.findType(typeId)
@@ -80,16 +84,36 @@ class IlPublicationImpl(
     }
 
 
-    private inner class IlPublicationFeatureImpl() : IlTypeSearchFeature{
-        override fun findType(typeId: TypeId): ResolvedIlTypeResult {
+    private inner class IlPublicationFeatureImpl : IlTypeSearchFeature {
+        override fun findType(typeId: TypeId): ResolvedIlTypeResult? {
             val persistence = db.persistence
             val type = persistence.findTypeSourceOrNull(typeId)
                 ?.let { dto -> IlTypeImpl.from(dto, this@IlPublicationImpl) }
-            return ResolvedIlTypeResult(typeId, type)
-            // maybe return null for unknown classes to continue search in chain?
+            return if (type == null) null else ResolvedIlTypeResult(typeId, type)
         }
 
         override fun event(result: Any): IlPublicationEvent {
+            return IlPublicationEvent(this, result)
+        }
+    }
+
+    private inner class IlPublicationTypeRequestFeature : IlTypeSearchFeature {
+        override fun findType(typeId: TypeId): ResolvedIlTypeResult? {
+            var rawResponse = listOf<IlTypeDto>()
+            db.server.scheduler.invokeOrQueue {
+                rawResponse =
+                    db.server.protocol.ilModel.ilSigModel.genericSubstitutions.sync(
+                        listOf(typeId),
+                        RpcTimeouts.longRunning
+                    )
+
+            }
+            if (rawResponse.isEmpty()) return null;
+            val response = IlTypeImpl.from(rawResponse.single(), this@IlPublicationImpl)
+            return ResolvedIlTypeResult(response.id, response)
+        }
+
+        override fun event(result: Any): IlPublicationEvent? {
             return IlPublicationEvent(this, result)
         }
     }

@@ -71,5 +71,5 @@ class IlPublicationEvent(val feature: IlTypeSearchFeature, val result: Any)
 
 interface FeatureCallResult
 
-class ResolvedIlTypeResult(val typeId: TypeId, val type: IlType?) : FeatureCallResult
+class ResolvedIlTypeResult(val typeId: TypeId, val type: IlType) : FeatureCallResult
 class ResolvedIlTypesResult(val name: String, val types: List<IlType>) : FeatureCallResult

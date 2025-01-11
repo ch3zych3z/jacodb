@@ -19,6 +19,7 @@ package org.jacodb.api.net
 import org.jacodb.api.net.generated.models.IlAsmDto
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.generated.models.TypeId
+import org.jacodb.api.net.rdinfra.RdServer
 import org.jacodb.api.net.storage.IlDbInstanceInterner
 import org.jacodb.api.net.storage.IlDbSymbolInterner
 import org.jacodb.api.net.storage.IlDbTypeIdInternerImpl
@@ -29,7 +30,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 interface IlDatabase : Closeable {
     val persistence: IlDatabasePersistence
-
+    val server: RdServer
+    fun bindTo(server: RdServer)
     fun publication(targtetAsms: List<String>, features: List<IlPublicationFeature>): IlPublication
 }
 

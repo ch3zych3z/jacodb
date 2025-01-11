@@ -16,59 +16,29 @@
 
 package org.jacodb.api.net.features
 
-import com.jetbrains.rd.framework.impl.RpcTimeouts
-import com.jetbrains.rd.framework.util.NetUtils
 import kotlinx.coroutines.runBlocking
-import org.jacodb.api.net.IlSettings
-import org.jacodb.api.net.database.IlDatabaseImpl
-import org.jacodb.api.net.generated.models.PublicationRequest
+import org.jacodb.api.net.TestDllServer
 import org.jacodb.api.net.generated.models.TypeId
-import org.jacodb.api.net.generated.models.ilModel
-import org.jacodb.api.net.generated.models.ilSigModel
 import org.jacodb.api.net.ilinstances.IlArrayConstant
 import org.jacodb.api.net.ilinstances.IlTypeRef
 import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
-import org.jacodb.api.net.publication.IlPublicationCache
-import org.jacodb.api.net.rdinfra.RdServer
+import org.jacodb.api.net.publication.IlPredefinedTypesExt.int32
+import org.jacodb.api.net.publication.IlPredefinedTypesExt.string
+import org.jacodb.api.net.storage.TypeIdExt.emptyTypeId
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
+import java.lang.reflect.Type
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 
 class InMemoryIlHierarchyTest {
     companion object {
         val testEntryAttrType = "TACBuilder.Tests.InMemoryIlHierarchy.InMemoryHierarchyTestEntryAttribute"
-        val testDllPath =
-            "/Users/petrukhinandrew/RiderProjects/dotnet-tac/TACBuilder.Tests/bin/Release/net8.0/osx-arm64/publish/TACBuilder.Tests.dll"
-        private val server = setupTestDllDb()
-        val publication = server.db.publication(
-            listOf(testDllPath),
-            listOf(
-                IlPublicationCache(IlSettings().publicationCacheSettings),
-                IlMethodInstructionsFeature(),
-            )
-        )
-
-        private fun setupTestDllDb(): RdServer {
-            val exePath = "/Users/petrukhinandrew/RiderProjects/dotnet-tac/TACBuilder/bin/Debug/net8.0/osx-arm64/"
-            val asmPaths =
-                listOf(testDllPath)
-
-            val settings = IlSettings()
-            val database = IlDatabaseImpl(settings)
-            val freePort = NetUtils.findFreePort(0)
-            val server = RdServer(freePort, exePath, database)
-            server.protocol.scheduler.queue {
-                val res =
-                    server.protocol.ilModel.ilSigModel.publication.sync(
-                        PublicationRequest(asmPaths),
-                        RpcTimeouts.longRunning
-                    )
-                database.persistence.persistAsmHierarchy(res.reachableAsms, res.referencedAsms)
-                database.persistence.persistTypes(res.reachableTypes)
-            }
-            return server
-        }
+        private val env = TestDllServer.freshEnv()
+        val server get() = env.first
+        val publication get() = env.second
 
         @JvmStatic
         @AfterAll
@@ -82,7 +52,7 @@ class InMemoryIlHierarchyTest {
         val testClasses = publication.allTypes.filter {
             it.declType == TypeId(
                 listOf(),
-                publication.findAsmNameByLocationOrNull(testDllPath)!!,
+                publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
                 "TACBuilder.Tests.InMemoryIlHierarchy.Simple"
             )
         }.map { IlTypeImpl.from(it, publication) }
@@ -95,7 +65,7 @@ class InMemoryIlHierarchyTest {
         val testClasses = publication.allTypes.filter {
             it.declType == TypeId(
                 listOf(),
-                publication.findAsmNameByLocationOrNull(testDllPath)!!,
+                publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
                 "TACBuilder.Tests.InMemoryIlHierarchy.Implementors"
             )
         }.map { IlTypeImpl.from(it, publication) }
@@ -108,7 +78,7 @@ class InMemoryIlHierarchyTest {
         val testClasses = publication.allTypes.filter {
             it.declType == TypeId(
                 listOf(),
-                publication.findAsmNameByLocationOrNull(testDllPath)!!,
+                publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
                 "TACBuilder.Tests.InMemoryIlHierarchy.NonGenericChildren"
             )
         }.map { IlTypeImpl.from(it, publication) }
@@ -118,15 +88,41 @@ class InMemoryIlHierarchyTest {
 
     @Test
     fun testGenericChildren() {
-        val testClasses = publication.allTypes.filter {
-            it.declType == TypeId(
-                listOf(),
-                publication.findAsmNameByLocationOrNull(testDllPath)!!,
-                "TACBuilder.Tests.InMemoryIlHierarchy.GenericChildren"
-            )
-        }.map { IlTypeImpl.from(it, publication) }
+        val requestTypeIdTemplate = TypeId(
+            listOf(emptyTypeId()),
+            TypeRequestTest.publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
+            "TACBuilder.Tests.InMemoryIlHierarchy.SingleParamBase`1"
+        )
+        val intSubst =
+            TypeId(listOf(publication.int32().id), requestTypeIdTemplate.asmName, requestTypeIdTemplate.typeName)
+        val intRequest = InMemoryIlHierarchyReq(intSubst)
+        runBlocking {
+            val response =
+                InMemoryIlHierarchy.query(publication, intRequest).toList()
 
-        testRoutine(testClasses)
+            assertEquals(2, response.size)
+            response.forEach {
+                assertTrue(it.isGenericType && !it.isGenericDefinition)
+                assertEquals(publication.int32(), it.genericArgs.first())
+            }
+            assertEquals(setOf("SingleParamStruct`1", "SingleParamAny`1"), response.map { it.name }.toSet())
+
+
+        }
+        val strSubst =
+            TypeId(listOf(publication.string().id), requestTypeIdTemplate.asmName, requestTypeIdTemplate.typeName)
+        val strRequest = InMemoryIlHierarchyReq(strSubst)
+        runBlocking {
+            val response =
+                InMemoryIlHierarchy.query(publication, strRequest).toList()
+            assertEquals(2, response.size)
+            response.forEach {
+                assertTrue(it.isGenericType && !it.isGenericDefinition)
+                assertEquals(publication.string(), it.genericArgs.first())
+            }
+            assertEquals(setOf("SingleParamClass`1", "SingleParamAny`1"), response.map { it.name }.toSet())
+
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -137,10 +133,11 @@ class InMemoryIlHierarchyTest {
             val req = InMemoryIlHierarchyReq(entry.id)
             val expectationRefs: List<IlTypeRef> =
                 (entry.attributes.first { it.type.fullname == testEntryAttrType }.constructorArgs[0] as IlArrayConstant).values as List<IlTypeRef>
-            val expectation = expectationRefs.map { it.referencedType }
+            val expectation = expectationRefs.map { it.referencedType }.sortedBy { it.typeToken }
             runBlocking {
                 val actual =
-                    InMemoryIlHierarchy.query(publication, req).map { IlTypeImpl.from(it, publication) }.toList()
+                    InMemoryIlHierarchy.query(publication, req)
+                        .sortedBy { it.typeToken }.toList()
                 assertContentEquals(expectation, actual)
             }
         }
