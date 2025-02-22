@@ -110,20 +110,28 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
     }
 }
 
-class IlPointerType(private val dto: IlPointerTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
-open class IlValueType(private val dto: IlValueTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
-class IlEnumType(private val dto: IlEnumTypeDto, publication: IlPublication) : IlValueType(dto, publication)
-class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, publication: IlPublication) : IlValueType(dto, publication)
-class IlStructType(private val dto: IlStructTypeDto, publication: IlPublication) : IlValueType(dto, publication)
+class IlPointerType(dto: IlPointerTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication) {
+    override val nullable: Boolean? get() = true
+}
 
-open class IlReferenceType(private val dto: IlReferenceTypeDto, publication: IlPublication) :
-    IlTypeImpl(dto, publication)
+open class IlValueType(private val dto: IlValueTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication) {
+    override val nullable: Boolean? get() = false
+}
+
+class IlEnumType(dto: IlEnumTypeDto, publication: IlPublication) : IlValueType(dto, publication)
+class IlPrimitiveType(dto: IlPrimitiveTypeDto, publication: IlPublication) : IlValueType(dto, publication)
+class IlStructType(dto: IlStructTypeDto, publication: IlPublication) : IlValueType(dto, publication)
+
+open class IlReferenceType(dto: IlReferenceTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication) {
+    override val nullable: Boolean? get() = true
+}
 
 class IlArrayType(private val dto: IlArrayTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication) {
     val elementType: IlType by lazy { publication.findIlTypeOrNull(dto.elementType)!! }
+    override val nullable: Boolean? get() = true
 }
 
-class IlClassType(private val dto: IlClassTypeDto, publication: IlPublication) : IlReferenceType(dto, publication)
+class IlClassType(dto: IlClassTypeDto, publication: IlPublication) : IlReferenceType(dto, publication)
 
 
 private fun List<IlFieldImpl>.joinFeatureFields(type: IlTypeImpl, featuresChain: IlFeaturesChain): List<IlField> {

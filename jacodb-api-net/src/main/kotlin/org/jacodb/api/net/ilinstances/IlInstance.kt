@@ -30,7 +30,7 @@ interface IlInstance {
     val isConstructed: Boolean
 }
 
-interface IlType : IlInstance, CommonTypeName {
+interface IlType : IlInstance, CommonTypeName, CommonType {
     val publication: IlPublication
     val declaringType: IlType?
     val baseType: IlType?
