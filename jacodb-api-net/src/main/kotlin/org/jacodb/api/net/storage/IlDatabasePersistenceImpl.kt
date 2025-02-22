@@ -27,12 +27,6 @@ import kotlin.concurrent.withLock
 
 class IlDatabasePersistenceImpl(override val ers: EntityRelationshipStorage) : IlDatabasePersistence {
     private val lock = ReentrantLock()
-    override val allTypes: List<IlTypeDto>
-        get() = read { ctx ->
-            val txn = ctx.txn
-            val types = txn.all("Type").map { it.toDto() }.toList()
-            types
-        }
 
     override val symbolInterner: IlDbSymbolInterner =
         IlDbSymbolsInternerImpl().apply { setup(this@IlDatabasePersistenceImpl) }

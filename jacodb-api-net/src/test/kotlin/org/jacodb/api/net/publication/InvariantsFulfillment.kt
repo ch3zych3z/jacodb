@@ -23,8 +23,11 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import org.jacodb.api.net.generated.models.getIlTypeDto
+import org.jacodb.api.net.storage.txn
 
 class InvariantsFulfillment {
 
@@ -42,7 +45,12 @@ class InvariantsFulfillment {
 
     @Test
     fun `no fail on deserialization`() {
-        publication.allTypes.forEach { typeDto ->
+        val allTypes = publication.db.persistence.read { ctx ->
+            ctx.txn.all("Type").mapNotNull { t -> t.getRawBlob("bytes")?.getIlTypeDto() }.toList()
+        }
+        assertNotEquals(0, allTypes.size, "no types received")
+        println("${allTypes.size} types received")
+        allTypes.forEach { typeDto ->
             val type = publication.findIlTypeOrNull(typeDto.id())
             assertNotNull(type, "type not found: ${typeDto.fullname}")
 

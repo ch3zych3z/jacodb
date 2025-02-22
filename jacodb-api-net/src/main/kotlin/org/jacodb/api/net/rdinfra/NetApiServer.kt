@@ -52,13 +52,11 @@ open class RdServer(private val port: Int, private val netExePath: String, val d
     fun close() {
         scheduler.invokeOrQueue {
             protocol.ilModel.ilSigModel.close.fire(Unit)
-            println("fire sent")
         }
 
         thread {
             lifetimeDef.terminate()
-            if (netProcess.isAlive)
-                netProcess.destroyForcibly()
+            if (netProcess.isAlive) netProcess.destroy()
         }
     }
 

@@ -7,10 +7,6 @@ plugins {
     id(Plugins.RdGen)
 }
 
-val rdgenModelsCompileClasspath by configurations.creating {
-    extendsFrom(configurations.compileClasspath.get())
-}
-
 kotlin {
     sourceSets.create("rdgenModels").apply {
         kotlin.srcDir("src/main/rdgen")

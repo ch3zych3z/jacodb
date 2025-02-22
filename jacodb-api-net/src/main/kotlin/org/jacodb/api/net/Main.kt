@@ -50,7 +50,6 @@ fun main(args: Array<String>) {
             IlMethodInstructionsFeature(),
         )
     )
-    val allTypes = publication.allTypes
     println("types fetched")
     server.close()
 

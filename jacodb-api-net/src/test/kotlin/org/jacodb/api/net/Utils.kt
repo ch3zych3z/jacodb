@@ -19,6 +19,7 @@ package org.jacodb.api.net
 import com.jetbrains.rd.framework.impl.RpcTimeouts
 import com.jetbrains.rd.framework.util.NetUtils
 import org.jacodb.api.net.database.IlDatabaseImpl
+import org.jacodb.api.net.features.AnnotatedTypesFeature
 import org.jacodb.api.net.features.IlMethodInstructionsFeature
 import org.jacodb.api.net.generated.models.PublicationRequest
 import org.jacodb.api.net.generated.models.ilModel
@@ -38,6 +39,8 @@ object TestDllServer {
 
         val settings = IlSettings()
         val database = IlDatabaseImpl(settings)
+        AnnotatedTypesFeature.observeByName("TACBuilder.Tests.InMemoryIlHierarchy.InMemoryHierarchyTestEntryAttribute")
+        database.featuresRegistry.add(AnnotatedTypesFeature)
         val freePort = NetUtils.findFreePort(0)
         val server = RdServer(freePort, exePath, database)
         server.protocol.scheduler.queue {

@@ -42,7 +42,6 @@ class IlPublicationImpl(
 ) : IlPublication {
     override val featuresChain =
         features.let { it + IlPublicationFeatureImpl() + IlPublicationTypeRequestFeature() }.let { IlFeaturesChain(it) }
-    override val allTypes: List<IlTypeDto> get() = db.persistence.allTypes
 
     override val referencedAsmLocations: Map<String, List<String>> by lazy(PUBLICATION) {
         val worklist: Queue<String> = LinkedList<String>(targetAsmLocations);

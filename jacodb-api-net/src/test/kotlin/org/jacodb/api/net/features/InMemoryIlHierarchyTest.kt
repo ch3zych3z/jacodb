@@ -16,8 +16,10 @@
 
 package org.jacodb.api.net.features
 
+import kotlin.collections.filter
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -26,7 +28,10 @@ import kotlinx.coroutines.runBlocking
 import org.jacodb.api.net.TestDllServer
 import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.IlArrayConstant
+import org.jacodb.api.net.ilinstances.IlAttribute
+import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.ilinstances.IlTypeRef
+import org.jacodb.api.net.ilinstances.impl.IlAttributeImpl
 import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import org.jacodb.api.net.publication.IlPredefinedTypesExt.int32
 import org.jacodb.api.net.publication.IlPredefinedTypesExt.string
@@ -41,7 +46,17 @@ class InMemoryIlHierarchyTest {
         val env = TestDllServer.freshEnv()
         val server get() = env.first
         val publication get() = env.second
-
+        val annotatedClasses
+            get() = runBlocking {
+                publication.query(
+                    AnnotatedTypesFeature,
+                    TypeId(
+                        listOf(),
+                        publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
+                        testEntryAttrType
+                    )
+                )
+            }
         @JvmStatic
         @AfterAll
         fun dispatch() {
@@ -51,40 +66,25 @@ class InMemoryIlHierarchyTest {
 
     @Test
     fun testSimple() {
-        val testClasses = publication.allTypes.filter {
-            it.declType == TypeId(
-                listOf(),
-                publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
-                "TACBuilder.Tests.InMemoryIlHierarchy.Simple"
-            )
-        }.map { IlTypeImpl.from(it, publication) }
-
+        val testClasses =
+            annotatedClasses.filter { it.declaringType?.fullname == "TACBuilder.Tests.InMemoryIlHierarchy.Simple" }
+                .toList()
         testRoutine(testClasses)
     }
 
     @Test
     fun testImplementors() {
-        val testClasses = publication.allTypes.filter {
-            it.declType == TypeId(
-                listOf(),
-                publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
-                "TACBuilder.Tests.InMemoryIlHierarchy.Implementors"
-            )
-        }.map { IlTypeImpl.from(it, publication) }
-
+        val testClasses =
+            annotatedClasses.filter { it.declaringType?.fullname == "TACBuilder.Tests.InMemoryIlHierarchy.Implementors" }
+                .toList()
         testRoutine(testClasses)
     }
 
     @Test
     fun testNonGenericChildren() {
-        val testClasses = publication.allTypes.filter {
-            it.declType == TypeId(
-                listOf(),
-                publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
-                "TACBuilder.Tests.InMemoryIlHierarchy.NonGenericChildren"
-            )
-        }.map { IlTypeImpl.from(it, publication) }
-
+        val testClasses =
+            annotatedClasses.filter { it.declaringType?.fullname == "TACBuilder.Tests.InMemoryIlHierarchy.NonGenericChildren" }
+                .toList()
         testRoutine(testClasses)
     }
 
@@ -168,13 +168,14 @@ class InMemoryIlHierarchyTest {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun testRoutine(testClasses: List<IlTypeImpl>) {
+    private fun testRoutine(testClasses: List<IlType>) {
+        assertNotEquals(0, testClasses.size, "no test classes found")
         val testEntries =
             testClasses.filter { it.attributes.any { attr -> attr.type.fullname == testEntryAttrType } }
         testEntries.forEach { entry ->
             val req = InMemoryIlHierarchyReq(entry.id)
             val expectationRefs: List<IlTypeRef> =
-                (entry.attributes.first { it.type.fullname == testEntryAttrType }.constructorArgs[0] as IlArrayConstant).values as List<IlTypeRef>
+                ((entry.attributes.first<IlAttribute> { it.type.fullname == testEntryAttrType } as IlAttributeImpl).constructorArgs[0] as IlArrayConstant).values as List<IlTypeRef>
             val expectation = expectationRefs.map { it.referencedType }.sortedBy { it.typeToken }
             runBlocking {
                 val actual =

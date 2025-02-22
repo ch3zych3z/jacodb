@@ -18,13 +18,11 @@ package org.jacodb.api.net
 
 import org.jacodb.api.net.cfg.IlGraphImpl
 import org.jacodb.api.net.features.IlFeaturesChain
-import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.IlField
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.IlStmt
 import org.jacodb.api.net.ilinstances.IlType
-import javax.sql.rowset.Predicate
 
 interface IlPublication {
     val db: IlDatabase
@@ -34,7 +32,6 @@ interface IlPublication {
     val referencedAsmLocations: Map<String, List<String>>
     val features: List<IlPublicationFeature>
     val featuresChain: IlFeaturesChain
-    val allTypes: List<IlTypeDto>
     fun findIlTypeOrNull(typeId: TypeId): IlType?
     fun findAsmNameByLocationOrNull(location: String): String?
 }
