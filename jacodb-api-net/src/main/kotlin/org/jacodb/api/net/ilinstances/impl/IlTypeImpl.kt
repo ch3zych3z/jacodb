@@ -126,9 +126,8 @@ open class IlReferenceType(dto: IlReferenceTypeDto, publication: IlPublication) 
     override val nullable: Boolean? get() = true
 }
 
-class IlArrayType(private val dto: IlArrayTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication) {
+class IlArrayType(private val dto: IlArrayTypeDto, publication: IlPublication) : IlReferenceType(dto, publication) {
     val elementType: IlType by lazy { publication.findIlTypeOrNull(dto.elementType)!! }
-    override val nullable: Boolean? get() = true
 }
 
 class IlClassType(dto: IlClassTypeDto, publication: IlPublication) : IlReferenceType(dto, publication)
