@@ -21,7 +21,11 @@ import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlTypeDto
 import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.generated.models.getIlTypeDto
+import org.jacodb.api.net.ilinstances.IlThis
 import org.jacodb.api.net.ilinstances.IlType
+import org.jacodb.api.net.ilinstances.impl.IlReferenceType
+import org.jacodb.api.net.ilinstances.impl.IlStructType
+import org.jacodb.api.net.ilinstances.impl.IlValueType
 import org.jacodb.api.net.storage.asTypeId
 import org.jacodb.api.net.storage.interned
 import org.jacodb.api.net.storage.txn
@@ -98,49 +102,50 @@ object InMemoryIlHierarchy : IlFeature<InMemoryIlHierarchyReq, IlType> {
         val hierarchy = hierarchies[publication.db] ?: return emptySequence()
 
         fun Long.optGenericDefn() = asTypeId(typeIdInterner).withEmptyTypeArgs().interned(typeIdInterner)
+        fun IlType.satisfyConstraintsOf(type: IlType): Boolean {
+            if (type.hasRefTypeConstraint && this !is IlReferenceType) return false;
+            if (type.hasNotNullValueTypeConstraint && this !is IlValueType) return false;
+            // TODO defn improper
+            if (type.hasDefaultCtorConstraint && this !is IlValueType && this.methods.find { method -> method.name == ".ctor" && method.parameters.singleOrNull()?.type == this } == null) return false;
+            return true;
+        }
 
         fun Long.isSupertypeOfOrNull(mbChild: Long): Long? {
-            val sup = publication.findIlTypeOrNull(typeIdInterner.findValue(this))!!
-            if (!sup.isGenericType) return mbChild
+            val supId = typeIdInterner.findValue(this)
+            if (supId.typeArgs.isEmpty()) return mbChild
+//            val sup = publication.findIlTypeOrNull(supId) ?: return null
+//            if (!sup.isGenericType) return mbChild
             // got a feeling that there is a mistake here
-            val sub = publication.findIlTypeOrNull(typeIdInterner.findValue(mbChild))!!
+//            val subId = typeIdInterner.findValue(mbChild)
+//            if (subId.typeArgs.isEmpty()) return mbChild
+            val sub = publication.findIlTypeOrNull(typeIdInterner.findValue(mbChild)) ?: return null
             if (!sub.isGenericType) return mbChild
-            val supDef = sup.genericDefinition!!
-            val matching =
-                (sub.interfaces + sub.baseType).filter { it != null && it.genericDefinition?.let { gd -> gd == supDef } ?: false }
             check(sub.isGenericDefinition)
+            val supDef = publication.findIlTypeOrNull(supId.withEmptyTypeArgs())
+            val matching =
+                (sub.interfaces + sub.baseType).filter { it != null && it.genericDefinition == supDef }
             val paramToArg = sub.genericArgs.associateWith { param ->
                 matching.mapNotNull { supArg ->
                     supArg?.genericArgs?.mapIndexedNotNull { index, arg ->
-                        if (arg == param) sup.genericArgs[index] else null
+                        if (arg == param) supId.typeArgs[index] else null
                     }
                 }.flatten().singleOrNull()
             }
 
-            // TODO replace with proper checks here
+            val argSatisfyParamsConstraints = paramToArg.all { (param, arg) ->
+                arg == null ||
+                        publication.findIlTypeOrNull(arg as TypeId)!!.satisfyConstraintsOf(param)
+            }
+            if (!argSatisfyParamsConstraints) return null;
             val subTypeId = sub.id
             val requestTypeId = TypeId(
-                sub.genericDefinition!!.genericArgs.map { paramToArg[it]?.id ?: it.id },
+                sub.genericDefinition!!.genericArgs.map { paramToArg[it] ?: it.id },
                 subTypeId.asmName,
                 subTypeId.typeName
             )
             // check interning works properly on such request
             val response = publication.findIlTypeOrNull(requestTypeId)
             return response?.let { typeIdInterner.findIdOrNew(it.id) }
-
-            /* we want to check this :> other
-             * here may be the following situations:
-             * 1. both ~ non-generic
-             *   + the only possible check is exact inheritance (or transitive)
-             * 2. this ~ generic & other ~ non-generic
-             *   -
-             * 3. this ~ non-generic & other ~ generic
-             *   + the only possible check here is generic defn inherit from this (since we cannot define specific constraints for generic substitution)
-             * 4. both ~ generic
-             *   - T1<P1, P2> :> T2<P3, P4, P5>
-             *
-             * seems like for situations except when both are generics, exact inheritance is the only think we can check
-             */
         }
 
         fun subClassesOf(requestedType: Long, transitive: Boolean, result: HashSet<Long>) {

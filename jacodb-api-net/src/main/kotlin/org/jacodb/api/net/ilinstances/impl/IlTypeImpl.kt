@@ -112,9 +112,9 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
 
 class IlPointerType(private val dto: IlPointerTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
 open class IlValueType(private val dto: IlValueTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
-class IlEnumType(private val dto: IlEnumTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
-class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
-class IlStructType(private val dto: IlStructTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
+class IlEnumType(private val dto: IlEnumTypeDto, publication: IlPublication) : IlValueType(dto, publication)
+class IlPrimitiveType(private val dto: IlPrimitiveTypeDto, publication: IlPublication) : IlValueType(dto, publication)
+class IlStructType(private val dto: IlStructTypeDto, publication: IlPublication) : IlValueType(dto, publication)
 
 open class IlReferenceType(private val dto: IlReferenceTypeDto, publication: IlPublication) :
     IlTypeImpl(dto, publication)
@@ -123,7 +123,7 @@ class IlArrayType(private val dto: IlArrayTypeDto, publication: IlPublication) :
     val elementType: IlType by lazy { publication.findIlTypeOrNull(dto.elementType)!! }
 }
 
-class IlClassType(private val dto: IlClassTypeDto, publication: IlPublication) : IlTypeImpl(dto, publication)
+class IlClassType(private val dto: IlClassTypeDto, publication: IlPublication) : IlReferenceType(dto, publication)
 
 
 private fun List<IlFieldImpl>.joinFeatureFields(type: IlTypeImpl, featuresChain: IlFeaturesChain): List<IlField> {

@@ -35,7 +35,8 @@ object IlSigModel : Ext(IlModel) {
     }
 
     init {
-        call("publication", publicationRequest, publicationResponse)
-        call("genericSubstitutions", immutableList(IlModel.typeId), immutableList(IlModel.IlTypeDto))
+        call("publication",publicationRequest , publicationResponse)
+        call("genericSubstitutions", immutableList(IlModel.typeId), immutableList(IlModel.IlTypeDto.nullable))
+        signal("close", PredefinedType.void)
     }
 }

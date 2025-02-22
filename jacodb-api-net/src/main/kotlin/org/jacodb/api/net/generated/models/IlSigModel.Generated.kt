@@ -36,7 +36,8 @@ import kotlin.jvm.JvmStatic
  */
 class IlSigModel private constructor(
     private val _publication: RdCall<PublicationRequest, PublicationResponse>,
-    private val _genericSubstitutions: RdCall<List<TypeId>, List<IlTypeDto>>
+    private val _genericSubstitutions: RdCall<List<TypeId>, List<IlTypeDto?>>,
+    private val _close: RdSignal<Unit>
 ) : RdExtBase() {
     //companion
     
@@ -52,9 +53,9 @@ class IlSigModel private constructor(
         
         
         private val __TypeIdListSerializer = TypeId.list()
-        private val __IlTypeDtoListSerializer = AbstractPolymorphic(IlTypeDto).list()
+        private val __IlTypeDtoNullableListSerializer = AbstractPolymorphic(IlTypeDto).nullable().list()
         
-        const val serializationHash = -1254625028312812736L
+        const val serializationHash = -4291866564617915204L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlSigModel
@@ -62,19 +63,22 @@ class IlSigModel private constructor(
     
     //fields
     val publication: IRdCall<PublicationRequest, PublicationResponse> get() = _publication
-    val genericSubstitutions: IRdCall<List<TypeId>, List<IlTypeDto>> get() = _genericSubstitutions
+    val genericSubstitutions: IRdCall<List<TypeId>, List<IlTypeDto?>> get() = _genericSubstitutions
+    val close: ISignal<Unit> get() = _close
     //methods
     //initializer
     init {
         bindableChildren.add("publication" to _publication)
         bindableChildren.add("genericSubstitutions" to _genericSubstitutions)
+        bindableChildren.add("close" to _close)
     }
     
     //secondary constructor
     internal constructor(
     ) : this(
         RdCall<PublicationRequest, PublicationResponse>(PublicationRequest, PublicationResponse),
-        RdCall<List<TypeId>, List<IlTypeDto>>(__TypeIdListSerializer, __IlTypeDtoListSerializer)
+        RdCall<List<TypeId>, List<IlTypeDto?>>(__TypeIdListSerializer, __IlTypeDtoNullableListSerializer),
+        RdSignal<Unit>(FrameworkMarshallers.Void)
     )
     
     //equals trait
@@ -85,6 +89,7 @@ class IlSigModel private constructor(
         printer.indent {
             print("publication = "); _publication.print(printer); println()
             print("genericSubstitutions = "); _genericSubstitutions.print(printer); println()
+            print("close = "); _close.print(printer); println()
         }
         printer.print(")")
     }
@@ -92,7 +97,8 @@ class IlSigModel private constructor(
     override fun deepClone(): IlSigModel   {
         return IlSigModel(
             _publication.deepClonePolymorphic(),
-            _genericSubstitutions.deepClonePolymorphic()
+            _genericSubstitutions.deepClonePolymorphic(),
+            _close.deepClonePolymorphic()
         )
     }
     //contexts

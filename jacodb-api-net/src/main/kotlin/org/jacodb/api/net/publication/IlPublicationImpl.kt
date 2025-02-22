@@ -99,17 +99,16 @@ class IlPublicationImpl(
 
     private inner class IlPublicationTypeRequestFeature : IlTypeSearchFeature {
         override fun findType(typeId: TypeId): ResolvedIlTypeResult? {
-            var rawResponse = listOf<IlTypeDto>()
+            var rawResponse = listOf<IlTypeDto?>()
             db.server.scheduler.invokeOrQueue {
                 rawResponse =
                     db.server.protocol.ilModel.ilSigModel.genericSubstitutions.sync(
                         listOf(typeId),
                         RpcTimeouts.longRunning
                     )
-
             }
             if (rawResponse.isEmpty()) return null;
-            val response = IlTypeImpl.from(rawResponse.single(), this@IlPublicationImpl)
+            val response = IlTypeImpl.from(rawResponse.singleOrNull() ?: return null, this@IlPublicationImpl)
             return ResolvedIlTypeResult(response.id, response)
         }
 

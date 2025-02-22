@@ -16,6 +16,12 @@
 
 package org.jacodb.api.net.features
 
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.future.future
 import kotlinx.coroutines.runBlocking
 import org.jacodb.api.net.TestDllServer
 import org.jacodb.api.net.generated.models.TypeId
@@ -27,16 +33,12 @@ import org.jacodb.api.net.publication.IlPredefinedTypesExt.string
 import org.jacodb.api.net.storage.TypeIdExt.emptyTypeId
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import java.lang.reflect.Type
-import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 
 class InMemoryIlHierarchyTest {
     companion object {
         val testEntryAttrType = "TACBuilder.Tests.InMemoryIlHierarchy.InMemoryHierarchyTestEntryAttribute"
-        private val env = TestDllServer.freshEnv()
+        val env = TestDllServer.freshEnv()
         val server get() = env.first
         val publication get() = env.second
 
@@ -86,6 +88,7 @@ class InMemoryIlHierarchyTest {
         testRoutine(testClasses)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     @Test
     fun testGenericChildren() {
         val requestTypeIdTemplate = TypeId(
@@ -93,19 +96,64 @@ class InMemoryIlHierarchyTest {
             TypeRequestTest.publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
             "TACBuilder.Tests.InMemoryIlHierarchy.SingleParamBase`1"
         )
+
         val intSubst =
             TypeId(listOf(publication.int32().id), requestTypeIdTemplate.asmName, requestTypeIdTemplate.typeName)
         val intRequest = InMemoryIlHierarchyReq(intSubst)
         runBlocking {
-            val response =
-                InMemoryIlHierarchy.query(publication, intRequest).toList()
-
-            assertEquals(2, response.size)
+            val response = InMemoryIlHierarchy.query(publication, intRequest).toList()
             response.forEach {
                 assertTrue(it.isGenericType && !it.isGenericDefinition)
                 assertEquals(publication.int32(), it.genericArgs.first())
             }
             assertEquals(setOf("SingleParamStruct`1", "SingleParamAny`1"), response.map { it.name }.toSet())
+        }
+
+        val strSubst =
+            TypeId(listOf(publication.string().id), requestTypeIdTemplate.asmName, requestTypeIdTemplate.typeName)
+        val strRequest = InMemoryIlHierarchyReq(strSubst)
+
+        val response = GlobalScope.future { InMemoryIlHierarchy.query(publication, strRequest).toList() }.join()
+
+        assertEquals(2, response.size)
+        response.forEach {
+            assertTrue(it.isGenericType && !it.isGenericDefinition)
+            assertEquals(publication.string(), it.genericArgs.first())
+        }
+        assertEquals(setOf("SingleParamClass`1", "SingleParamAny`1"), response.map { it.name }.toSet())
+
+    }
+
+    @Test
+    fun testDefaultCtorSingleArg() {
+        val exactSubst = TypeId(
+            listOf(),
+            TypeRequestTest.publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
+            "TACBuilder.Tests.InMemoryIlHierarchy.DefaultCtorTypeParam"
+        )
+
+        val requestTypeIdTemplate = TypeId(
+            listOf(emptyTypeId()),
+            TypeRequestTest.publication.findAsmNameByLocationOrNull(TestDllServer.testDllPath)!!,
+            "TACBuilder.Tests.InMemoryIlHierarchy.DefaultCtorTestBase`1"
+        )
+
+        val exactRequest = InMemoryIlHierarchyReq(
+            TypeId(
+                listOf(exactSubst),
+                requestTypeIdTemplate.asmName,
+                requestTypeIdTemplate.typeName
+            )
+        )
+        runBlocking {
+            val response =
+                InMemoryIlHierarchy.query(publication, exactRequest).toList()
+
+            response.forEach {
+                assertTrue(it.isGenericType && !it.isGenericDefinition)
+                assertEquals(exactSubst, it.genericArgs.first().id)
+            }
+            assertEquals(setOf("DefaultCtorClass`1"), response.map { it.name }.toSet())
 
 
         }
@@ -115,13 +163,7 @@ class InMemoryIlHierarchyTest {
         runBlocking {
             val response =
                 InMemoryIlHierarchy.query(publication, strRequest).toList()
-            assertEquals(2, response.size)
-            response.forEach {
-                assertTrue(it.isGenericType && !it.isGenericDefinition)
-                assertEquals(publication.string(), it.genericArgs.first())
-            }
-            assertEquals(setOf("SingleParamClass`1", "SingleParamAny`1"), response.map { it.name }.toSet())
-
+            assertTrue(response.isEmpty())
         }
     }
 

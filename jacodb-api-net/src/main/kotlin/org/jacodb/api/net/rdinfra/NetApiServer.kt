@@ -20,6 +20,8 @@ import com.jetbrains.rd.framework.*
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.threading.SynchronousScheduler
 import org.jacodb.api.net.IlDatabase
+import org.jacodb.api.net.generated.models.ilModel
+import org.jacodb.api.net.generated.models.ilSigModel
 import java.io.File
 import kotlin.concurrent.thread
 
@@ -48,10 +50,15 @@ open class RdServer(private val port: Int, private val netExePath: String, val d
     }
 
     fun close() {
+        scheduler.invokeOrQueue {
+            protocol.ilModel.ilSigModel.close.fire(Unit)
+            println("fire sent")
+        }
+
         thread {
             lifetimeDef.terminate()
             if (netProcess.isAlive)
-                netProcess.destroy()
+                netProcess.destroyForcibly()
         }
     }
 
