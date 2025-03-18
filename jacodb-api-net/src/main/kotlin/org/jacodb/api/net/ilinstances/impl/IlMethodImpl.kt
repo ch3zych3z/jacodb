@@ -28,7 +28,7 @@ import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
 import kotlin.LazyThreadSafetyMode.PUBLICATION
 
 class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMethodDto) : IlMethod {
-    private val publication: IlPublication
+    val publication: IlPublication
         get() = declaringType.publication
 
     override fun flowGraph(): ControlFlowGraph<CommonInst> {
