@@ -87,7 +87,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = -5233379986265628042L
+        const val serializationHash = -1338205526355587415L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -1686,7 +1686,8 @@ class IlMethodDto (
     val errs: List<IlErrVarDto>,
     val ehScopes: List<IlEhScopeDto>,
     val rawInstList: List<IlStmtDto>,
-    val isConstructed: Boolean
+    val isConstructed: Boolean,
+    val baseMethod: InstanceId?
 ) : IlDto (
 ) {
     //companion
@@ -1712,7 +1713,8 @@ class IlMethodDto (
             val ehScopes = buffer.readList { ctx.serializers.readPolymorphic<IlEhScopeDto>(ctx, buffer, IlEhScopeDto) }
             val rawInstList = buffer.readList { ctx.serializers.readPolymorphic<IlStmtDto>(ctx, buffer, IlStmtDto) }
             val isConstructed = buffer.readBool()
-            return IlMethodDto(returnType, attrs, isStatic, isGeneric, isGenericDefinition, signature, name, parameters, genericArgs, resolved, locals, temps, errs, ehScopes, rawInstList, isConstructed)
+            val baseMethod = buffer.readNullable { InstanceId.read(ctx, buffer) }
+            return IlMethodDto(returnType, attrs, isStatic, isGeneric, isGenericDefinition, signature, name, parameters, genericArgs, resolved, locals, temps, errs, ehScopes, rawInstList, isConstructed, baseMethod)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMethodDto)  {
@@ -1732,6 +1734,7 @@ class IlMethodDto (
             buffer.writeList(value.ehScopes) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
             buffer.writeList(value.rawInstList) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
             buffer.writeBool(value.isConstructed)
+            buffer.writeNullable(value.baseMethod) { InstanceId.write(ctx, buffer, it) }
         }
         
         
@@ -1763,6 +1766,7 @@ class IlMethodDto (
         if (ehScopes != other.ehScopes) return false
         if (rawInstList != other.rawInstList) return false
         if (isConstructed != other.isConstructed) return false
+        if (baseMethod != other.baseMethod) return false
         
         return true
     }
@@ -1785,6 +1789,7 @@ class IlMethodDto (
         __r = __r*31 + ehScopes.hashCode()
         __r = __r*31 + rawInstList.hashCode()
         __r = __r*31 + isConstructed.hashCode()
+        __r = __r*31 + if (baseMethod != null) baseMethod.hashCode() else 0
         return __r
     }
     //pretty print
@@ -1807,6 +1812,7 @@ class IlMethodDto (
             print("ehScopes = "); ehScopes.print(printer); println()
             print("rawInstList = "); rawInstList.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
+            print("baseMethod = "); baseMethod.print(printer); println()
         }
         printer.print(")")
     }
@@ -2672,7 +2678,7 @@ class IlReferenceTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:150]
+ * #### Generated from [IlModel.kt:151]
  */
 class IlSignatureDto (
     val returnType: TypeId,

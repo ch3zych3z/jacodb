@@ -22,7 +22,7 @@ import com.jetbrains.rd.generator.nova.*
 import org.jacodb.api.net.models.IlModel.typeId
 
 object IlMethodBodyModel : Ext(IlRoot) {
-    private val instanceId = structdef {
+    val instanceId = structdef {
         field("type", typeId)
         field("name", PredefinedType.string)
     }

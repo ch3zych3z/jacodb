@@ -145,6 +145,7 @@ object IlModel : Ext(IlRoot) {
         field("ehScopes", immutableList(IlEhScopeDto))
         field("rawInstList", immutableList(IlMethodBodyModel.IlStmtDto))
         field("isConstructed", PredefinedType.bool)
+        field("baseMethod", IlMethodBodyModel.instanceId.nullable)
     }
 
     val IlSignatureDto = structdef extends IlDto {

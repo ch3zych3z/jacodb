@@ -86,6 +86,14 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
                 )
         }.toList()
     }
+
+    val baseMethod: IlMethod? by lazy(PUBLICATION) {
+        dto.baseMethod?.let { baseDecl ->
+            publication.findIlTypeOrNull(baseDecl.type)
+            ?.let { base -> base.methods.single { m -> m.signature == baseDecl.name } }
+        }
+    }
+
     val locals: List<IlLocalVar> by lazy(PUBLICATION) { dto.locals.map { IlLocalVar(it, publication) } }
     val temps: List<IlTempVar> by lazy(PUBLICATION) { dto.temps.map { IlTempVar(it, publication) } }
     val errs: List<IlErrVar> by lazy(PUBLICATION) { dto.errs.map { IlErrVar(it, publication) } }

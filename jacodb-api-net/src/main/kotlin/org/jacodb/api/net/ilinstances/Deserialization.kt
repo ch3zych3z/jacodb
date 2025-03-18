@@ -163,14 +163,11 @@ fun IlExprDto.deserialize(ilMethod: IlMethod): IlExpr {
         is IlArrayLengthExprDto -> IlArrayLengthExpr(publication.nuint(), array.deserialize(ilMethod))
         is IlCallDto -> {
             val declType = publication.findIlTypeOrNull(method.type)
-            if (declType == null)
-                throw IllegalArgumentException("method decltype not resolved")
+            check(declType != null) { "method decltype not resolved" }
             val methods = declType.methods
-            if (methods.isEmpty())
-                throw IllegalArgumentException("methods expected in type ${declType.name}")
+            check (methods.isNotEmpty()) { "methods expected in type ${declType.name}" }
             val callMethod = methods.filter { m -> m.signature == method.name }
-            if (callMethod.size != 1)
-                throw IllegalArgumentException("unexpected number of methods found for given name")
+            check (callMethod.size == 1) {"unexpected number of methods found for given name"}
             IlCall(
                 callMethod.first(),
                 // FIXME
