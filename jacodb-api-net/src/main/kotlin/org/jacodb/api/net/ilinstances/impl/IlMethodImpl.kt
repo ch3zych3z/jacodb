@@ -16,6 +16,7 @@
 
 package org.jacodb.api.net.ilinstances.impl
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.jacodb.api.common.cfg.CommonInst
 import org.jacodb.api.common.cfg.ControlFlowGraph
 import org.jacodb.api.net.IlMethodExtFeature
@@ -38,6 +39,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
     override val isConstructed: Boolean = dto.isConstructed
 
     override val isStatic: Boolean = dto.isStatic
+    override val isVirtual: Boolean = dto.isVirtual
     override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType)!! } }
     override val isGeneric: Boolean
         get() = dto.isGeneric

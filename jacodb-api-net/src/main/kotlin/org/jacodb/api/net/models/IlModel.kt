@@ -25,9 +25,11 @@ object IlModel : Ext(IlRoot) {
         field("asmName", PredefinedType.string)
         field("typeName", PredefinedType.string)
     }
+
     val typeId = structdef extends typeIdBase {
         field("typeArgs", immutableList(typeIdBase))
     }
+
     val IlDto = basestruct {}
 
     val IlTypeDto = basestruct extends IlDto {
@@ -35,6 +37,7 @@ object IlModel : Ext(IlRoot) {
         field("moduleToken", PredefinedType.int)
         field("typeToken", PredefinedType.int)
         field("namespaceName", PredefinedType.string)
+//        field("size", PredefinedType.uint32)
         field("name", PredefinedType.string)
         field("fullname", PredefinedType.string)
         field("isConstructed", PredefinedType.bool)
@@ -61,22 +64,28 @@ object IlModel : Ext(IlRoot) {
     val IlPointerTypeDto = structdef extends IlTypeDto {
         field("targetType", typeId)
     }
-    val IlValueTypeDto = basestruct extends IlTypeDto {}
-    val IlPrimitiveTypeDto = structdef extends IlValueTypeDto {}
+
+    val IlValueTypeDto = basestruct extends IlTypeDto { }
+
+    val IlPrimitiveTypeDto = structdef extends IlValueTypeDto { }
+
     val IlEnumTypeDto = structdef extends IlValueTypeDto {
         // TODO name to value mapping
         field("underlyingType", typeId)
         field("names", immutableList(PredefinedType.string))
         field("values", immutableList(IlMethodBodyModel.IlConstDto))
     }
-    val IlStructTypeDto = structdef extends IlValueTypeDto {}
 
-    val IlReferenceTypeDto = basestruct extends IlTypeDto {}
+    val IlStructTypeDto = structdef extends IlValueTypeDto { }
 
-    val IlClassTypeDto = structdef extends IlReferenceTypeDto {}
+    val IlReferenceTypeDto = basestruct extends IlTypeDto { }
+
+    val IlClassTypeDto = structdef extends IlReferenceTypeDto { }
+
     val IlArrayTypeDto = structdef extends IlReferenceTypeDto {
         field("elementType", typeId)
     }
+
     private val IlAttrDto = structdef extends IlDto {
         field("attrType", typeId)
         field("ctorArgs", immutableList(IlMethodBodyModel.IlConstDto))
@@ -91,6 +100,7 @@ object IlModel : Ext(IlRoot) {
         field("name", PredefinedType.string)
         field("attrs", immutableList(IlAttrDto))
         field("isConstructed", PredefinedType.bool)
+//        field("offset", PredefinedType.int32)
     }
 
     private val IlParameterDto = structdef {
@@ -111,6 +121,7 @@ object IlModel : Ext(IlRoot) {
     }
 
     private val IlTempVarDto = structdef extends IlVarDto { }
+
     private val IlErrVarDto = structdef extends IlVarDto { }
 
     private val IlEhScopeDto = basestruct extends IlDto {
@@ -119,12 +130,16 @@ object IlModel : Ext(IlRoot) {
         field("hb", PredefinedType.int)
         field("he", PredefinedType.int)
     }
+
     private val IlCatchScopeDto = structdef extends IlEhScopeDto {
     }
+
     private val IlFilterScopeDto = structdef extends IlEhScopeDto {
         field("fb", PredefinedType.int)
     }
+
     private val IlFaultScopeDto = structdef extends IlEhScopeDto { }
+
     private val IlFinallyScopeDto = structdef extends IlEhScopeDto { }
 
 
@@ -145,6 +160,7 @@ object IlModel : Ext(IlRoot) {
         field("ehScopes", immutableList(IlEhScopeDto))
         field("rawInstList", immutableList(IlMethodBodyModel.IlStmtDto))
         field("isConstructed", PredefinedType.bool)
+        field("isVirtual", PredefinedType.bool)
         field("baseMethod", IlMethodBodyModel.instanceId.nullable)
     }
 

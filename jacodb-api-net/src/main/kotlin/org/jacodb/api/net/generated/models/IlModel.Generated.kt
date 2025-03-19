@@ -87,7 +87,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = -1338205526355587415L
+        const val serializationHash = 7906376064565375402L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -116,7 +116,7 @@ val IProtocol.ilModel get() = getOrCreateExtension(IlModel::class) { @Suppress("
 
 
 /**
- * #### Generated from [IlModel.kt:77]
+ * #### Generated from [IlModel.kt:85]
  */
 class IlArrayTypeDto (
     val elementType: TypeId,
@@ -351,7 +351,7 @@ class IlArrayTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:80]
+ * #### Generated from [IlModel.kt:89]
  */
 class IlAttrDto (
     val attrType: TypeId,
@@ -435,7 +435,7 @@ class IlAttrDto (
 
 
 /**
- * #### Generated from [IlModel.kt:122]
+ * #### Generated from [IlModel.kt:134]
  */
 class IlCatchScopeDto (
     tb: Int,
@@ -517,7 +517,7 @@ class IlCatchScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:76]
+ * #### Generated from [IlModel.kt:83]
  */
 class IlClassTypeDto (
     asmName: String,
@@ -746,7 +746,7 @@ class IlClassTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:31]
+ * #### Generated from [IlModel.kt:33]
  */
 abstract class IlDto (
 ) : IPrintable {
@@ -827,7 +827,7 @@ class IlDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:116]
+ * #### Generated from [IlModel.kt:127]
  */
 abstract class IlEhScopeDto (
     val tb: Int,
@@ -943,7 +943,7 @@ class IlEhScopeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:66]
+ * #### Generated from [IlModel.kt:72]
  */
 class IlEnumTypeDto (
     val underlyingType: TypeId,
@@ -1190,7 +1190,7 @@ class IlEnumTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:114]
+ * #### Generated from [IlModel.kt:125]
  */
 class IlErrVarDto (
     type: TypeId,
@@ -1258,7 +1258,7 @@ class IlErrVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:127]
+ * #### Generated from [IlModel.kt:141]
  */
 class IlFaultScopeDto (
     tb: Int,
@@ -1340,7 +1340,7 @@ class IlFaultScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:88]
+ * #### Generated from [IlModel.kt:97]
  */
 class IlFieldDto (
     val fieldType: TypeId,
@@ -1424,7 +1424,7 @@ class IlFieldDto (
 
 
 /**
- * #### Generated from [IlModel.kt:124]
+ * #### Generated from [IlModel.kt:137]
  */
 class IlFilterScopeDto (
     val fb: Int,
@@ -1512,7 +1512,7 @@ class IlFilterScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:128]
+ * #### Generated from [IlModel.kt:143]
  */
 class IlFinallyScopeDto (
     tb: Int,
@@ -1594,7 +1594,7 @@ class IlFinallyScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:109]
+ * #### Generated from [IlModel.kt:119]
  */
 class IlLocalVarDto (
     val isPinned: Boolean,
@@ -1668,7 +1668,7 @@ class IlLocalVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:131]
+ * #### Generated from [IlModel.kt:146]
  */
 class IlMethodDto (
     val returnType: TypeId,
@@ -1687,6 +1687,7 @@ class IlMethodDto (
     val ehScopes: List<IlEhScopeDto>,
     val rawInstList: List<IlStmtDto>,
     val isConstructed: Boolean,
+    val isVirtual: Boolean,
     val baseMethod: InstanceId?
 ) : IlDto (
 ) {
@@ -1713,8 +1714,9 @@ class IlMethodDto (
             val ehScopes = buffer.readList { ctx.serializers.readPolymorphic<IlEhScopeDto>(ctx, buffer, IlEhScopeDto) }
             val rawInstList = buffer.readList { ctx.serializers.readPolymorphic<IlStmtDto>(ctx, buffer, IlStmtDto) }
             val isConstructed = buffer.readBool()
+            val isVirtual = buffer.readBool()
             val baseMethod = buffer.readNullable { InstanceId.read(ctx, buffer) }
-            return IlMethodDto(returnType, attrs, isStatic, isGeneric, isGenericDefinition, signature, name, parameters, genericArgs, resolved, locals, temps, errs, ehScopes, rawInstList, isConstructed, baseMethod)
+            return IlMethodDto(returnType, attrs, isStatic, isGeneric, isGenericDefinition, signature, name, parameters, genericArgs, resolved, locals, temps, errs, ehScopes, rawInstList, isConstructed, isVirtual, baseMethod)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlMethodDto)  {
@@ -1734,6 +1736,7 @@ class IlMethodDto (
             buffer.writeList(value.ehScopes) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
             buffer.writeList(value.rawInstList) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
             buffer.writeBool(value.isConstructed)
+            buffer.writeBool(value.isVirtual)
             buffer.writeNullable(value.baseMethod) { InstanceId.write(ctx, buffer, it) }
         }
         
@@ -1766,6 +1769,7 @@ class IlMethodDto (
         if (ehScopes != other.ehScopes) return false
         if (rawInstList != other.rawInstList) return false
         if (isConstructed != other.isConstructed) return false
+        if (isVirtual != other.isVirtual) return false
         if (baseMethod != other.baseMethod) return false
         
         return true
@@ -1789,6 +1793,7 @@ class IlMethodDto (
         __r = __r*31 + ehScopes.hashCode()
         __r = __r*31 + rawInstList.hashCode()
         __r = __r*31 + isConstructed.hashCode()
+        __r = __r*31 + isVirtual.hashCode()
         __r = __r*31 + if (baseMethod != null) baseMethod.hashCode() else 0
         return __r
     }
@@ -1812,6 +1817,7 @@ class IlMethodDto (
             print("ehScopes = "); ehScopes.print(printer); println()
             print("rawInstList = "); rawInstList.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
+            print("isVirtual = "); isVirtual.print(printer); println()
             print("baseMethod = "); baseMethod.print(printer); println()
         }
         printer.print(")")
@@ -1824,7 +1830,7 @@ class IlMethodDto (
 
 
 /**
- * #### Generated from [IlModel.kt:96]
+ * #### Generated from [IlModel.kt:106]
  */
 data class IlParameterDto (
     val index: Int,
@@ -1905,7 +1911,7 @@ data class IlParameterDto (
 
 
 /**
- * #### Generated from [IlModel.kt:61]
+ * #### Generated from [IlModel.kt:64]
  */
 class IlPointerTypeDto (
     val targetType: TypeId,
@@ -2140,7 +2146,7 @@ class IlPointerTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:65]
+ * #### Generated from [IlModel.kt:70]
  */
 class IlPrimitiveTypeDto (
     asmName: String,
@@ -2369,7 +2375,7 @@ class IlPrimitiveTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:74]
+ * #### Generated from [IlModel.kt:81]
  */
 abstract class IlReferenceTypeDto (
     asmName: String,
@@ -2678,7 +2684,7 @@ class IlReferenceTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:151]
+ * #### Generated from [IlModel.kt:167]
  */
 class IlSignatureDto (
     val returnType: TypeId,
@@ -2756,7 +2762,7 @@ class IlSignatureDto (
 
 
 /**
- * #### Generated from [IlModel.kt:72]
+ * #### Generated from [IlModel.kt:79]
  */
 class IlStructTypeDto (
     asmName: String,
@@ -2985,7 +2991,7 @@ class IlStructTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:113]
+ * #### Generated from [IlModel.kt:123]
  */
 class IlTempVarDto (
     type: TypeId,
@@ -3053,7 +3059,7 @@ class IlTempVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:33]
+ * #### Generated from [IlModel.kt:35]
  */
 abstract class IlTypeDto (
     val asmName: String,
@@ -3337,7 +3343,7 @@ class IlTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:64]
+ * #### Generated from [IlModel.kt:68]
  */
 abstract class IlValueTypeDto (
     asmName: String,
@@ -3646,7 +3652,7 @@ class IlValueTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:104]
+ * #### Generated from [IlModel.kt:114]
  */
 abstract class IlVarDto (
     val type: TypeId,
@@ -3746,7 +3752,7 @@ class IlVarDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:28]
+ * #### Generated from [IlModel.kt:29]
  */
 class TypeId (
     val typeArgs: List<TypeIdBase>,

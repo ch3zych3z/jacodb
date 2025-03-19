@@ -22,11 +22,19 @@ import org.jacodb.api.net.features.InMemoryIlHierarchyReq
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 
-fun IlMethodImpl.overrides(): List<IlMethod> {
+fun IlMethodImpl.getOverridingMethods(): List<IlMethod> {
     val inheritors = runBlocking { InMemoryIlHierarchy.query(publication, InMemoryIlHierarchyReq(declaringType.id)) }
     return inheritors.flatMap {
         it.methods
     }.filter {
-        (it as IlMethodImpl).baseMethod == baseMethod
+        (it as IlMethodImpl).baseMethod == baseMethod ||
+                (it.baseMethod as IlMethodImpl).isReturnTypeCovarianceAgnosticOverrideOf(this)
     }.toList()
+}
+
+internal fun IlMethodImpl.isReturnTypeCovarianceAgnosticOverrideOf(method: IlMethodImpl): Boolean {
+    return method.attributes.any { it.type.name == "System.Runtime.CompilerServices.PreserveBaseOverridesAttribute" }
+            && method.isVirtual
+            && name == method.name
+            && method.parameters.zip(parameters).fold(true) { acc, (r, l) -> acc && r.type == l.type }
 }

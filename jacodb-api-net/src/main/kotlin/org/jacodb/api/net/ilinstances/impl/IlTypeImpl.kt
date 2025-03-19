@@ -149,6 +149,8 @@ private fun List<IlMethodImpl>.joinFeatureMethods(
     featuresChain.run<IlTypeExtFeature> {
         methodsOf(type)?.let { additional.addAll(it) }
     }
+
+    // TODO: check name is enough
     return appendOrReplace(additional, IlMethod::name)
 }
 
