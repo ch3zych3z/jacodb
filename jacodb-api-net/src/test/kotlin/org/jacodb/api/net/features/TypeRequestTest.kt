@@ -18,13 +18,12 @@ package org.jacodb.api.net.features
 
 import org.jacodb.api.net.TestDllServer
 import org.jacodb.api.net.generated.models.TypeId
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.int32
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.nuint
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.string
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.int32
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.nuint
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.string
 import org.jacodb.api.net.storage.TypeIdExt.emptyTypeId
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 

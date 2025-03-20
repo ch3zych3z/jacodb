@@ -23,7 +23,7 @@ import org.jacodb.api.net.TestDllServer
 import org.jacodb.api.net.ilinstances.impl.IlPointerType
 import org.jacodb.api.net.ilinstances.impl.IlPrimitiveType
 import org.jacodb.api.net.publication.IlPredefinedAsmExt.mscorelib
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.byte
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.byte
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 

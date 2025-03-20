@@ -19,35 +19,38 @@ package org.jacodb.api.net.publication
 import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.TypeId
 import org.jacodb.api.net.ilinstances.IlType
-import org.jacodb.api.net.publication.IlPredefinedAsmsExt.mscorelib
+import org.jacodb.api.net.publication.IlPredefinedAsmExt.mscorelib
 
 
-object IlPredefinedAsmsExt {
-    fun IlPublication.mscorelib(): String? {
+object IlPredefinedAsmExt {
+    fun IlPublication.mscorelib(): String {
         return referencedAsmLocations.keys.single {
             it.contains("System.Private.CoreLib")
         }.let {
-            findAsmNameByLocationOrNull(it)
+            findAsmNameByLocationOrNull(it)!!
         }
     }
 }
 
-object IlPredefinedTypesExt {
+object IlPredefinedTypeExt {
     fun IlPublication.void(): IlType =
-        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.Void", typeArgs = emptyList()))!!
+        findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.Void", typeArgs = emptyList()))!!
+
+    fun IlPublication.byte(): IlType =
+        findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.Byte", typeArgs = emptyList()))!!
 
     fun IlPublication.int32(): IlType =
-        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.Int32", typeArgs = emptyList()))!!
+        findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.Int32", typeArgs = emptyList()))!!
 
     fun IlPublication.uint32(): IlType =
-        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.UInt32", typeArgs = emptyList()))!!
+        findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.UInt32", typeArgs = emptyList()))!!
 
     fun IlPublication.nint(): IlType =
-        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.IntPtr", typeArgs = emptyList()))!!
+        findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.IntPtr", typeArgs = emptyList()))!!
 
     fun IlPublication.nuint(): IlType =
-        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.UIntPtr", typeArgs = emptyList()))!!
+        findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.UIntPtr", typeArgs = emptyList()))!!
 
     fun IlPublication.string(): IlType =
-        findIlTypeOrNull(TypeId(asmName = mscorelib()!!, typeName = "System.String", typeArgs = emptyList()))!!
+        findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.String", typeArgs = emptyList()))!!
 }

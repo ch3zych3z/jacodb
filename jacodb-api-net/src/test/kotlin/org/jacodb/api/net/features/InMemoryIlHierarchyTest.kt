@@ -32,9 +32,8 @@ import org.jacodb.api.net.ilinstances.IlAttribute
 import org.jacodb.api.net.ilinstances.IlType
 import org.jacodb.api.net.ilinstances.IlTypeRef
 import org.jacodb.api.net.ilinstances.impl.IlAttributeImpl
-import org.jacodb.api.net.ilinstances.impl.IlTypeImpl
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.int32
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.string
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.int32
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.string
 import org.jacodb.api.net.storage.TypeIdExt.emptyTypeId
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test

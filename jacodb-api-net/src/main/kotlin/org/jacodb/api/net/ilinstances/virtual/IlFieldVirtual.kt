@@ -21,7 +21,7 @@ import org.jacodb.api.net.features.eliminateApproximation
 import org.jacodb.api.net.ilinstances.IlAttribute
 import org.jacodb.api.net.ilinstances.IlField
 import org.jacodb.api.net.ilinstances.IlType
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.void
 
 class IlFieldVirtual(
     override val declaringType: IlType,

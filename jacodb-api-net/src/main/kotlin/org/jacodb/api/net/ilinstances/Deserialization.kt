@@ -79,8 +79,8 @@ import org.jacodb.api.net.generated.models.IlVarKind
 import org.jacodb.api.net.generated.models.IlXorOpDto
 import org.jacodb.api.net.ilinstances.impl.IlArrayType
 import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.nuint
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.uint32
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.nuint
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.uint32
 
 
 fun IlConstDto.deserializeConst(publication: IlPublication): IlConstant {

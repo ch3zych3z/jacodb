@@ -24,7 +24,7 @@ import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.generated.models.IlStmtDto
 import org.jacodb.api.net.ilinstances.*
 import org.jacodb.api.net.ilinstances.impl.IlEhScope
-import org.jacodb.api.net.publication.IlPredefinedTypesExt.void
+import org.jacodb.api.net.publication.IlPredefinedTypeExt.void
 
 
 class IlMethodVirtual(
