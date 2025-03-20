@@ -38,6 +38,7 @@ interface IlType : IlInstance, CommonTypeName, CommonType {
 
     override val isConstructed: Boolean
 
+    val isManaged: Boolean
     val isGenericType: Boolean
     val genericDefinition: IlType?
     val isGenericDefinition: Boolean
