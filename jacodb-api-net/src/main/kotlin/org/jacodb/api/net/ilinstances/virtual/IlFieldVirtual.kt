@@ -27,6 +27,7 @@ class IlFieldVirtual(
     override val declaringType: IlType,
     override val fieldType: IlType,
     override val name: String,
+    override val offset: Int,
     override val isStatic: Boolean,
     override val attributes: List<IlAttribute>
 ) : IlField {
@@ -52,6 +53,13 @@ class IlFieldVirtual(
             fieldType = value
         }
 
+        var offset: Int = 0
+            private set
+
+        fun offset(value: Int) = apply {
+            offset = value
+        }
+
         var isStatic: Boolean = false
             private set
 
@@ -67,13 +75,19 @@ class IlFieldVirtual(
         }
 
         fun build(): IlFieldVirtual {
-            return IlFieldVirtual(declaringType, fieldType, name, isStatic, attributes)
+            return IlFieldVirtual(declaringType, fieldType, name, offset, isStatic, attributes)
         }
     }
 
     companion object {
         fun IlField.toVirtualOf(type: IlType) =
-            Builder(this.fieldType.publication).declaringType(type).fieldType(fieldType.eliminateApproximation())
-                .name(this.name).isStatic(isStatic).attributes(attributes).build()
+            Builder(this.fieldType.publication).
+            declaringType(type).
+            fieldType(fieldType.eliminateApproximation()).
+            name(this.name).
+            offset(this.offset).
+            isStatic(isStatic).
+            attributes(attributes).
+            build()
     }
 }

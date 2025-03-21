@@ -75,10 +75,12 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
     override val moduleToken: Int = dto.moduleToken
     override val typeToken: Int = dto.typeToken
     override val asmName = dto.asmName
+
     val namespace: String = dto.namespaceName
     override val name: String = dto.name
     override val fullname = dto.fullname
     override val typeName = fullname
+    override val size: Int = dto.size
     override val attributes: List<IlAttributeImpl> by lazy(PUBLICATION) {
         dto.attrs.map {
             IlAttributeImpl(

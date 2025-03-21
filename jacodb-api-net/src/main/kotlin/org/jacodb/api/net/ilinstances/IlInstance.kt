@@ -59,7 +59,7 @@ interface IlType : IlInstance, CommonTypeName, CommonType {
     val name: String
     val id: TypeId
         get() = TypeId(asmName = asmName, typeName = fullname, typeArgs = genericArgs.map { (it as IlTypeImpl).id })
-
+    val size: Int
     val attributes: List<IlAttribute>
 
     val fields: List<IlField>
@@ -70,6 +70,7 @@ interface IlField : IlInstance {
     val declaringType: IlType
     val fieldType: IlType
     val name: String
+    val offset: Int
     val isStatic: Boolean
     val attributes: List<IlAttribute>
 }

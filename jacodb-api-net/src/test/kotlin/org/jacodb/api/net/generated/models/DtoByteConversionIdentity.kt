@@ -48,7 +48,8 @@ class DtoByteConversionIdentity {
             isContravariant = false,
             hasRefTypeConstraint = false,
             hasNotNullValueTypeConstraint = false,
-            hasDefaultCtorConstraint = false
+            hasDefaultCtorConstraint = false,
+            size = 0
         )
         val bytes = primitiveType.getBytes()
         val sameType = bytes.getIlTypeDto()
@@ -92,7 +93,8 @@ class DtoByteConversionIdentity {
             isContravariant = false,
             hasRefTypeConstraint = false,
             hasNotNullValueTypeConstraint = false,
-            hasDefaultCtorConstraint = false
+            hasDefaultCtorConstraint = false,
+            size = 0
         )
 
         val bytes = initialEnum.getBytes()

@@ -50,5 +50,6 @@ fun randomPrimitive(namesLength: Int) = IlPrimitiveTypeDto(
     isContravariant = false,
     hasRefTypeConstraint = false,
     hasNotNullValueTypeConstraint = false,
-    hasDefaultCtorConstraint = false
+    hasDefaultCtorConstraint = false,
+    size = 0
 )

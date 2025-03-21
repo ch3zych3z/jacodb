@@ -39,6 +39,9 @@ object IlPredefinedTypeExt {
     fun IlPublication.byte(): IlType =
         findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.Byte", typeArgs = emptyList()))!!
 
+    fun IlPublication.double(): IlType =
+        findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.Double", typeArgs = emptyList()))!!
+
     fun IlPublication.int32(): IlType =
         findIlTypeOrNull(TypeId(asmName = mscorelib(), typeName = "System.Int32", typeArgs = emptyList()))!!
 

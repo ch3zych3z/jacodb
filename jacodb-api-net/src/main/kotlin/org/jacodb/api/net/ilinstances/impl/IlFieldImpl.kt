@@ -28,6 +28,7 @@ class IlFieldImpl(override val declaringType: IlType, private val dto: IlFieldDt
     override val attributes: MutableList<IlAttributeImpl> = mutableListOf()
     override val isStatic: Boolean = dto.isStatic
     override val name: String = dto.name
+    override val offset: Int = dto.offset
     override fun toString(): String {
         return if (isStatic) "$declaringType.$name" else "$.$name"
     }

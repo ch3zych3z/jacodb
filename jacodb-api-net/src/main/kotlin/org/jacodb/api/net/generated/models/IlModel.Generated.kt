@@ -87,7 +87,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = 7906376064565375402L
+        const val serializationHash = -4398620885872587098L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -124,6 +124,7 @@ class IlArrayTypeDto (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -150,6 +151,7 @@ class IlArrayTypeDto (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -183,6 +185,7 @@ class IlArrayTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -205,7 +208,7 @@ class IlArrayTypeDto (
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val elementType = TypeId.read(ctx, buffer)
-            return IlArrayTypeDto(elementType, asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlArrayTypeDto(elementType, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArrayTypeDto)  {
@@ -213,6 +216,7 @@ class IlArrayTypeDto (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -255,6 +259,7 @@ class IlArrayTypeDto (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -287,6 +292,7 @@ class IlArrayTypeDto (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -319,6 +325,7 @@ class IlArrayTypeDto (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
@@ -524,6 +531,7 @@ class IlClassTypeDto (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -550,6 +558,7 @@ class IlClassTypeDto (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -583,6 +592,7 @@ class IlClassTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -604,7 +614,7 @@ class IlClassTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlClassTypeDto(asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlClassTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlClassTypeDto)  {
@@ -612,6 +622,7 @@ class IlClassTypeDto (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -652,6 +663,7 @@ class IlClassTypeDto (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -683,6 +695,7 @@ class IlClassTypeDto (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -714,6 +727,7 @@ class IlClassTypeDto (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
@@ -953,6 +967,7 @@ class IlEnumTypeDto (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -979,6 +994,7 @@ class IlEnumTypeDto (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -1012,6 +1028,7 @@ class IlEnumTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -1036,7 +1053,7 @@ class IlEnumTypeDto (
             val underlyingType = TypeId.read(ctx, buffer)
             val names = buffer.readList { buffer.readString() }
             val values = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
-            return IlEnumTypeDto(underlyingType, names, values, asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlEnumTypeDto(underlyingType, names, values, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlEnumTypeDto)  {
@@ -1044,6 +1061,7 @@ class IlEnumTypeDto (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -1090,6 +1108,7 @@ class IlEnumTypeDto (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -1124,6 +1143,7 @@ class IlEnumTypeDto (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -1158,6 +1178,7 @@ class IlEnumTypeDto (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
@@ -1347,7 +1368,8 @@ class IlFieldDto (
     val isStatic: Boolean,
     val name: String,
     val attrs: List<IlAttrDto>,
-    val isConstructed: Boolean
+    val isConstructed: Boolean,
+    val offset: Int
 ) : IlDto (
 ) {
     //companion
@@ -1362,7 +1384,8 @@ class IlFieldDto (
             val name = buffer.readString()
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val isConstructed = buffer.readBool()
-            return IlFieldDto(fieldType, isStatic, name, attrs, isConstructed)
+            val offset = buffer.readInt()
+            return IlFieldDto(fieldType, isStatic, name, attrs, isConstructed, offset)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlFieldDto)  {
@@ -1371,6 +1394,7 @@ class IlFieldDto (
             buffer.writeString(value.name)
             buffer.writeList(value.attrs) { v -> IlAttrDto.write(ctx, buffer, v) }
             buffer.writeBool(value.isConstructed)
+            buffer.writeInt(value.offset)
         }
         
         
@@ -1391,6 +1415,7 @@ class IlFieldDto (
         if (name != other.name) return false
         if (attrs != other.attrs) return false
         if (isConstructed != other.isConstructed) return false
+        if (offset != other.offset) return false
         
         return true
     }
@@ -1402,6 +1427,7 @@ class IlFieldDto (
         __r = __r*31 + name.hashCode()
         __r = __r*31 + attrs.hashCode()
         __r = __r*31 + isConstructed.hashCode()
+        __r = __r*31 + offset.hashCode()
         return __r
     }
     //pretty print
@@ -1413,6 +1439,7 @@ class IlFieldDto (
             print("name = "); name.print(printer); println()
             print("attrs = "); attrs.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
+            print("offset = "); offset.print(printer); println()
         }
         printer.print(")")
     }
@@ -1919,6 +1946,7 @@ class IlPointerTypeDto (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -1945,6 +1973,7 @@ class IlPointerTypeDto (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -1978,6 +2007,7 @@ class IlPointerTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -2000,7 +2030,7 @@ class IlPointerTypeDto (
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val targetType = TypeId.read(ctx, buffer)
-            return IlPointerTypeDto(targetType, asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlPointerTypeDto(targetType, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlPointerTypeDto)  {
@@ -2008,6 +2038,7 @@ class IlPointerTypeDto (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -2050,6 +2081,7 @@ class IlPointerTypeDto (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -2082,6 +2114,7 @@ class IlPointerTypeDto (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -2114,6 +2147,7 @@ class IlPointerTypeDto (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
@@ -2153,6 +2187,7 @@ class IlPrimitiveTypeDto (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -2179,6 +2214,7 @@ class IlPrimitiveTypeDto (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -2212,6 +2248,7 @@ class IlPrimitiveTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -2233,7 +2270,7 @@ class IlPrimitiveTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlPrimitiveTypeDto(asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlPrimitiveTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlPrimitiveTypeDto)  {
@@ -2241,6 +2278,7 @@ class IlPrimitiveTypeDto (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -2281,6 +2319,7 @@ class IlPrimitiveTypeDto (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -2312,6 +2351,7 @@ class IlPrimitiveTypeDto (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -2343,6 +2383,7 @@ class IlPrimitiveTypeDto (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
@@ -2382,6 +2423,7 @@ abstract class IlReferenceTypeDto (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -2408,6 +2450,7 @@ abstract class IlReferenceTypeDto (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -2439,6 +2482,7 @@ abstract class IlReferenceTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -2462,7 +2506,7 @@ abstract class IlReferenceTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlReferenceTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlReferenceTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -2484,6 +2528,7 @@ class IlReferenceTypeDto_Unknown (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -2512,6 +2557,7 @@ class IlReferenceTypeDto_Unknown (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -2549,6 +2595,7 @@ class IlReferenceTypeDto_Unknown (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -2590,6 +2637,7 @@ class IlReferenceTypeDto_Unknown (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -2621,6 +2669,7 @@ class IlReferenceTypeDto_Unknown (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -2652,6 +2701,7 @@ class IlReferenceTypeDto_Unknown (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
@@ -2769,6 +2819,7 @@ class IlStructTypeDto (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -2795,6 +2846,7 @@ class IlStructTypeDto (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -2828,6 +2880,7 @@ class IlStructTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -2849,7 +2902,7 @@ class IlStructTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlStructTypeDto(asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlStructTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlStructTypeDto)  {
@@ -2857,6 +2910,7 @@ class IlStructTypeDto (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -2897,6 +2951,7 @@ class IlStructTypeDto (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -2928,6 +2983,7 @@ class IlStructTypeDto (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -2959,6 +3015,7 @@ class IlStructTypeDto (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
@@ -3066,6 +3123,7 @@ abstract class IlTypeDto (
     val moduleToken: Int,
     val typeToken: Int,
     val namespaceName: String,
+    val size: Int,
     val name: String,
     val fullname: String,
     val isConstructed: Boolean,
@@ -3098,6 +3156,7 @@ abstract class IlTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -3121,7 +3180,7 @@ abstract class IlTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -3143,6 +3202,7 @@ class IlTypeDto_Unknown (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -3171,6 +3231,7 @@ class IlTypeDto_Unknown (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -3208,6 +3269,7 @@ class IlTypeDto_Unknown (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -3249,6 +3311,7 @@ class IlTypeDto_Unknown (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -3280,6 +3343,7 @@ class IlTypeDto_Unknown (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -3311,6 +3375,7 @@ class IlTypeDto_Unknown (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()
@@ -3350,6 +3415,7 @@ abstract class IlValueTypeDto (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -3376,6 +3442,7 @@ abstract class IlValueTypeDto (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -3407,6 +3474,7 @@ abstract class IlValueTypeDto (
             val moduleToken = buffer.readInt()
             val typeToken = buffer.readInt()
             val namespaceName = buffer.readString()
+            val size = buffer.readInt()
             val name = buffer.readString()
             val fullname = buffer.readString()
             val isConstructed = buffer.readBool()
@@ -3430,7 +3498,7 @@ abstract class IlValueTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlValueTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlValueTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -3452,6 +3520,7 @@ class IlValueTypeDto_Unknown (
     moduleToken: Int,
     typeToken: Int,
     namespaceName: String,
+    size: Int,
     name: String,
     fullname: String,
     isConstructed: Boolean,
@@ -3480,6 +3549,7 @@ class IlValueTypeDto_Unknown (
     moduleToken,
     typeToken,
     namespaceName,
+    size,
     name,
     fullname,
     isConstructed,
@@ -3517,6 +3587,7 @@ class IlValueTypeDto_Unknown (
             buffer.writeInt(value.moduleToken)
             buffer.writeInt(value.typeToken)
             buffer.writeString(value.namespaceName)
+            buffer.writeInt(value.size)
             buffer.writeString(value.name)
             buffer.writeString(value.fullname)
             buffer.writeBool(value.isConstructed)
@@ -3558,6 +3629,7 @@ class IlValueTypeDto_Unknown (
         if (moduleToken != other.moduleToken) return false
         if (typeToken != other.typeToken) return false
         if (namespaceName != other.namespaceName) return false
+        if (size != other.size) return false
         if (name != other.name) return false
         if (fullname != other.fullname) return false
         if (isConstructed != other.isConstructed) return false
@@ -3589,6 +3661,7 @@ class IlValueTypeDto_Unknown (
         __r = __r*31 + moduleToken.hashCode()
         __r = __r*31 + typeToken.hashCode()
         __r = __r*31 + namespaceName.hashCode()
+        __r = __r*31 + size.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + fullname.hashCode()
         __r = __r*31 + isConstructed.hashCode()
@@ -3620,6 +3693,7 @@ class IlValueTypeDto_Unknown (
             print("moduleToken = "); moduleToken.print(printer); println()
             print("typeToken = "); typeToken.print(printer); println()
             print("namespaceName = "); namespaceName.print(printer); println()
+            print("size = "); size.print(printer); println()
             print("name = "); name.print(printer); println()
             print("fullname = "); fullname.print(printer); println()
             print("isConstructed = "); isConstructed.print(printer); println()

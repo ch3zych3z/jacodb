@@ -37,7 +37,7 @@ object IlModel : Ext(IlRoot) {
         field("moduleToken", PredefinedType.int)
         field("typeToken", PredefinedType.int)
         field("namespaceName", PredefinedType.string)
-//        field("size", PredefinedType.uint32)
+        field("size", PredefinedType.int32)
         field("name", PredefinedType.string)
         field("fullname", PredefinedType.string)
         field("isConstructed", PredefinedType.bool)
@@ -100,7 +100,7 @@ object IlModel : Ext(IlRoot) {
         field("name", PredefinedType.string)
         field("attrs", immutableList(IlAttrDto))
         field("isConstructed", PredefinedType.bool)
-//        field("offset", PredefinedType.int32)
+        field("offset", PredefinedType.int32)
     }
 
     private val IlParameterDto = structdef {

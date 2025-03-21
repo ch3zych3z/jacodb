@@ -54,7 +54,8 @@ class DtoSerializationExtKtTest {
             isContravariant = false,
             hasRefTypeConstraint = false,
             hasNotNullValueTypeConstraint = false,
-            hasDefaultCtorConstraint = false
+            hasDefaultCtorConstraint = false,
+            size = 0
         )
         val bytes = pointerType.getBytes()
         val deserializedType = bytes.getIlTypeDto()
@@ -75,7 +76,8 @@ class DtoSerializationExtKtTest {
             isStatic = false,
             name = "field1",
             attrs = listOf(),
-            isConstructed = true
+            isConstructed = true,
+            offset = 0
         )
 
         val field2 = IlFieldDto(
@@ -87,7 +89,8 @@ class DtoSerializationExtKtTest {
             isStatic = true,
             name = "field2",
             attrs = listOf(),
-            isConstructed = true
+            isConstructed = true,
+            offset = 0
         )
 
         // Create mock methods
@@ -207,7 +210,8 @@ class DtoSerializationExtKtTest {
             isContravariant = false,
             hasRefTypeConstraint = false,
             hasNotNullValueTypeConstraint = false,
-            hasDefaultCtorConstraint = false
+            hasDefaultCtorConstraint = false,
+            size = 0
         )
 
         // Serialize and deserialize the struct type
@@ -258,7 +262,8 @@ class DtoSerializationExtKtTest {
             isContravariant = false,
             hasRefTypeConstraint = false,
             hasNotNullValueTypeConstraint = false,
-            hasDefaultCtorConstraint = false
+            hasDefaultCtorConstraint = false,
+            size = 0
         )
         val bytes = arrayType.getBytes()
         val deserializedType = bytes.getIlTypeDto()
