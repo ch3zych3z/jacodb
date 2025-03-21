@@ -51,5 +51,7 @@ fun randomPrimitive(namesLength: Int) = IlPrimitiveTypeDto(
     hasRefTypeConstraint = false,
     hasNotNullValueTypeConstraint = false,
     hasDefaultCtorConstraint = false,
-    size = 0
+    size = 0,
+    isInterface = false,
+    genericParameterConstraints = listOf()
 )

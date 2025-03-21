@@ -50,6 +50,7 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
     override val isManaged: Boolean
         get() = dto.isManaged
     override val isGenericType: Boolean = dto.isGenericType
+    override val isInterface: Boolean = dto.isInterface
     override val genericDefinition: IlType? by lazy(PUBLICATION) {
         dto.genericDefinition?.let { publication.findIlTypeOrNull(it) }
     }
@@ -57,7 +58,7 @@ sealed class IlTypeImpl(private val dto: IlTypeDto, override val publication: Il
         get() = dto.isGenericDefinition
     override val isGenericParameter: Boolean
         get() = dto.isGenericParam
-
+    override val genericParameterConstraints: List<IlType> by lazy { dto.genericParameterConstraints.map { publication.findIlTypeOrNull(it)!! } }
     override val genericArgs: List<IlType> by lazy(PUBLICATION) { dto.genericArgs.map { publication.findIlTypeOrNull(it)!! } }
 
     override val hasDefaultCtorConstraint: Boolean = dto.hasDefaultCtorConstraint

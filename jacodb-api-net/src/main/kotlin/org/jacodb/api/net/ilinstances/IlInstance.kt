@@ -34,12 +34,14 @@ interface IlType : IlInstance, CommonTypeName, CommonType {
     val publication: IlPublication
     val declaringType: IlType?
     val baseType: IlType?
+    val isInterface: Boolean
     val interfaces: List<IlType>
 
     override val isConstructed: Boolean
 
     val isManaged: Boolean
     val isGenericType: Boolean
+    val genericParameterConstraints: List<IlType>
     val genericDefinition: IlType?
     val isGenericDefinition: Boolean
     val isGenericParameter: Boolean

@@ -55,7 +55,9 @@ class DtoSerializationExtKtTest {
             hasRefTypeConstraint = false,
             hasNotNullValueTypeConstraint = false,
             hasDefaultCtorConstraint = false,
-            size = 0
+            size = 0,
+            isInterface = false,
+            genericParameterConstraints = listOf()
         )
         val bytes = pointerType.getBytes()
         val deserializedType = bytes.getIlTypeDto()
@@ -211,7 +213,9 @@ class DtoSerializationExtKtTest {
             hasRefTypeConstraint = false,
             hasNotNullValueTypeConstraint = false,
             hasDefaultCtorConstraint = false,
-            size = 0
+            size = 0,
+            isInterface = false,
+            genericParameterConstraints = listOf()
         )
 
         // Serialize and deserialize the struct type
@@ -263,7 +267,9 @@ class DtoSerializationExtKtTest {
             hasRefTypeConstraint = false,
             hasNotNullValueTypeConstraint = false,
             hasDefaultCtorConstraint = false,
-            size = 0
+            size = 0,
+            isInterface = false,
+            genericParameterConstraints = listOf()
         )
         val bytes = arrayType.getBytes()
         val deserializedType = bytes.getIlTypeDto()

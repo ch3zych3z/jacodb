@@ -87,7 +87,7 @@ class IlModel private constructor(
         }
         
         
-        const val serializationHash = -4398620885872587098L
+        const val serializationHash = -2569662940650366085L
         
     }
     override val serializersOwner: ISerializersOwner get() = IlModel
@@ -116,7 +116,7 @@ val IProtocol.ilModel get() = getOrCreateExtension(IlModel::class) { @Suppress("
 
 
 /**
- * #### Generated from [IlModel.kt:85]
+ * #### Generated from [IlModel.kt:87]
  */
 class IlArrayTypeDto (
     val elementType: TypeId,
@@ -132,7 +132,9 @@ class IlArrayTypeDto (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -159,7 +161,9 @@ class IlArrayTypeDto (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -193,7 +197,9 @@ class IlArrayTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -208,7 +214,7 @@ class IlArrayTypeDto (
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val elementType = TypeId.read(ctx, buffer)
-            return IlArrayTypeDto(elementType, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlArrayTypeDto(elementType, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlArrayTypeDto)  {
@@ -224,7 +230,9 @@ class IlArrayTypeDto (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -267,7 +275,9 @@ class IlArrayTypeDto (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -300,7 +310,9 @@ class IlArrayTypeDto (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -333,7 +345,9 @@ class IlArrayTypeDto (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -358,7 +372,7 @@ class IlArrayTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:89]
+ * #### Generated from [IlModel.kt:91]
  */
 class IlAttrDto (
     val attrType: TypeId,
@@ -442,7 +456,7 @@ class IlAttrDto (
 
 
 /**
- * #### Generated from [IlModel.kt:134]
+ * #### Generated from [IlModel.kt:136]
  */
 class IlCatchScopeDto (
     tb: Int,
@@ -524,7 +538,7 @@ class IlCatchScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:83]
+ * #### Generated from [IlModel.kt:85]
  */
 class IlClassTypeDto (
     asmName: String,
@@ -539,7 +553,9 @@ class IlClassTypeDto (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -566,7 +582,9 @@ class IlClassTypeDto (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -600,7 +618,9 @@ class IlClassTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -614,7 +634,7 @@ class IlClassTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlClassTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlClassTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlClassTypeDto)  {
@@ -630,7 +650,9 @@ class IlClassTypeDto (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -671,7 +693,9 @@ class IlClassTypeDto (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -703,7 +727,9 @@ class IlClassTypeDto (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -735,7 +761,9 @@ class IlClassTypeDto (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -841,7 +869,7 @@ class IlDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:127]
+ * #### Generated from [IlModel.kt:129]
  */
 abstract class IlEhScopeDto (
     val tb: Int,
@@ -957,7 +985,7 @@ class IlEhScopeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:72]
+ * #### Generated from [IlModel.kt:74]
  */
 class IlEnumTypeDto (
     val underlyingType: TypeId,
@@ -975,7 +1003,9 @@ class IlEnumTypeDto (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -1002,7 +1032,9 @@ class IlEnumTypeDto (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -1036,7 +1068,9 @@ class IlEnumTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -1053,7 +1087,7 @@ class IlEnumTypeDto (
             val underlyingType = TypeId.read(ctx, buffer)
             val names = buffer.readList { buffer.readString() }
             val values = buffer.readList { ctx.serializers.readPolymorphic<IlConstDto>(ctx, buffer, IlConstDto) }
-            return IlEnumTypeDto(underlyingType, names, values, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlEnumTypeDto(underlyingType, names, values, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlEnumTypeDto)  {
@@ -1069,7 +1103,9 @@ class IlEnumTypeDto (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -1116,7 +1152,9 @@ class IlEnumTypeDto (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -1151,7 +1189,9 @@ class IlEnumTypeDto (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -1186,7 +1226,9 @@ class IlEnumTypeDto (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -1211,7 +1253,7 @@ class IlEnumTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:125]
+ * #### Generated from [IlModel.kt:127]
  */
 class IlErrVarDto (
     type: TypeId,
@@ -1279,7 +1321,7 @@ class IlErrVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:141]
+ * #### Generated from [IlModel.kt:143]
  */
 class IlFaultScopeDto (
     tb: Int,
@@ -1361,7 +1403,7 @@ class IlFaultScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:97]
+ * #### Generated from [IlModel.kt:99]
  */
 class IlFieldDto (
     val fieldType: TypeId,
@@ -1451,7 +1493,7 @@ class IlFieldDto (
 
 
 /**
- * #### Generated from [IlModel.kt:137]
+ * #### Generated from [IlModel.kt:139]
  */
 class IlFilterScopeDto (
     val fb: Int,
@@ -1539,7 +1581,7 @@ class IlFilterScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:143]
+ * #### Generated from [IlModel.kt:145]
  */
 class IlFinallyScopeDto (
     tb: Int,
@@ -1621,7 +1663,7 @@ class IlFinallyScopeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:119]
+ * #### Generated from [IlModel.kt:121]
  */
 class IlLocalVarDto (
     val isPinned: Boolean,
@@ -1695,7 +1737,7 @@ class IlLocalVarDto (
 
 
 /**
- * #### Generated from [IlModel.kt:146]
+ * #### Generated from [IlModel.kt:148]
  */
 class IlMethodDto (
     val returnType: TypeId,
@@ -1857,7 +1899,7 @@ class IlMethodDto (
 
 
 /**
- * #### Generated from [IlModel.kt:106]
+ * #### Generated from [IlModel.kt:108]
  */
 data class IlParameterDto (
     val index: Int,
@@ -1938,7 +1980,7 @@ data class IlParameterDto (
 
 
 /**
- * #### Generated from [IlModel.kt:64]
+ * #### Generated from [IlModel.kt:66]
  */
 class IlPointerTypeDto (
     val targetType: TypeId,
@@ -1954,7 +1996,9 @@ class IlPointerTypeDto (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -1981,7 +2025,9 @@ class IlPointerTypeDto (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -2015,7 +2061,9 @@ class IlPointerTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -2030,7 +2078,7 @@ class IlPointerTypeDto (
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val targetType = TypeId.read(ctx, buffer)
-            return IlPointerTypeDto(targetType, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlPointerTypeDto(targetType, asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlPointerTypeDto)  {
@@ -2046,7 +2094,9 @@ class IlPointerTypeDto (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -2089,7 +2139,9 @@ class IlPointerTypeDto (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -2122,7 +2174,9 @@ class IlPointerTypeDto (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -2155,7 +2209,9 @@ class IlPointerTypeDto (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -2180,7 +2236,7 @@ class IlPointerTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:70]
+ * #### Generated from [IlModel.kt:72]
  */
 class IlPrimitiveTypeDto (
     asmName: String,
@@ -2195,7 +2251,9 @@ class IlPrimitiveTypeDto (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -2222,7 +2280,9 @@ class IlPrimitiveTypeDto (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -2256,7 +2316,9 @@ class IlPrimitiveTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -2270,7 +2332,7 @@ class IlPrimitiveTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlPrimitiveTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlPrimitiveTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlPrimitiveTypeDto)  {
@@ -2286,7 +2348,9 @@ class IlPrimitiveTypeDto (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -2327,7 +2391,9 @@ class IlPrimitiveTypeDto (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -2359,7 +2425,9 @@ class IlPrimitiveTypeDto (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -2391,7 +2459,9 @@ class IlPrimitiveTypeDto (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -2416,7 +2486,7 @@ class IlPrimitiveTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:81]
+ * #### Generated from [IlModel.kt:83]
  */
 abstract class IlReferenceTypeDto (
     asmName: String,
@@ -2431,7 +2501,9 @@ abstract class IlReferenceTypeDto (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -2458,7 +2530,9 @@ abstract class IlReferenceTypeDto (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -2490,7 +2564,9 @@ abstract class IlReferenceTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -2506,7 +2582,7 @@ abstract class IlReferenceTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlReferenceTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlReferenceTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -2536,7 +2612,9 @@ class IlReferenceTypeDto_Unknown (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -2565,7 +2643,9 @@ class IlReferenceTypeDto_Unknown (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -2603,7 +2683,9 @@ class IlReferenceTypeDto_Unknown (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -2645,7 +2727,9 @@ class IlReferenceTypeDto_Unknown (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -2677,7 +2761,9 @@ class IlReferenceTypeDto_Unknown (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -2709,7 +2795,9 @@ class IlReferenceTypeDto_Unknown (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -2734,7 +2822,7 @@ class IlReferenceTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:167]
+ * #### Generated from [IlModel.kt:169]
  */
 class IlSignatureDto (
     val returnType: TypeId,
@@ -2812,7 +2900,7 @@ class IlSignatureDto (
 
 
 /**
- * #### Generated from [IlModel.kt:79]
+ * #### Generated from [IlModel.kt:81]
  */
 class IlStructTypeDto (
     asmName: String,
@@ -2827,7 +2915,9 @@ class IlStructTypeDto (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -2854,7 +2944,9 @@ class IlStructTypeDto (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -2888,7 +2980,9 @@ class IlStructTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -2902,7 +2996,7 @@ class IlStructTypeDto (
             val attrs = buffer.readList { IlAttrDto.read(ctx, buffer) }
             val fields = buffer.readList { IlFieldDto.read(ctx, buffer) }
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
-            return IlStructTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
+            return IlStructTypeDto(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: IlStructTypeDto)  {
@@ -2918,7 +3012,9 @@ class IlStructTypeDto (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -2959,7 +3055,9 @@ class IlStructTypeDto (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -2991,7 +3089,9 @@ class IlStructTypeDto (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -3023,7 +3123,9 @@ class IlStructTypeDto (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -3048,7 +3150,7 @@ class IlStructTypeDto (
 
 
 /**
- * #### Generated from [IlModel.kt:123]
+ * #### Generated from [IlModel.kt:125]
  */
 class IlTempVarDto (
     type: TypeId,
@@ -3131,7 +3233,9 @@ abstract class IlTypeDto (
     val baseType: TypeId?,
     val interfaces: List<TypeId>,
     val genericArgs: List<TypeId>,
+    val isInterface: Boolean,
     val isGenericType: Boolean,
+    val genericParameterConstraints: List<TypeId>,
     val isGenericParam: Boolean,
     val isGenericDefinition: Boolean,
     val genericDefinition: TypeId?,
@@ -3164,7 +3268,9 @@ abstract class IlTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -3180,7 +3286,7 @@ abstract class IlTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -3210,7 +3316,9 @@ class IlTypeDto_Unknown (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -3239,7 +3347,9 @@ class IlTypeDto_Unknown (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -3277,7 +3387,9 @@ class IlTypeDto_Unknown (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -3319,7 +3431,9 @@ class IlTypeDto_Unknown (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -3351,7 +3465,9 @@ class IlTypeDto_Unknown (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -3383,7 +3499,9 @@ class IlTypeDto_Unknown (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -3408,7 +3526,7 @@ class IlTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:68]
+ * #### Generated from [IlModel.kt:70]
  */
 abstract class IlValueTypeDto (
     asmName: String,
@@ -3423,7 +3541,9 @@ abstract class IlValueTypeDto (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -3450,7 +3570,9 @@ abstract class IlValueTypeDto (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -3482,7 +3604,9 @@ abstract class IlValueTypeDto (
             val baseType = buffer.readNullable { TypeId.read(ctx, buffer) }
             val interfaces = buffer.readList { TypeId.read(ctx, buffer) }
             val genericArgs = buffer.readList { TypeId.read(ctx, buffer) }
+            val isInterface = buffer.readBool()
             val isGenericType = buffer.readBool()
+            val genericParameterConstraints = buffer.readList { TypeId.read(ctx, buffer) }
             val isGenericParam = buffer.readBool()
             val isGenericDefinition = buffer.readBool()
             val genericDefinition = buffer.readNullable { TypeId.read(ctx, buffer) }
@@ -3498,7 +3622,7 @@ abstract class IlValueTypeDto (
             val methods = buffer.readList { IlMethodDto.read(ctx, buffer) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return IlValueTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isGenericType, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
+            return IlValueTypeDto_Unknown(asmName, moduleToken, typeToken, namespaceName, size, name, fullname, isConstructed, declType, baseType, interfaces, genericArgs, isInterface, isGenericType, genericParameterConstraints, isGenericParam, isGenericDefinition, genericDefinition, isCovariant, isContravariant, hasRefTypeConstraint, hasNotNullValueTypeConstraint, hasDefaultCtorConstraint, isValueType, isManaged, attrs, fields, methods, unknownId, unknownBytes)
         }
         
         
@@ -3528,7 +3652,9 @@ class IlValueTypeDto_Unknown (
     baseType: TypeId?,
     interfaces: List<TypeId>,
     genericArgs: List<TypeId>,
+    isInterface: Boolean,
     isGenericType: Boolean,
+    genericParameterConstraints: List<TypeId>,
     isGenericParam: Boolean,
     isGenericDefinition: Boolean,
     genericDefinition: TypeId?,
@@ -3557,7 +3683,9 @@ class IlValueTypeDto_Unknown (
     baseType,
     interfaces,
     genericArgs,
+    isInterface,
     isGenericType,
+    genericParameterConstraints,
     isGenericParam,
     isGenericDefinition,
     genericDefinition,
@@ -3595,7 +3723,9 @@ class IlValueTypeDto_Unknown (
             buffer.writeNullable(value.baseType) { TypeId.write(ctx, buffer, it) }
             buffer.writeList(value.interfaces) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeList(value.genericArgs) { v -> TypeId.write(ctx, buffer, v) }
+            buffer.writeBool(value.isInterface)
             buffer.writeBool(value.isGenericType)
+            buffer.writeList(value.genericParameterConstraints) { v -> TypeId.write(ctx, buffer, v) }
             buffer.writeBool(value.isGenericParam)
             buffer.writeBool(value.isGenericDefinition)
             buffer.writeNullable(value.genericDefinition) { TypeId.write(ctx, buffer, it) }
@@ -3637,7 +3767,9 @@ class IlValueTypeDto_Unknown (
         if (baseType != other.baseType) return false
         if (interfaces != other.interfaces) return false
         if (genericArgs != other.genericArgs) return false
+        if (isInterface != other.isInterface) return false
         if (isGenericType != other.isGenericType) return false
+        if (genericParameterConstraints != other.genericParameterConstraints) return false
         if (isGenericParam != other.isGenericParam) return false
         if (isGenericDefinition != other.isGenericDefinition) return false
         if (genericDefinition != other.genericDefinition) return false
@@ -3669,7 +3801,9 @@ class IlValueTypeDto_Unknown (
         __r = __r*31 + if (baseType != null) baseType.hashCode() else 0
         __r = __r*31 + interfaces.hashCode()
         __r = __r*31 + genericArgs.hashCode()
+        __r = __r*31 + isInterface.hashCode()
         __r = __r*31 + isGenericType.hashCode()
+        __r = __r*31 + genericParameterConstraints.hashCode()
         __r = __r*31 + isGenericParam.hashCode()
         __r = __r*31 + isGenericDefinition.hashCode()
         __r = __r*31 + if (genericDefinition != null) genericDefinition.hashCode() else 0
@@ -3701,7 +3835,9 @@ class IlValueTypeDto_Unknown (
             print("baseType = "); baseType.print(printer); println()
             print("interfaces = "); interfaces.print(printer); println()
             print("genericArgs = "); genericArgs.print(printer); println()
+            print("isInterface = "); isInterface.print(printer); println()
             print("isGenericType = "); isGenericType.print(printer); println()
+            print("genericParameterConstraints = "); genericParameterConstraints.print(printer); println()
             print("isGenericParam = "); isGenericParam.print(printer); println()
             print("isGenericDefinition = "); isGenericDefinition.print(printer); println()
             print("genericDefinition = "); genericDefinition.print(printer); println()
@@ -3726,7 +3862,7 @@ class IlValueTypeDto_Unknown (
 
 
 /**
- * #### Generated from [IlModel.kt:114]
+ * #### Generated from [IlModel.kt:116]
  */
 abstract class IlVarDto (
     val type: TypeId,
