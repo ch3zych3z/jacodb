@@ -46,6 +46,7 @@ object IlModel : Ext(IlRoot) {
         field("interfaces", immutableList(typeId))
         field("genericArgs", immutableList(typeId))
         field("isInterface", PredefinedType.bool)
+        field("isAbstract", PredefinedType.bool)
         field("isGenericType", PredefinedType.bool)
         field("genericParameterConstraints", immutableList(typeId))
         field("isGenericParam", PredefinedType.bool)

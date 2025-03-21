@@ -51,6 +51,7 @@ class DtoByteConversionIdentity {
             hasDefaultCtorConstraint = false,
             size = 0,
             isInterface = false,
+            isAbstract = false,
             genericParameterConstraints = listOf()
 
         )
@@ -99,6 +100,7 @@ class DtoByteConversionIdentity {
             hasDefaultCtorConstraint = false,
             size = 0,
             isInterface = false,
+            isAbstract = false,
             genericParameterConstraints = listOf()
         )
 

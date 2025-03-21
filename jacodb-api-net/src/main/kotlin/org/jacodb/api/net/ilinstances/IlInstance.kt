@@ -35,6 +35,7 @@ interface IlType : IlInstance, CommonTypeName, CommonType {
     val declaringType: IlType?
     val baseType: IlType?
     val isInterface: Boolean
+    val isAbstract: Boolean
     val interfaces: List<IlType>
 
     override val isConstructed: Boolean
@@ -81,6 +82,7 @@ interface IlMethod : IlInstance, CommonMethod {
 
     val attributes: List<IlAttribute>
     val declaringType: IlType
+    val baseMethod: IlMethod?
     val isStatic: Boolean
     val isVirtual: Boolean
     val isGeneric: Boolean

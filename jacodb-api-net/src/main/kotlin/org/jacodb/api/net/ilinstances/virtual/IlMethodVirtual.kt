@@ -30,6 +30,7 @@ import org.jacodb.api.net.publication.IlPredefinedTypeExt.void
 class IlMethodVirtual(
     override val declaringType: IlType,
     override val isStatic: Boolean,
+    override val baseMethod: IlMethod?,
     override val isVirtual: Boolean,
     override val returnType: IlType,
     override val isGeneric: Boolean,
@@ -38,7 +39,7 @@ class IlMethodVirtual(
     override val attributes: List<IlAttribute>,
     override val parameters: List<IlParameter>,
     override val genericArguments: List<IlType>,
-    override val rawInstList: List<IlStmtDto>
+    override val rawInstList: List<IlStmtDto>,
 ) : IlMethod {
     // TODO
     override val isConstructed: Boolean = true
@@ -76,6 +77,12 @@ class IlMethodVirtual(
             name = value
         }
 
+        var baseMethod: IlMethod? = null
+
+        fun baseMethod(value: IlMethod?) = apply {
+            baseMethod = value
+        }
+
         var attributes: List<IlAttribute> = emptyList()
             private set
 
@@ -110,6 +117,7 @@ class IlMethodVirtual(
             IlMethodVirtual(
                 declaringType,
                 isStatic,
+                baseMethod,
                 isVirtual,
                 returnType,
                 false, false,
@@ -132,9 +140,18 @@ class IlMethodVirtual(
 
     companion object {
         fun IlMethod.toVirtualOf(type: IlType) =
-            Builder(type.publication).declaringType(type).isStatic(isStatic).isVirtual(isVirtual).returnType(returnType).name(name)
+            Builder(type.publication)
+                .declaringType(type)
+                .baseMethod(baseMethod)
+                .isStatic(isStatic)
+                .isVirtual(isVirtual)
+                .returnType(returnType)
+                .name(name)
                 .attributes(attributes)
-                .parameters(parameters).genericArguments(genericArguments).rawInstList(rawInstList).build()
+                .parameters(parameters)
+                .genericArguments(genericArguments)
+                .rawInstList(rawInstList)
+                .build()
     }
 
     override fun flowGraph(): ControlFlowGraph<CommonInst> {

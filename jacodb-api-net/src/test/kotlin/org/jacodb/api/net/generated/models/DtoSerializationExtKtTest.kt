@@ -57,6 +57,7 @@ class DtoSerializationExtKtTest {
             hasDefaultCtorConstraint = false,
             size = 0,
             isInterface = false,
+            isAbstract = false,
             genericParameterConstraints = listOf()
         )
         val bytes = pointerType.getBytes()
@@ -215,6 +216,7 @@ class DtoSerializationExtKtTest {
             hasDefaultCtorConstraint = false,
             size = 0,
             isInterface = false,
+            isAbstract = false,
             genericParameterConstraints = listOf()
         )
 
@@ -269,6 +271,7 @@ class DtoSerializationExtKtTest {
             hasDefaultCtorConstraint = false,
             size = 0,
             isInterface = false,
+            isAbstract = false,
             genericParameterConstraints = listOf()
         )
         val bytes = arrayType.getBytes()

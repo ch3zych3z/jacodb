@@ -89,7 +89,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
         }.toList()
     }
 
-    val baseMethod: IlMethod? by lazy(PUBLICATION) {
+    override val baseMethod: IlMethod? by lazy(PUBLICATION) {
         dto.baseMethod?.let { baseDecl ->
             publication.findIlTypeOrNull(baseDecl.type)
             ?.let { base -> base.methods.single { m -> m.signature == baseDecl.name } }
@@ -101,6 +101,11 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
     val errs: List<IlErrVar> by lazy(PUBLICATION) { dto.errs.map { IlErrVar(it, publication) } }
     override val scopes: List<IlEhScope> by lazy(PUBLICATION) { dto.ehScopes.map { IlEhScope.deserialize(this, it) } }
 
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is IlMethodImpl) return false
+        // TODO: maybe compare by types and name
+        return signature == other.signature
+    }
     override fun toString(): String {
         return "$returnType $name(${parameters.joinToString(", ")})"
     }

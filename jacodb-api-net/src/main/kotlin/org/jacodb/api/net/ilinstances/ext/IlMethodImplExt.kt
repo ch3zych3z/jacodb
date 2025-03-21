@@ -17,22 +17,23 @@
 package org.jacodb.api.net.ilinstances.ext
 
 import kotlinx.coroutines.runBlocking
+import org.jacodb.api.net.IlPublication
 import org.jacodb.api.net.features.InMemoryIlHierarchy
 import org.jacodb.api.net.features.InMemoryIlHierarchyReq
 import org.jacodb.api.net.ilinstances.IlMethod
 import org.jacodb.api.net.ilinstances.impl.IlMethodImpl
 
-fun IlMethodImpl.getOverridingMethods(): List<IlMethod> {
-    val inheritors = runBlocking { InMemoryIlHierarchy.query(publication, InMemoryIlHierarchyReq(declaringType.id)) }
+fun IlMethod.getOverridingMethods(pub: IlPublication): List<IlMethod> {
+    val inheritors = runBlocking { InMemoryIlHierarchy.query(pub, InMemoryIlHierarchyReq(declaringType.id)) }
     return inheritors.flatMap {
         it.methods
     }.filter {
-        (it as IlMethodImpl).baseMethod == baseMethod ||
-                (it.baseMethod as IlMethodImpl).isReturnTypeCovarianceAgnosticOverrideOf(this)
+        it.baseMethod == baseMethod ||
+                (it.baseMethod != null && it.baseMethod!!.isReturnTypeCovarianceAgnosticOverrideOf(this))
     }.toList()
 }
 
-internal fun IlMethodImpl.isReturnTypeCovarianceAgnosticOverrideOf(method: IlMethodImpl): Boolean {
+internal fun IlMethod.isReturnTypeCovarianceAgnosticOverrideOf(method: IlMethod): Boolean {
     return method.attributes.any { it.type.name == "System.Runtime.CompilerServices.PreserveBaseOverridesAttribute" }
             && method.isVirtual
             && name == method.name
