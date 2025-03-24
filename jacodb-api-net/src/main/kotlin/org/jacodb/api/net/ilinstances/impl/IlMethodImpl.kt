@@ -40,6 +40,7 @@ class IlMethodImpl(override val declaringType: IlTypeImpl, private val dto: IlMe
 
     override val isStatic: Boolean = dto.isStatic
     override val isVirtual: Boolean = dto.isVirtual
+    override val isAbstract: Boolean = dto.isAbstract
     override val returnType: IlType by lazy { dto.returnType.let { publication.findIlTypeOrNull(dto.returnType)!! } }
     override val isGeneric: Boolean
         get() = dto.isGeneric

@@ -85,6 +85,7 @@ interface IlMethod : IlInstance, CommonMethod {
     val baseMethod: IlMethod?
     val isStatic: Boolean
     val isVirtual: Boolean
+    val isAbstract: Boolean
     val isGeneric: Boolean
     val isGenericDefinition: Boolean
     override val returnType: IlType

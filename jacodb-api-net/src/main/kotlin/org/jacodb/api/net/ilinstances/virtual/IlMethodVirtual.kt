@@ -32,6 +32,7 @@ class IlMethodVirtual(
     override val isStatic: Boolean,
     override val baseMethod: IlMethod?,
     override val isVirtual: Boolean,
+    override val isAbstract: Boolean,
     override val returnType: IlType,
     override val isGeneric: Boolean,
     override val isGenericDefinition: Boolean,
@@ -62,6 +63,10 @@ class IlMethodVirtual(
         var isVirtual: Boolean = false
 
         fun isVirtual(value: Boolean) = apply { isVirtual = value }
+
+        var isAbstract: Boolean = false
+
+        fun isAbstract(value: Boolean) = apply { isAbstract = value }
 
         var returnType: IlType = publication.void()
             private set
@@ -119,6 +124,7 @@ class IlMethodVirtual(
                 isStatic,
                 baseMethod,
                 isVirtual,
+                isAbstract,
                 returnType,
                 false, false,
                 name,
@@ -145,6 +151,7 @@ class IlMethodVirtual(
                 .baseMethod(baseMethod)
                 .isStatic(isStatic)
                 .isVirtual(isVirtual)
+                .isAbstract(isAbstract)
                 .returnType(returnType)
                 .name(name)
                 .attributes(attributes)

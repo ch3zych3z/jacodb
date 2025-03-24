@@ -41,17 +41,19 @@ class OverridingMethodsTest {
 
     @Test
     fun inherited() {
-        val parent = AssignableFromTests.Companion.publication.findIlTypeOrNull(
+        val parent = publication.findIlTypeOrNull(
             TypeId(
                 listOf(),
-                AssignableFromTests.Companion.testAsm, "TACBuilder.Tests.InMemoryIlHierarchy.Simple+Base"
+                testAsm,
+                "TACBuilder.Tests.InMemoryIlHierarchy.Simple+Base"
             )
         )
         assertNotNull(parent)
-        val child = AssignableFromTests.Companion.publication.findIlTypeOrNull(
+        val child = publication.findIlTypeOrNull(
             TypeId(
                 listOf(),
-                AssignableFromTests.Companion.testAsm, "TACBuilder.Tests.InMemoryIlHierarchy.Simple+DirectChild"
+                testAsm,
+                "TACBuilder.Tests.InMemoryIlHierarchy.Simple+DirectChild"
             )
         )
         assertNotNull(child)
@@ -61,4 +63,30 @@ class OverridingMethodsTest {
         assertEquals(2, overridings.size)
         assertContains(overridings, childMethod)
     }
+
+    @Test
+    fun interfaceImpl() {
+        val parent = publication.findIlTypeOrNull(
+            TypeId(
+                listOf(),
+                testAsm,
+                "IVuln"
+            )
+        )
+        assertNotNull(parent)
+        val child = publication.findIlTypeOrNull(
+            TypeId(
+                listOf(),
+                testAsm,
+                "Vuln"
+            )
+        )
+        assertNotNull(child)
+        val parentMethod = parent.methods.single { it.name == "Get"}
+        val overridings = parentMethod.getOverridingMethods(publication)
+        val childMethod = child.methods.single { it.name == "Get"}
+        assertEquals(1, overridings.size)
+        assertContains(overridings, childMethod)
+    }
+
 }

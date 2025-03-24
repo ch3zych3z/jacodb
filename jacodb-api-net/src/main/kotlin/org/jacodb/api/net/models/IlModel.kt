@@ -164,6 +164,7 @@ object IlModel : Ext(IlRoot) {
         field("rawInstList", immutableList(IlMethodBodyModel.IlStmtDto))
         field("isConstructed", PredefinedType.bool)
         field("isVirtual", PredefinedType.bool)
+        field("isAbstract", PredefinedType.bool)
         field("baseMethod", IlMethodBodyModel.instanceId.nullable)
     }
 
