@@ -28,10 +28,13 @@ fun IlMethod.getOverridingMethods(pub: IlPublication): List<IlMethod> {
     return inheritors.flatMap {
         it.methods
     }.filter {
-        it.baseMethod == baseMethod ||
-                (it.baseMethod != null && it.baseMethod!!.isReturnTypeCovarianceAgnosticOverrideOf(this))
+        it.isOverriding(this)
     }.toList()
 }
+
+fun IlMethod.isOverriding(other: IlMethod) =
+    other.baseMethod == baseMethod
+    || (baseMethod != null && baseMethod!!.isReturnTypeCovarianceAgnosticOverrideOf(other))
 
 internal fun IlMethod.isReturnTypeCovarianceAgnosticOverrideOf(method: IlMethod): Boolean {
     return method.attributes.any { it.type.name == "System.Runtime.CompilerServices.PreserveBaseOverridesAttribute" }
